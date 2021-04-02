@@ -61,9 +61,18 @@ export default function(pos) {
     while (start > 0 && check(line.charAt(start - 1))) --start
     while (end < line.length && check(line.charAt(end))) ++end
   }
-  let found = line.substring(start, end);
-  if (/[\u4e00-\u9fa5]/.test(found)) {
-    console.log("chs char found, line: " + found);
+  
+  if (/[\u4e00-\u9fa5]/.test(line.substring(start, end))) {
+    console.log("chs char found");
+    const range = 6;
+    if (pos.ch - start > range) {
+      start = pos.ch - range;
+    }
+    if (end - pos.ch > range) {
+      end = pos.ch + range;
+    }
+    let found = line.substring(start, end);
+    console.log("Trimmed line: " + found);
     let relativePos = pos.ch - start;
     const segmentit = app.plugins.plugins["cm-chs-patch"].segmentit;
     const result = segmentit.doSegment(found);
