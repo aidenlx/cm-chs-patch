@@ -1,56 +1,37 @@
-## Obsidian Sample Plugin
+# Word Splitting for Simplified Chinese in Edit Mode
 
-This is a sample plugin for Obsidian (https://obsidian.md).
+A patch for Obsidian's built-in CodeMirror Editor to support Simplified Chinese word splitting
 
-This project uses Typescript to provide type checking and documentation.
-The repo depends on the latest plugin API (obsidian.d.ts) in Typescript Definition format, which contains TSDoc comments describing what it does.
+增加 Obsidian 内置编辑器的(简体)中文分词支持，使得编辑模式的双击可以选中中文
 
-**Note:** The Obsidian API is still in early alpha and is subject to change at any time!
+Special Thanks to [@linonetwo](https://github.com/linonetwo) for [the chs word splitting module](https://github.com/linonetwo/segmentit)
 
-This sample plugin demonstrates some of the basic functionality the plugin API can do.
-- Changes the default font color to red using `styles.css`.
-- Adds a ribbon icon, which shows a Notice when clicked.
-- Adds a command "Open Sample Modal" which opens a Modal.
-- Adds a plugin setting tab to the settings page.
-- Registers a global click event and output 'click' to the console.
-- Registers a global interval which logs 'setInterval' to the console.
+## Demo
 
-### First time developing plugins?
+| Obsidian's Default Word Splitting<br>默认分词 | Patched<br>安装插件后 |
+| ------------------ | ----------- |
+| ![ob-default-splitting](https://img.aidenlx.top/img/ob-default-splitting.gif)                   | ![ob-patched-splitting](https://img.aidenlx.top/img/ob-patched-splitting.gif)            |
 
-Quick starting guide for new plugin devs:
+## Compatibility 兼容性
 
-- Make a copy of this repo as a template with the "Use this template" button (login to GitHub if you don't see it).
-- Clone your repo to a local development folder. For convenience, you can place this folder in your `.obsidian/plugins/your-plugin-name` folder.
-- Install NodeJS, then run `npm i` in the command line under your repo folder.
-- Run `npm run dev` to compile your plugin from `main.ts` to `main.js`.
-- Make changes to `main.ts` (or create new `.ts` files). Those changes should be automatically compiled into `main.js`.
-- Reload Obsidian to load the new version of your plugin.
-- Enable plugin in settings window.
+The required API feature is only available for Obsidian v0.10.0+.
 
-### Releasing new releases
+本插件仅支持0.10.0以上的版本
 
-- Update your `manifest.json` with your new version number, such as `1.0.1`, and the minimum Obsidian version required for your latest release.
-- Update your `versions.json` file with `"new-plugin-version": "minimum-obsidian-version"` so older versions of Obsidian can download an older version of your plugin that's compatible.
-- Create new GitHub release using your new version number as the "Tag version". Use the exact version number, don't include a prefix `v`. See here for an example: https://github.com/obsidianmd/obsidian-sample-plugin/releases
-- Upload the files `manifest.json`, `main.js`, `styles.css` as binary attachments.
-- Publish the release.
+## Installation 安装
 
-### Adding your plugin to the community plugin list
+1. Open `Settings` > `Third-party plugin`
+2. Make sure Safe mode is **off**
+3. Click `Browse community plugins`
+4. Search for this plugin
+5. Click `Install`
+6. Once installed, close the community plugins window and the patch is ready to use.
 
-- Publish an initial version.
-- Make sure you have a `README.md` file in the root of your repo.
-- Make a pull request at https://github.com/obsidianmd/obsidian-releases to add your plugin.
+***
 
-### How to use
-
-- Clone this repo.
-- `npm i` or `yarn` to install dependencies
-- `npm run dev` to start compilation in watch mode.
-
-### Manually installing the plugin
-
-- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/your-plugin-id/`.
-
-### API Documentation
-
-See https://github.com/obsidianmd/obsidian-api
+1. 打开`设置`>`第三方插件`
+2. 确保安全模式为`关闭`
+3. 点击`浏览社区插件`
+4. 搜索此插件
+5. 点击`安装`
+6. 安装完成后，关闭安装窗口，插件即可使用
