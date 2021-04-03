@@ -1,9 +1,9 @@
-import { MarkdownView, Plugin, Editor } from "obsidian";
+import { Plugin } from "obsidian";
 import { Segment, useDefault } from 'segmentit';
 import findWordAt from 'inject'
 
 
-export default class MyPlugin extends Plugin {
+export default class CMChsPatch extends Plugin {
 
 	segmentit:any;
 
@@ -12,7 +12,6 @@ export default class MyPlugin extends Plugin {
 
 		this.segmentit = useDefault(new Segment())
 
-    // 可以用来设置中文双击选择
     this.registerCodeMirror((cm: CodeMirror.Editor) => {
     	cm.findWordAt = findWordAt;
     });
