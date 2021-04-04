@@ -8,7 +8,7 @@ export default class CMChsPatch extends Plugin {
 	segmentit:any;
 
   async onload() {
-    console.log("loading plugin");
+    console.log("loading cm-chs-patch");
 
 		this.segmentit = useDefault(new Segment())
 
@@ -18,6 +18,6 @@ export default class CMChsPatch extends Plugin {
   }
 
   onunload() {
-    console.log("unloading plugin");
+    console.log("unloading cm-chs-patch");
   }
 }
