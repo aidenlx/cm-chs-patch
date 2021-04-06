@@ -16,11 +16,20 @@ export default class CMChsPatch extends Plugin {
     this.segmentit = useDefault(new Segment());
 
     this.registerCodeMirror((cm: CodeMirror.Editor) => {
+      if (this.findWordAt_backup===undefined)
+        this.findWordAt_backup = cm.findWordAt;
       patch(cm, this.segmentit);
     });
   }
 
   onunload() {
+    const restoreFWA = (cm:CodeMirror.Editor) => {
+      if (this.findWordAt_backup)
+        cm.findWordAt = this.findWordAt_backup.bind(cm);
+      else
+        throw new Error("findWordAt_backup not found");
+    }
+    this.app.workspace.iterateCodeMirrors(restoreFWA);
     console.log("unloading cm-chs-patch");
   }
 }
