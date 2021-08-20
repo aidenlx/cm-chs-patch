@@ -5,32 +5,52 @@
   "main": "main.js",
   "scripts": {
     "dev": "rollup --config rollup.config.js -w",
-    "build": "rollup --config rollup.config.js",
+    "build": "rollup --config rollup.config.js --environment BUILD:production",
+    "prettier": "prettier --write 'src/**/*.+(ts|tsx|json|html|css)'",
+    "eslint": "eslint . --ext .ts,.tsx --fix",
     "release": "release-it"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "@release-it/bumper": "^2.0.0",
-    "@release-it/conventional-changelog": "^2.0.1",
-    "@rollup/plugin-commonjs": "^15.1.0",
-    "@rollup/plugin-node-resolve": "^9.0.0",
-    "@rollup/plugin-typescript": "^6.0.0",
-    "@types/codemirror": "^0.0.98",
-    "@types/node": "^14.14.2",
+    "@release-it/bumper": "^3.0.1",
+    "@release-it/conventional-changelog": "^3.3.0",
+    "@rollup/plugin-commonjs": "^20.0.0",
+    "@rollup/plugin-node-resolve": "^13.0.4",
+    "@rollup/plugin-typescript": "^8.2.5",
+    "@types/codemirror": "^5.60.2",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.24.1",
+    "eslint-plugin-jsdoc": "^36.0.7",
+    "eslint-plugin-prefer-arrow": "^1.2.3",
+    "eslint-plugin-prettier": "^3.4.0",
+    "eslint-plugin-simple-import-sort": "^7.0.0",
+    "prettier": "^2.3.2",
+    "rollup-plugin-copy": "^3.4.0",
+    "@types/node": "^16.6.2",
     "cz-conventional-changelog": "^3.3.0",
-    "obsidian": "https://github.com/obsidianmd/obsidian-api/tarball/master",
-    "release-it": "^14.5.1",
-    "rollup": "^2.32.1",
+    "obsidian": "^0.12.11",
+    "release-it": "^14.11.5",
+    "rollup": "^2.56.2",
     "segmentit": "^2.0.3",
-    "tslib": "^2.0.3",
-    "typescript": "^4.0.3"
+    "tslib": "^2.3.1",
+    "typescript": "^4.3.5"
   },
   "release-it": {
     "hooks": {
-      "before:bump": "chmod u+x scripts/bump-version.sh && source scripts/bump-version.sh",
-      "after:bump": "npm run build",
+      "before:init": [
+        "npm run prettier",
+        "npm run eslint"
+      ],
+      "after:bump": [
+        "json -I -f manifest.json -e \"this.version='${version}'\"",
+        "json -I -f versions.json -e \"this['${version}']='$(cat manifest.json | json minAppVersion)'\"",
+        "sed -i '' \"s/available for Obsidian v.*$/available for Obsidian v$(cat manifest.json | json minAppVersion)+./\" README.md",
+        "git add .",
+        "npm run build"
+      ],
       "after:git:release": "echo After git push, before github release",
       "after:release": "echo Successfully released ${name} v${version} to ${repo.repository}."
     },

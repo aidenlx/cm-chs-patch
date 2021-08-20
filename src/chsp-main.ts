@@ -1,34 +1,31 @@
 import { Plugin } from "obsidian";
 import { Segment, useDefault } from "segmentit";
 
-import type * as CodeMirror from "codemirror";
 import { Pos, Range } from "./cm-extracted";
 
 export default class CMChsPatch extends Plugin {
-
   segmentit: any;
 
-  findWordAt_backup? : findWordAt;
+  findWordAt_backup?: findWordAt;
 
   async onload() {
     console.log("loading cm-chs-patch");
 
     this.segmentit = useDefault(new Segment());
 
-    this.registerCodeMirror((cm: CodeMirror.Editor) => {
-      if (this.findWordAt_backup===undefined)
+    this.registerCodeMirror((cm) => {
+      if (this.findWordAt_backup === undefined)
         this.findWordAt_backup = cm.findWordAt;
       patch(cm, this.segmentit);
     });
   }
 
   onunload() {
-    const restoreFWA = (cm:CodeMirror.Editor) => {
+    const restoreFWA = (cm: CodeMirror.Editor) => {
       if (this.findWordAt_backup)
         cm.findWordAt = this.findWordAt_backup.bind(cm);
-      else
-        throw new Error("findWordAt_backup not found");
-    }
+      else throw new Error("findWordAt_backup not found");
+    };
     this.app.workspace.iterateCodeMirrors(restoreFWA);
     console.log("unloading cm-chs-patch");
   }

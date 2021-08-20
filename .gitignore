@@ -9,3 +9,9 @@ package-lock.json
 # build
 main.js
 *.js.map
+styles.css
+/build/*
+!build/.hotreload
+
+# saved data
+data.json
