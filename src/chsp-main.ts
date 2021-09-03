@@ -18,6 +18,7 @@ export default class CMChsPatch extends Plugin {
   async onload() {
     console.log("loading cm-chs-patch");
     this.loadSegmentit();
+    this.loadApi();
   }
 
   loadApi() {

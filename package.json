@@ -17,6 +17,9 @@
   "keywords": [],
   "author": "AidenLx",
   "license": "MIT",
+  "dependencies": {
+    "obsidian": "^0.12.11"
+  },
   "devDependencies": {
     "@release-it/bumper": "^3.0.1",
     "@release-it/conventional-changelog": "^3.3.0",
@@ -36,7 +39,6 @@
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "monkey-around": "^2.2.0",
-    "obsidian": "^0.12.11",
     "pinyinlite": "^1.2.1",
     "prettier": "^2.3.2",
     "release-it": "^14.11.5",
