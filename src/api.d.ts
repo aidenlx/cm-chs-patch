@@ -3,6 +3,7 @@ import "obsidian";
 import pinyinlite from "pinyinlite";
 export interface ChsPatchAPI {
   pinyin: typeof pinyinlite;
+  chsRegex: RegExp;
 }
 
 declare module "obsidian" {

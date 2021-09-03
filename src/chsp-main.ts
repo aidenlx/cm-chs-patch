@@ -8,6 +8,7 @@ import { Range } from "./selection";
 
 const API_NAME: API_NAME extends keyof typeof window ? API_NAME : never =
   "ChsPatchAPI" as const; // this line will throw error when name out of sync
+const chsRegex = /[\u4e00-\u9fa5]/g;
 
 export default class CMChsPatch extends Plugin {
   api?: ChsPatchAPI;
@@ -20,7 +21,7 @@ export default class CMChsPatch extends Plugin {
   }
 
   loadApi() {
-    const api = { pinyin };
+    const api = { pinyin, chsRegex };
     this.api = api;
     window[API_NAME] = api;
     this.register(() => (window[API_NAME] = undefined));
