@@ -1,22 +1,37 @@
 import { around } from "monkey-around";
 import { Plugin } from "obsidian";
+import pinyin from "pinyinlite";
 import { Segment, useDefault } from "segmentit";
 
+import { API_NAME, ChsPatchAPI, Evt_ApiReady } from "./api";
 import { Range } from "./selection";
 
+const API_NAME: API_NAME extends keyof typeof window ? API_NAME : never =
+  "ChsPatchAPI" as const; // this line will throw error when name out of sync
+
 export default class CMChsPatch extends Plugin {
-  api: {
-    segmentit?: any;
-  } = {};
+  api?: ChsPatchAPI;
+
+  segmentit?: any;
 
   async onload() {
     console.log("loading cm-chs-patch");
     this.loadSegmentit();
   }
 
+  loadApi() {
+    const api = { pinyin };
+    this.api = api;
+    window[API_NAME] = api;
+    this.register(() => (window[API_NAME] = undefined));
+    console.log("ChsPatch API ready");
+
+    this.app.metadataCache.trigger(...(<Evt_ApiReady>["chs-patch:ready", api]));
+  }
+
   loadSegmentit() {
     const segmentit = useDefault(new Segment());
-    this.api.segmentit = segmentit;
+    this.segmentit = segmentit;
     this.registerCodeMirror((cm) => {
       const unload = around(cm, {
         // eslint-disable-next-line prefer-arrow/prefer-arrow-functions
@@ -64,5 +79,6 @@ export default class CMChsPatch extends Plugin {
       });
       this.register(unload);
     });
+    window.ChsPatchAPI = undefined;
   }
 }
