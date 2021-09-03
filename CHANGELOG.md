@@ -1,3 +1,10 @@
+## [1.3.1](https://github.com/aidenlx/cm-chs-patch/compare/1.3.0...1.3.1) (2021-09-03)
+
+
+### Bug Fixes
+
+* fix dependencies; fix api not loaded ([795bb33](https://github.com/aidenlx/cm-chs-patch/commit/795bb33764bd9543eccab15ed771f8bace4e56a5))
+
 # [1.3.0](https://github.com/aidenlx/cm-chs-patch/compare/1.2.0...1.3.0) (2021-09-03)
 
 
