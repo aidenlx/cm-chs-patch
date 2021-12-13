@@ -21,7 +21,7 @@ export default {
     exports: "default",
     banner,
   },
-  external: ["obsidian", "@codemirror/state"],
+  external: ["obsidian", "@codemirror/state", "@codemirror/view"],
   plugins: [
     typescript(),
     nodeResolve({ browser: true }),

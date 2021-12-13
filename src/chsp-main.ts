@@ -4,6 +4,7 @@ import pinyin from "pinyinlite";
 import { Segment, useDefault } from "segmentit";
 
 import { API_NAME, ChsPatchAPI, Evt_ApiReady } from "./api";
+import getChsPatch from "./cm6/index";
 import { Range } from "./selection";
 
 const API_NAME: API_NAME extends keyof typeof window ? API_NAME : never =
@@ -13,12 +14,13 @@ const chsRegex = /[\u4e00-\u9fa5]/g;
 export default class CMChsPatch extends Plugin {
   api?: ChsPatchAPI;
 
-  segmentit?: any;
+  segmentit!: any;
 
   async onload() {
     console.log("loading cm-chs-patch");
     this.loadSegmentit();
     this.loadApi();
+    this.registerEditorExtension(getChsPatch(this.segmentit));
   }
 
   loadApi() {
