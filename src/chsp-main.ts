@@ -4,7 +4,7 @@ import { Segment, useDefault } from "segmentit";
 
 import { API_NAME, ChsPatchAPI, Evt_ApiReady } from "./api";
 import patchGetWordAt from "./cm5";
-import getChsPatch from "./cm6/index";
+import { getChsPatchExtension, getWordAtPatchUnloader } from "./cm6/index";
 
 const API_NAME: API_NAME extends keyof typeof window ? API_NAME : never =
   "ChsPatchAPI" as const; // this line will throw error when name out of sync
@@ -21,11 +21,13 @@ export default class CMChsPatch extends Plugin {
 
     this.loadApi();
 
+    // for cm5
     const cm5PatchUnloader = patchGetWordAt(this.segmentit);
-    if (cm5PatchUnloader) {
-      this.register(cm5PatchUnloader);
-    }
-    this.registerEditorExtension(getChsPatch(this.segmentit));
+    cm5PatchUnloader && this.register(cm5PatchUnloader);
+
+    // for cm6
+    this.registerEditorExtension(getChsPatchExtension(this.segmentit));
+    this.register(getWordAtPatchUnloader(this.segmentit));
   }
 
   loadApi() {

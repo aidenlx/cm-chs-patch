@@ -1,12 +1,14 @@
 /* eslint-disable prefer-arrow/prefer-arrow-functions */
-import { EditorSelection } from "@codemirror/state";
+import { EditorSelection, EditorState } from "@codemirror/state";
 import { EditorView, MouseSelectionStyle } from "@codemirror/view";
+import { around } from "monkey-around";
 import type { useDefault } from "segmentit";
 
 import { queryPos } from "./from-src";
+import cm6GetChsSeg from "./get-seg";
 import rangeForClick from "./range-for-click";
 
-const getChsPatch = (seg: ReturnType<typeof useDefault>) => {
+export const getChsPatchExtension = (seg: ReturnType<typeof useDefault>) => {
   const dblClickPatch = EditorView.mouseSelectionStyle.of((view, event) => {
     // Only handle double clicks
     if (event.button !== 0 || event.detail !== 2) return null;
@@ -66,4 +68,10 @@ const getChsPatch = (seg: ReturnType<typeof useDefault>) => {
   return [dblClickPatch];
 };
 
-export default getChsPatch;
+export const getWordAtPatchUnloader = (seg: ReturnType<typeof useDefault>) =>
+  around(EditorState.prototype, {
+    wordAt: (next) =>
+      function (this: EditorState, pos: number) {
+        return cm6GetChsSeg(pos, next.call(this, pos), this, seg);
+      },
+  });
