@@ -1,3 +1,10 @@
+## [1.4.1](https://github.com/aidenlx/cm-chs-patch/compare/1.4.0...1.4.1) (2021-12-13)
+
+
+### Features
+
+* patch EditorState.wordAt ([2eec604](https://github.com/aidenlx/cm-chs-patch/commit/2eec6043e388e8462b6bf485f630f1e19d1fc6e7))
+
 # [1.4.0](https://github.com/aidenlx/cm-chs-patch/compare/1.3.1...1.4.0) (2021-12-13)
 
 
