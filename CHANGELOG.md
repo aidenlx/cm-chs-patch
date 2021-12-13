@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/aidenlx/cm-chs-patch/compare/1.3.1...1.4.0) (2021-12-13)
+
+
+### Features
+
+* support live preview (cm6) ([a809e2c](https://github.com/aidenlx/cm-chs-patch/commit/a809e2cd525a6bb841da5cdaaaf48a79130c4d0a))
+
 ## [1.3.1](https://github.com/aidenlx/cm-chs-patch/compare/1.3.0...1.3.1) (2021-09-03)
 
 

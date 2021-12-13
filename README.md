@@ -14,7 +14,7 @@ Special Thanks to [@linonetwo](https://github.com/linonetwo) for [the chs word s
 
 ## Compatibility 兼容性
 
-The required API feature is only available for Obsidian v0.10.0+.
+The required API feature is only available for Obsidian v0.13.8+.
 
 本插件仅支持0.10.0以上的版本
 
