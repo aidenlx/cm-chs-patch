@@ -71,8 +71,19 @@ class GoToDownloadModal extends Modal {
       );
       div.createEl("ol", {}, (ol) => {
         ol.createEl("li", {}, (li) => {
-          li.appendText("点击此链接下载 @node-rs/jieba：");
-          li.createEl("a", { href: downloadLink, text: "下载链接" });
+          li.appendText("点击链接下载 ");
+          li.createEl("code", {
+            text: lib.replace(/\.node$/, "") + ".zip",
+          });
+          li.createEl("br");
+          li.appendText("从 ");
+          li.createEl("a", { href: downloadLink, text: "GitHub" });
+          li.appendText(" 或 ");
+          li.createEl("a", {
+            href: "https://wwe.lanzoum.com/b01j6fw8h",
+            text: "蓝奏云（密码b6p8）",
+          });
+          li.appendText(" 下载");
         });
         ol.createEl("li", {}, (li) => {
           li.appendText("解压缩zip包得到 ");
