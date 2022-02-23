@@ -23,6 +23,7 @@ __metadata:
     "@types/node": ^16.11.12
     "@typescript-eslint/eslint-plugin": ^5.6.0
     "@typescript-eslint/parser": ^5.6.0
+    builtin-modules: ^3.2.0
     cm6-view-src: "github:aidenlx/view"
     cross-env: ^7.0.3
     cz-conventional-changelog: ^3.3.0
@@ -35,11 +36,11 @@ __metadata:
     eslint-plugin-prefer-arrow: ^1.2.3
     eslint-plugin-prettier: ^4.0.0
     eslint-plugin-simple-import-sort: ^7.0.0
+    file-select-dialog: ^1.5.4
     monkey-around: ^2.2.0
     obsidian: "github:obsidianmd/obsidian-api"
     prettier: ^2.5.1
     release-it: ^14.11.8
-    segmentit: ^2.0.3
     tslib: ^2.3.1
     typescript: ^4.5.3
   languageName: unknown
@@ -134,15 +135,6 @@ __metadata:
     chalk: ^2.0.0
     js-tokens: ^4.0.0
   checksum: 1f1bdd752a90844f4efc22166a46303fb651ba0fd75a06daba3ebae2575ab3edc1da9827c279872a3aaf305f50a18473c5fa1966752726a2b253065fd4c0745e
-  languageName: node
-  linkType: hard
-
-"@babel/runtime@npm:^7.7.2":
-  version: 7.17.2
-  resolution: "@babel/runtime@npm:7.17.2::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2F%40babel%2Fruntime%2F-%2Fruntime-7.17.2.tgz"
-  dependencies:
-    regenerator-runtime: ^0.13.4
-  checksum: a48702d271ecc59c09c397856407afa29ff980ab537b3da58eeee1aeaa0f545402d340a1680c9af58aec94dfdcbccfb6abb211991b74686a86d03d3f6956cacd
   languageName: node
   linkType: hard
 
@@ -1025,28 +1017,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"babel-plugin-macros@npm:^2.6.1":
-  version: 2.8.0
-  resolution: "babel-plugin-macros@npm:2.8.0::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fbabel-plugin-macros%2F-%2Fbabel-plugin-macros-2.8.0.tgz"
-  dependencies:
-    "@babel/runtime": ^7.7.2
-    cosmiconfig: ^6.0.0
-    resolve: ^1.12.0
-  checksum: 59b09a21cf3ae1e14186c1b021917d004b49b953824b24953a54c6502da79e8051d4ac31cfd4a0ae7f6ea5ddf1f7edd93df4895dd3c3982a5b2431859c2889ac
-  languageName: node
-  linkType: hard
-
-"babel-plugin-preval@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "babel-plugin-preval@npm:4.0.0::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fbabel-plugin-preval%2F-%2Fbabel-plugin-preval-4.0.0.tgz"
-  dependencies:
-    "@babel/runtime": ^7.7.2
-    babel-plugin-macros: ^2.6.1
-    require-from-string: ^2.0.2
-  checksum: e2c199a2ea04f827d5b84b06f7a4b24af5da6ffa021930f22ce79671e2e331dfd9dbc28c46a2af0c81c7447101895926838948e8ccd1a0dc51e0f298cbef6f95
-  languageName: node
-  linkType: hard
-
 "balanced-match@npm:^1.0.0":
   version: 1.0.2
   resolution: "balanced-match@npm:1.0.2::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fbalanced-match%2F-%2Fbalanced-match-1.0.2.tgz"
@@ -1128,6 +1098,13 @@ __metadata:
     base64-js: ^1.3.1
     ieee754: ^1.1.13
   checksum: e2cf8429e1c4c7b8cbd30834ac09bd61da46ce35f5c22a78e6c2f04497d6d25541b16881e30a019c6fd3154150650ccee27a308eff3e26229d788bbdeb08ab84
+  languageName: node
+  linkType: hard
+
+"builtin-modules@npm:^3.2.0":
+  version: 3.2.0
+  resolution: "builtin-modules@npm:3.2.0"
+  checksum: 0265aa1ba78e1a16f4e18668d815cb43fb364e6a6b8aa9189c6f44c7b894a551a43b323c40206959d2d4b2568c1f2805607ad6c88adc306a776ce6904cca6715
   languageName: node
   linkType: hard
 
@@ -1696,19 +1673,6 @@ __metadata:
     path-type: ^4.0.0
     yaml: ^1.10.0
   checksum: 4be63e7117955fd88333d7460e4c466a90f556df6ef34efd59034d2463484e339666c41f02b523d574a797ec61f4a91918c5b89a316db2ea2f834e0d2d09465b
-  languageName: node
-  linkType: hard
-
-"cosmiconfig@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "cosmiconfig@npm:6.0.0::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fcosmiconfig%2F-%2Fcosmiconfig-6.0.0.tgz"
-  dependencies:
-    "@types/parse-json": ^4.0.0
-    import-fresh: ^3.1.0
-    parse-json: ^5.0.0
-    path-type: ^4.0.0
-    yaml: ^1.7.2
-  checksum: 8eed7c854b91643ecb820767d0deb038b50780ecc3d53b0b19e03ed8aabed4ae77271198d1ae3d49c3b110867edf679f5faad924820a8d1774144a87cb6f98fc
   languageName: node
   linkType: hard
 
@@ -2694,6 +2658,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"file-select-dialog@npm:^1.5.4":
+  version: 1.5.4
+  resolution: "file-select-dialog@npm:1.5.4"
+  checksum: 378448cbd4653fe27946692e1cf98f651f6c1ef8325a3a417fafc4520344305418dc9c58221ca7270c119b5216b898dc68d9386181d88ec1a408d73562ad850a
+  languageName: node
+  linkType: hard
+
 "fill-range@npm:^7.0.1":
   version: 7.0.1
   resolution: "fill-range@npm:7.0.1::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Ffill-range%2F-%2Ffill-range-7.0.1.tgz"
@@ -3293,7 +3264,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"import-fresh@npm:^3.0.0, import-fresh@npm:^3.1.0, import-fresh@npm:^3.2.1":
+"import-fresh@npm:^3.0.0, import-fresh@npm:^3.2.1":
   version: 3.3.0
   resolution: "import-fresh@npm:3.3.0::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fimport-fresh%2F-%2Fimport-fresh-3.3.0.tgz"
   dependencies:
@@ -4711,15 +4682,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"preval.macro@npm:^4.0.0":
-  version: 4.0.0
-  resolution: "preval.macro@npm:4.0.0::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fpreval.macro%2F-%2Fpreval.macro-4.0.0.tgz"
-  dependencies:
-    babel-plugin-preval: ^4.0.0
-  checksum: 07a9e060541a144c45501febb0eb72e504fa53abc1188db3d6171440d194c1de4d77aee3eea96272d5f9b8b7625aeb5eeabb235a2160df2e00129242142f019e
-  languageName: node
-  linkType: hard
-
 "process-nextick-args@npm:~2.0.0":
   version: 2.0.1
   resolution: "process-nextick-args@npm:2.0.1::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fprocess-nextick-args%2F-%2Fprocess-nextick-args-2.0.1.tgz"
@@ -4912,13 +4874,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"regenerator-runtime@npm:^0.13.4":
-  version: 0.13.9
-  resolution: "regenerator-runtime@npm:0.13.9::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fregenerator-runtime%2F-%2Fregenerator-runtime-0.13.9.tgz"
-  checksum: 65ed455fe5afd799e2897baf691ca21c2772e1a969d19bb0c4695757c2d96249eb74ee3553ea34a91062b2a676beedf630b4c1551cc6299afb937be1426ec55e
-  languageName: node
-  linkType: hard
-
 "regexpp@npm:^3.2.0":
   version: 3.2.0
   resolution: "regexpp@npm:3.2.0::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fregexpp%2F-%2Fregexpp-3.2.0.tgz"
@@ -4996,13 +4951,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"require-from-string@npm:^2.0.2":
-  version: 2.0.2
-  resolution: "require-from-string@npm:2.0.2::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Frequire-from-string%2F-%2Frequire-from-string-2.0.2.tgz"
-  checksum: a03ef6895445f33a4015300c426699bc66b2b044ba7b670aa238610381b56d3f07c686251740d575e22f4c87531ba662d06937508f0f3c0f1ddc04db3130560b
-  languageName: node
-  linkType: hard
-
 "resolve-alpn@npm:^1.0.0":
   version: 1.2.1
   resolution: "resolve-alpn@npm:1.2.1::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fresolve-alpn%2F-%2Fresolve-alpn-1.2.1.tgz"
@@ -5043,7 +4991,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@npm:^1.1.6, resolve@npm:^1.10.0, resolve@npm:^1.12.0, resolve@npm:^1.20.0":
+"resolve@npm:^1.1.6, resolve@npm:^1.10.0, resolve@npm:^1.20.0":
   version: 1.22.0
   resolution: "resolve@npm:1.22.0::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fresolve%2F-%2Fresolve-1.22.0.tgz"
   dependencies:
@@ -5056,7 +5004,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"resolve@patch:resolve@^1.1.6#~builtin<compat/resolve>, resolve@patch:resolve@^1.10.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.12.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.20.0#~builtin<compat/resolve>":
+"resolve@patch:resolve@^1.1.6#~builtin<compat/resolve>, resolve@patch:resolve@^1.10.0#~builtin<compat/resolve>, resolve@patch:resolve@^1.20.0#~builtin<compat/resolve>":
   version: 1.22.0
   resolution: "resolve@patch:resolve@npm%3A1.22.0%3A%3A__archiveUrl=https%253A%252F%252Fregistry.npmmirror.com%252Fresolve%252F-%252Fresolve-1.22.0.tgz#~builtin<compat/resolve>::version=1.22.0&hash=07638b"
   dependencies:
@@ -5184,15 +5132,6 @@ __metadata:
   version: 2.1.2
   resolution: "safer-buffer@npm:2.1.2::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fsafer-buffer%2F-%2Fsafer-buffer-2.1.2.tgz"
   checksum: cab8f25ae6f1434abee8d80023d7e72b598cf1327164ddab31003c51215526801e40b66c5e65d658a0af1e9d6478cadcb4c745f4bd6751f97d8644786c0978b0
-  languageName: node
-  linkType: hard
-
-"segmentit@npm:^2.0.3":
-  version: 2.0.3
-  resolution: "segmentit@npm:2.0.3::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fsegmentit%2F-%2Fsegmentit-2.0.3.tgz"
-  dependencies:
-    preval.macro: ^4.0.0
-  checksum: 98c1c36ee2e00cfc22beb92b4ce424f2e11c8f1f8d6517f6cf13fc2d5dd2638de8be668aaf3ad746601961dafa010a153625d6087a89e36dde8481a73da1ada5
   languageName: node
   linkType: hard
 
@@ -6088,7 +6027,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"yaml@npm:1.10.2, yaml@npm:^1.10.0, yaml@npm:^1.7.2":
+"yaml@npm:1.10.2, yaml@npm:^1.10.0":
   version: 1.10.2
   resolution: "yaml@npm:1.10.2::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fyaml%2F-%2Fyaml-1.10.2.tgz"
   checksum: ce4ada136e8a78a0b08dc10b4b900936912d15de59905b2bf415b4d33c63df1d555d23acb2a41b23cf9fb5da41c256441afca3d6509de7247daa062fd2c5ea5f

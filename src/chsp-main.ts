@@ -1,20 +1,32 @@
 import { Plugin } from "obsidian";
-import { Segment, useDefault } from "segmentit";
 
 import setupCM5 from "./cm5";
 import setupCM6 from "./cm6";
+import { cut, load as loadJieba } from "./jieba";
 
 const RANGE_LIMIT = 6;
 
+const wait = (time: number) =>
+  new Promise((resolve) => setTimeout(resolve, time));
+
 export default class CMChsPatch extends Plugin {
-  segmentit: any;
-
   async onload() {
-    console.log("loading cm-chs-patch");
-    this.segmentit = useDefault(new Segment());
-
+    // don't block obsidian loading
+    await wait(0);
+    try {
+      loadJieba();
+      console.info("Jieba loaded");
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        error.message === "Jieba was loaded, could not load again"
+      ) {
+        console.info("Jieba was loaded before");
+      } else throw error;
+    }
     setupCM5(this);
     setupCM6(this);
+    console.info("editor word splitting patched");
   }
 
   getChsSegFromRange(
@@ -36,17 +48,17 @@ export default class CMChsPatch extends Plugin {
         text = text.slice(0, newTo - to);
         to = newTo;
       }
-      const segResult = this.segmentit.doSegment(text);
+      const segResult = cut(text);
       let chunkStart = 0,
-        chunkEnd;
+        chunkEnd = 0;
       const relativePos = cursor - from;
 
       for (const seg of segResult) {
-        chunkEnd = chunkStart + seg.w.length;
+        chunkEnd = chunkStart + seg.length;
         if (relativePos >= chunkStart && relativePos < chunkEnd) {
           break;
         }
-        chunkStart += seg.w.length;
+        chunkStart += seg.length;
       }
       to = chunkEnd + from;
       from += chunkStart;
