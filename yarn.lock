@@ -14,35 +14,35 @@ __metadata:
     "@aidenlx/obsidian-plugin-bumper": ^0.1.3
     "@aidenlx/prettier-config": ^0.1.0
     "@aidenlx/release-it-config": ^0.1.3
-    "@aidenlx/ts-config": ^0.1.2
+    "@aidenlx/ts-config": ^0.1.5
     "@codemirror/state": ^0.19.9
-    "@codemirror/view": 0.19.30
+    "@codemirror/view": 0.19.44
     "@release-it/bumper": ^3.0.1
-    "@release-it/conventional-changelog": ^3.3.0
+    "@release-it/conventional-changelog": ^4.1.0
     "@types/codemirror": ^5.60.5
-    "@types/node": ^16.11.12
-    "@typescript-eslint/eslint-plugin": ^5.6.0
-    "@typescript-eslint/parser": ^5.6.0
+    "@types/node": ^17.0.20
+    "@typescript-eslint/eslint-plugin": ^5.12.1
+    "@typescript-eslint/parser": ^5.12.1
     builtin-modules: ^3.2.0
     cm6-view-src: "github:aidenlx/view"
     cross-env: ^7.0.3
     cz-conventional-changelog: ^3.3.0
     esbuild: ^0.14.23
-    eslint: ^8.4.1
-    eslint-config-prettier: ^8.3.0
+    eslint: ^8.9.0
+    eslint-config-prettier: ^8.4.0
     eslint-import-resolver-typescript: ^2.5.0
-    eslint-plugin-import: ^2.25.3
-    eslint-plugin-jsdoc: ^37.2.0
+    eslint-plugin-import: ^2.25.4
+    eslint-plugin-jsdoc: ^37.9.4
     eslint-plugin-prefer-arrow: ^1.2.3
     eslint-plugin-prettier: ^4.0.0
     eslint-plugin-simple-import-sort: ^7.0.0
     file-select-dialog: ^1.5.4
-    monkey-around: ^2.2.0
+    monkey-around: ^2.3.0
     obsidian: "github:obsidianmd/obsidian-api"
     prettier: ^2.5.1
-    release-it: ^14.11.8
+    release-it: ^14.12.5
     tslib: ^2.3.1
-    typescript: ^4.5.3
+    typescript: ^4.5.5
   languageName: unknown
   linkType: soft
 
@@ -101,13 +101,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@aidenlx/ts-config@npm:^0.1.2":
-  version: 0.1.2
-  resolution: "@aidenlx/ts-config@npm:0.1.2::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2F%40aidenlx%2Fts-config%2F-%2Fts-config-0.1.2.tgz"
+"@aidenlx/ts-config@npm:^0.1.5":
+  version: 0.1.5
+  resolution: "@aidenlx/ts-config@npm:0.1.5"
   peerDependencies:
     tslib: ^2.3.1
     typescript: ^4.5.5
-  checksum: 4fe652155478c2b82bd08441bff14c625a9bb6292209feb4b456bfb559e095abd3a10ee6fb51d84588f76d57e71558ac66192ce493d7bf8c8bb973bcfb4d10d0
+  checksum: 04469964413c61bacd1c399b1295e06b3a62a24cc0c5a0dea8a7f82a8b7b09a19d968400f2c6afe5db114a93b8f987703f97b5f38c0899c9ad948c8514d0023e
   languageName: node
   linkType: hard
 
@@ -138,7 +138,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/rangeset@npm:^0.19.0, @codemirror/rangeset@npm:^0.19.5":
+"@codemirror/rangeset@npm:^0.19.5":
   version: 0.19.8
   resolution: "@codemirror/rangeset@npm:0.19.8::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2F%40codemirror%2Frangeset%2F-%2Frangeset-0.19.8.tgz"
   dependencies:
@@ -172,16 +172,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@codemirror/view@npm:0.19.30":
-  version: 0.19.30
-  resolution: "@codemirror/view@npm:0.19.30::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2F%40codemirror%2Fview%2F-%2Fview-0.19.30.tgz"
+"@codemirror/view@npm:0.19.44":
+  version: 0.19.44
+  resolution: "@codemirror/view@npm:0.19.44"
   dependencies:
-    "@codemirror/rangeset": ^0.19.0
+    "@codemirror/rangeset": ^0.19.5
     "@codemirror/state": ^0.19.3
     "@codemirror/text": ^0.19.0
     style-mod: ^4.0.0
     w3c-keyname: ^2.2.4
-  checksum: a317b4ccc944edc1046ded37436d4d3aefcb646ebe4b7c18f49200f009f8a362dfe498e0389be78bbe6d80a3c0d397a66fc83ec6c59a4e705a67d45ec0f1c35e
+  checksum: e8b60f7456677680676018c12965dad357dd097915ea9c2b128e3d385a0ed655020f5c45d30a70ec49644ba844c1ca790ab000d6fb8d7cadcfcbf3f473c5e876
   languageName: node
   linkType: hard
 
@@ -511,17 +511,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@release-it/conventional-changelog@npm:^3.3.0":
-  version: 3.3.0
-  resolution: "@release-it/conventional-changelog@npm:3.3.0::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2F%40release-it%2Fconventional-changelog%2F-%2Fconventional-changelog-3.3.0.tgz"
+"@release-it/conventional-changelog@npm:^4.1.0":
+  version: 4.1.0
+  resolution: "@release-it/conventional-changelog@npm:4.1.0"
   dependencies:
     concat-stream: ^2.0.0
-    conventional-changelog: ^3.1.24
+    conventional-changelog: ^3.1.25
     conventional-recommended-bump: ^6.1.0
     prepend-file: ^2.0.0
   peerDependencies:
-    release-it: ^14.11.5
-  checksum: af3d74e1715278926f9516822df23db444982e44622506012711675b1b5172617fabae977161c2bd8958cf12b190d0816e8a81ec7f11c82efbe7307cc2c53a3f
+    release-it: ^14.12.1
+  checksum: 7168a9eb60f0f8eeec5ce96f6c5d4de18aaf9047fdd1fe5e6c9a422e11e8b9ae72efe9e8847146c3f3f025eadc5259952510f24f594abccc10f7340d62b8171e
   languageName: node
   linkType: hard
 
@@ -666,10 +666,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:^16.11.12":
-  version: 16.11.25
-  resolution: "@types/node@npm:16.11.25::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2F%40types%2Fnode%2F-%2Fnode-16.11.25.tgz"
-  checksum: 0b6e25a81364be89256ad1a36341e27b387e646d3186e270108a8bb7b6ecdfdf5ae037aa1c75a5117b8a7509c80093b75431cd5cfcfbc4d553b52e7db2ca272e
+"@types/node@npm:^17.0.20":
+  version: 17.0.20
+  resolution: "@types/node@npm:17.0.20"
+  checksum: 50cdbd3c4c93f117f95e7c11ee28540f388500d6496e9efc8610f7e27839cb1fcf6c2479cac1dcd00fcc4658029a41201cc3294ae0d42e24ffcc71477a44191c
   languageName: node
   linkType: hard
 
@@ -705,9 +705,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/eslint-plugin@npm:^5.6.0":
+"@typescript-eslint/eslint-plugin@npm:^5.12.1":
   version: 5.12.1
-  resolution: "@typescript-eslint/eslint-plugin@npm:5.12.1::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2F%40typescript-eslint%2Feslint-plugin%2F-%2Feslint-plugin-5.12.1.tgz"
+  resolution: "@typescript-eslint/eslint-plugin@npm:5.12.1"
   dependencies:
     "@typescript-eslint/scope-manager": 5.12.1
     "@typescript-eslint/type-utils": 5.12.1
@@ -728,9 +728,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@typescript-eslint/parser@npm:^5.6.0":
+"@typescript-eslint/parser@npm:^5.12.1":
   version: 5.12.1
-  resolution: "@typescript-eslint/parser@npm:5.12.1::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2F%40typescript-eslint%2Fparser%2F-%2Fparser-5.12.1.tgz"
+  resolution: "@typescript-eslint/parser@npm:5.12.1"
   dependencies:
     "@typescript-eslint/scope-manager": 5.12.1
     "@typescript-eslint/types": 5.12.1
@@ -1572,9 +1572,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"conventional-changelog@npm:^3.1.24":
+"conventional-changelog@npm:^3.1.25":
   version: 3.1.25
-  resolution: "conventional-changelog@npm:3.1.25::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fconventional-changelog%2F-%2Fconventional-changelog-3.1.25.tgz"
+  resolution: "conventional-changelog@npm:3.1.25"
   dependencies:
     conventional-changelog-angular: ^5.0.12
     conventional-changelog-atom: ^2.0.8
@@ -2266,9 +2266,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-prettier@npm:^8.3.0":
+"eslint-config-prettier@npm:^8.4.0":
   version: 8.4.0
-  resolution: "eslint-config-prettier@npm:8.4.0::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Feslint-config-prettier%2F-%2Feslint-config-prettier-8.4.0.tgz"
+  resolution: "eslint-config-prettier@npm:8.4.0"
   peerDependencies:
     eslint: ">=7.0.0"
   bin:
@@ -2313,9 +2313,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-import@npm:^2.25.3":
+"eslint-plugin-import@npm:^2.25.4":
   version: 2.25.4
-  resolution: "eslint-plugin-import@npm:2.25.4::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Feslint-plugin-import%2F-%2Feslint-plugin-import-2.25.4.tgz"
+  resolution: "eslint-plugin-import@npm:2.25.4"
   dependencies:
     array-includes: ^3.1.4
     array.prototype.flat: ^1.2.5
@@ -2336,9 +2336,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-jsdoc@npm:^37.2.0":
+"eslint-plugin-jsdoc@npm:^37.9.4":
   version: 37.9.4
-  resolution: "eslint-plugin-jsdoc@npm:37.9.4::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Feslint-plugin-jsdoc%2F-%2Feslint-plugin-jsdoc-37.9.4.tgz"
+  resolution: "eslint-plugin-jsdoc@npm:37.9.4"
   dependencies:
     "@es-joy/jsdoccomment": ~0.20.1
     comment-parser: 1.3.0
@@ -2432,9 +2432,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint@npm:^8.4.1":
+"eslint@npm:^8.9.0":
   version: 8.9.0
-  resolution: "eslint@npm:8.9.0::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Feslint%2F-%2Feslint-8.9.0.tgz"
+  resolution: "eslint@npm:8.9.0"
   dependencies:
     "@eslint/eslintrc": ^1.1.0
     "@humanwhocodes/config-array": ^0.9.2
@@ -4171,9 +4171,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"monkey-around@npm:^2.2.0":
+"monkey-around@npm:^2.3.0":
   version: 2.3.0
-  resolution: "monkey-around@npm:2.3.0::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fmonkey-around%2F-%2Fmonkey-around-2.3.0.tgz"
+  resolution: "monkey-around@npm:2.3.0"
   checksum: 88e6cf8b6bf452f47bc3b77731a33a95964fc6877a95988337183561e95d0f1b9569bb99106155a3a3d0a46379d6a8a5271f12a0013c9990ecb3f34bf5b25ba0
   languageName: node
   linkType: hard
@@ -4906,9 +4906,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"release-it@npm:^14.11.8":
+"release-it@npm:^14.12.5":
   version: 14.12.5
-  resolution: "release-it@npm:14.12.5::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Frelease-it%2F-%2Frelease-it-14.12.5.tgz"
+  resolution: "release-it@npm:14.12.5"
   dependencies:
     "@iarna/toml": 2.2.5
     "@octokit/rest": 18.12.0
@@ -5709,7 +5709,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^4.4.3, typescript@npm:^4.5.3":
+"typescript@npm:^4.4.3":
   version: 4.5.5
   resolution: "typescript@npm:4.5.5::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Ftypescript%2F-%2Ftypescript-4.5.5.tgz"
   bin:
@@ -5719,9 +5719,29 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@^4.4.3#~builtin<compat/typescript>, typescript@patch:typescript@^4.5.3#~builtin<compat/typescript>":
+"typescript@npm:^4.5.5":
+  version: 4.5.5
+  resolution: "typescript@npm:4.5.5"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 506f4c919dc8aeaafa92068c997f1d213b9df4d9756d0fae1a1e7ab66b585ab3498050e236113a1c9e57ee08c21ec6814ca7a7f61378c058d79af50a4b1f5a5e
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@^4.4.3#~builtin<compat/typescript>":
   version: 4.5.5
   resolution: "typescript@patch:typescript@npm%3A4.5.5%3A%3A__archiveUrl=https%253A%252F%252Fregistry.npmmirror.com%252Ftypescript%252F-%252Ftypescript-4.5.5.tgz#~builtin<compat/typescript>::version=4.5.5&hash=bda367"
+  bin:
+    tsc: bin/tsc
+    tsserver: bin/tsserver
+  checksum: 858c61fa63f7274ca4aaaffeced854d550bf416cff6e558c4884041b3311fb662f476f167cf5c9f8680c607239797e26a2ee0bcc6467fbc05bfcb218e1c6c671
+  languageName: node
+  linkType: hard
+
+"typescript@patch:typescript@^4.5.5#~builtin<compat/typescript>":
+  version: 4.5.5
+  resolution: "typescript@patch:typescript@npm%3A4.5.5#~builtin<compat/typescript>::version=4.5.5&hash=bda367"
   bin:
     tsc: bin/tsc
     tsserver: bin/tsserver
