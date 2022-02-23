@@ -2,7 +2,8 @@ import { Plugin } from "obsidian";
 
 import setupCM5 from "./cm5";
 import setupCM6 from "./cm6";
-import { cut, load as loadJieba } from "./jieba";
+import { cut, load as loadJieba, loadDict } from "./jieba";
+import { ChsPatchSettingTab, DEFAULT_SETTINGS } from "./settings";
 
 const RANGE_LIMIT = 6;
 
@@ -11,10 +12,12 @@ const wait = (time: number) =>
 
 export default class CMChsPatch extends Plugin {
   async onload() {
+    this.addSettingTab(new ChsPatchSettingTab(this));
     // don't block obsidian loading
     await wait(0);
+    await this.loadSettings();
     try {
-      loadJieba();
+      this.loadDict();
       console.info("Jieba loaded");
     } catch (error) {
       if (
@@ -27,6 +30,23 @@ export default class CMChsPatch extends Plugin {
     setupCM5(this);
     setupCM6(this);
     console.info("editor word splitting patched");
+  }
+
+  loadDict() {
+    if (this.settings.dict) {
+      loadDict(Buffer.from(this.settings.dict, "utf-8"));
+    } else {
+      loadJieba();
+    }
+  }
+
+  settings = DEFAULT_SETTINGS;
+  async loadSettings() {
+    this.settings = { ...DEFAULT_SETTINGS, ...(await this.loadData()) };
+  }
+
+  async saveSettings() {
+    await this.saveData(this.settings);
   }
 
   getChsSegFromRange(
@@ -48,7 +68,7 @@ export default class CMChsPatch extends Plugin {
         text = text.slice(0, newTo - to);
         to = newTo;
       }
-      const segResult = cut(text);
+      const segResult = cut(text, this.settings.hmm);
       let chunkStart = 0,
         chunkEnd = 0;
       const relativePos = cursor - from;
