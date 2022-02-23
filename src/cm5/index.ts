@@ -1,10 +1,9 @@
 import type CodeMirror from "codemirror";
 import { around } from "monkey-around";
-import type { useDefault } from "segmentit";
 
-import { getChsSegFromRange } from "../get-chs-seg";
+import type CMChsPatch from "../chsp-main";
 
-const patchGetWordAt = (seg: ReturnType<typeof useDefault>) => {
+const patchGetWordAt = (plugin: CMChsPatch) => {
   if (!window.CodeMirror?.prototype) return null;
   return around(window.CodeMirror.prototype as CodeMirror.Editor, {
     findWordAt: (next) =>
@@ -22,14 +21,10 @@ const patchGetWordAt = (seg: ReturnType<typeof useDefault>) => {
           to = this.indexFromPos(toPos),
           text = this.getRange(fromPos, toPos);
 
-        const chsSegResult = getChsSegFromRange(
-          cursor,
-          { from, to, text },
-          seg,
-        );
+        const result = plugin.getChsSegFromRange(cursor, { from, to, text });
 
-        if (chsSegResult) {
-          const { from, to } = chsSegResult;
+        if (result) {
+          const { from, to } = result;
           srcRange.anchor = this.posFromIndex(from);
           srcRange.head = this.posFromIndex(to);
         }
@@ -37,4 +32,10 @@ const patchGetWordAt = (seg: ReturnType<typeof useDefault>) => {
       },
   });
 };
-export default patchGetWordAt;
+
+const setupCM5 = (plugin: CMChsPatch) => {
+  const cm5PatchUnloader = patchGetWordAt(plugin);
+  // patch only if cm5 is loaded
+  cm5PatchUnloader && plugin.register(cm5PatchUnloader);
+};
+export default setupCM5;
