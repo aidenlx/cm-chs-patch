@@ -2,11 +2,7 @@
   "name": "@aidenlx/chs-patch",
   "version": "1.4.1",
   "description": "A patch for Obsidian's built-in CodeMirror Editor to support Simplified Chinese word splitting",
-  "main": "",
-  "types": "src/api.d.ts",
-  "files": [
-    "src/*.d.ts"
-  ],
+  "private": true,
   "scripts": {
     "dev": "cross-env BUILD=dev node esbuild.config.mjs",
     "check": "tsc --noEmit",
@@ -18,9 +14,6 @@
   "keywords": [],
   "author": "AidenLx",
   "license": "MIT",
-  "dependencies": {
-    "obsidian": "github:obsidianmd/obsidian-api"
-  },
   "devDependencies": {
     "@aidenlx/esbuild-plugin-obsidian": "^0.1.4",
     "@aidenlx/eslint-config": "^0.1.2",
@@ -49,7 +42,7 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-simple-import-sort": "^7.0.0",
     "monkey-around": "^2.2.0",
-    "pinyinlite": "^1.2.1",
+    "obsidian": "github:obsidianmd/obsidian-api",
     "prettier": "^2.5.1",
     "release-it": "^14.11.8",
     "segmentit": "^2.0.3",

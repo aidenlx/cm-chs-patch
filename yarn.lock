@@ -37,7 +37,6 @@ __metadata:
     eslint-plugin-simple-import-sort: ^7.0.0
     monkey-around: ^2.2.0
     obsidian: "github:obsidianmd/obsidian-api"
-    pinyinlite: ^1.2.1
     prettier: ^2.5.1
     release-it: ^14.11.8
     segmentit: ^2.0.3
@@ -4668,13 +4667,6 @@ __metadata:
   version: 3.0.0
   resolution: "pify@npm:3.0.0::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fpify%2F-%2Fpify-3.0.0.tgz"
   checksum: 6cdcbc3567d5c412450c53261a3f10991665d660961e06605decf4544a61a97a54fefe70a68d5c37080ff9d6f4cf51444c90198d1ba9f9309a6c0d6e9f5c4fde
-  languageName: node
-  linkType: hard
-
-"pinyinlite@npm:^1.2.1":
-  version: 1.2.1
-  resolution: "pinyinlite@npm:1.2.1::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fpinyinlite%2F-%2Fpinyinlite-1.2.1.tgz"
-  checksum: ebe117a853cfbf977bc129594bc4a9543814ac543932542bdf1383aab567e83780d541061f82897e3ab890a51d18a8c6bb3d0da43f3f993f4ee4d92fd12e913f
   languageName: node
   linkType: hard
 
