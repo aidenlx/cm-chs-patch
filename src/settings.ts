@@ -48,8 +48,18 @@ export class ChsPatchSettingTab extends PluginSettingTab {
             "词典格式：一个词占一行；每一行分三部分：词语、词频（可省略）、词性（可省略），用空格隔开，顺序不可颠倒",
           );
           el.createEl("br");
-          el.appendText("重启obsidian生效");
+          el.appendText("按下按钮生效");
         }),
+      )
+      .addButton((btn) =>
+        btn
+          .setIcon("reset")
+          .setTooltip("重新加载词典")
+          .onClick(async () => {
+            await this.app.plugins.disablePlugin(this.plugin.manifest.id);
+            await this.app.plugins.enablePlugin(this.plugin.manifest.id);
+            this.app.setting.openTabById(this.plugin.manifest.id);
+          }),
       );
   }
 
