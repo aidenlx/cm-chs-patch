@@ -23,7 +23,7 @@ __metadata:
     "@types/node": ^17.0.20
     "@typescript-eslint/eslint-plugin": ^5.12.1
     "@typescript-eslint/parser": ^5.12.1
-    builtin-modules: ^3.2.0
+    assert-never: ^1.2.1
     cm6-view-src: "github:aidenlx/view"
     cross-env: ^7.0.3
     cz-conventional-changelog: ^3.3.0
@@ -37,6 +37,7 @@ __metadata:
     eslint-plugin-prettier: ^4.0.0
     eslint-plugin-simple-import-sort: ^7.0.0
     file-select-dialog: ^1.5.4
+    jieba-wasm: ^0.0.2
     monkey-around: ^2.3.0
     obsidian: "github:obsidianmd/obsidian-api"
     prettier: ^2.5.1
@@ -1001,6 +1002,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"assert-never@npm:^1.2.1":
+  version: 1.2.1
+  resolution: "assert-never@npm:1.2.1"
+  checksum: ea4f1756d90f55254c4dc7a20d6c5d5bc169160562aefe3d8756b598c10e695daf568f21b6d6b12245d7f3782d3ff83ef6a01ab75d487adfc6909470a813bf8c
+  languageName: node
+  linkType: hard
+
 "async-retry@npm:1.3.3":
   version: 1.3.3
   resolution: "async-retry@npm:1.3.3::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fasync-retry%2F-%2Fasync-retry-1.3.3.tgz"
@@ -1098,13 +1106,6 @@ __metadata:
     base64-js: ^1.3.1
     ieee754: ^1.1.13
   checksum: e2cf8429e1c4c7b8cbd30834ac09bd61da46ce35f5c22a78e6c2f04497d6d25541b16881e30a019c6fd3154150650ccee27a308eff3e26229d788bbdeb08ab84
-  languageName: node
-  linkType: hard
-
-"builtin-modules@npm:^3.2.0":
-  version: 3.2.0
-  resolution: "builtin-modules@npm:3.2.0"
-  checksum: 0265aa1ba78e1a16f4e18668d815cb43fb364e6a6b8aa9189c6f44c7b894a551a43b323c40206959d2d4b2568c1f2805607ad6c88adc306a776ce6904cca6715
   languageName: node
   linkType: hard
 
@@ -3707,6 +3708,13 @@ __metadata:
   version: 2.0.0
   resolution: "isexe@npm:2.0.0::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2Fisexe%2F-%2Fisexe-2.0.0.tgz"
   checksum: 26bf6c5480dda5161c820c5b5c751ae1e766c587b1f951ea3fcfc973bafb7831ae5b54a31a69bd670220e42e99ec154475025a468eae58ea262f813fdc8d1c62
+  languageName: node
+  linkType: hard
+
+"jieba-wasm@npm:^0.0.2":
+  version: 0.0.2
+  resolution: "jieba-wasm@npm:0.0.2"
+  checksum: 09372bd2708511a5334bda42dfa4e80e1555d9cc7fb96d20b5cac52e349664128b5034f45d3395b60032fe8c0a52cb88aa9e2cc34ebdacff6f661a9ba9c29a7c
   languageName: node
   linkType: hard
 

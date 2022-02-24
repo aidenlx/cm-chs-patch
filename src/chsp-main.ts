@@ -2,41 +2,40 @@ import { Plugin } from "obsidian";
 
 import setupCM5 from "./cm5";
 import setupCM6 from "./cm6";
-import { cut, load as loadJieba, loadDict } from "./jieba";
+import GoToDownloadModal from "./install-guide";
+import { cut, initJieba } from "./jieba";
 import { ChsPatchSettingTab, DEFAULT_SETTINGS } from "./settings";
 
 const RANGE_LIMIT = 6;
 
-const wait = (time: number) =>
-  new Promise((resolve) => setTimeout(resolve, time));
-
 export default class CMChsPatch extends Plugin {
+  libName = "jieba_rs_wasm_bg.wasm";
+  get libPath() {
+    return this.app.vault.configDir + "/" + this.libName;
+  }
   async onload() {
     this.addSettingTab(new ChsPatchSettingTab(this));
-    // don't block obsidian loading
-    await wait(0);
     await this.loadSettings();
-    try {
-      this.loadDict();
-      console.info("Jieba loaded");
-    } catch (error) {
-      if (
-        error instanceof Error &&
-        error.message === "Jieba was loaded, could not load again"
-      ) {
-        console.info("Jieba was loaded before");
-      } else throw error;
+
+    if (await this.loadJieba()) {
+      setupCM5(this);
+      setupCM6(this);
+      console.info("editor word splitting patched");
     }
-    setupCM5(this);
-    setupCM6(this);
-    console.info("editor word splitting patched");
   }
 
-  loadDict() {
-    if (this.settings.dict) {
-      loadDict(Buffer.from(this.settings.dict, "utf-8"));
+  async loadJieba(): Promise<boolean> {
+    const { vault } = this.app;
+    if (await vault.adapter.exists(this.libPath, true)) {
+      await initJieba(
+        this.app.vault.adapter.readBinary(this.libPath),
+        this.settings.dict,
+      );
+      console.info("Jieba loaded");
+      return true;
     } else {
-      loadJieba();
+      new GoToDownloadModal(this).open();
+      return false;
     }
   }
 
@@ -47,6 +46,10 @@ export default class CMChsPatch extends Plugin {
 
   async saveSettings() {
     await this.saveData(this.settings);
+  }
+
+  cut(text: string) {
+    return cut(text, this.settings.hmm);
   }
 
   getChsSegFromRange(
@@ -68,7 +71,7 @@ export default class CMChsPatch extends Plugin {
         text = text.slice(0, newTo - to);
         to = newTo;
       }
-      const segResult = cut(text, this.settings.hmm);
+      const segResult = this.cut(text);
       let chunkStart = 0,
         chunkEnd = 0;
       const relativePos = cursor - from;
