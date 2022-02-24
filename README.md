@@ -4,7 +4,11 @@ A patch for Obsidian's built-in CodeMirror Editor to support Simplified Chinese 
 
 增加 Obsidian 内置编辑器的(简体)中文分词支持，使得编辑模式的双击可以选中中文
 
-Special Thanks to [@linonetwo](https://github.com/linonetwo) for [the chs word splitting module](https://github.com/linonetwo/segmentit)
+Special Thanks to [@fengkx](https://github.com/fengkx) for [jieba-wasm module](https://github.com/fengkx/jieba-wasm)
+
+注意：从v1.5.0开始，该插件需要wasm组件方可工作。请按启动时的弹窗提示进行安装。
+
+手动安装：从[蓝奏云](https://wwe.lanzoum.com/igUPR00jp02h)或[GitHub](https://github.com/aidenlx/cm-chs-patch/blob/master/assets/jiaba-wasm/jieba_rs_wasm_bg.wasm.zip?raw=true)下载并解压得到`jieba_rs_wasm_bg.wasm`，将wasm文件放在obsidian库的`.obsidian`或者其它指定的配置文件夹下后重启obsidian
 
 ## Demo
 
@@ -14,9 +18,9 @@ Special Thanks to [@linonetwo](https://github.com/linonetwo) for [the chs word s
 
 ## Compatibility 兼容性
 
-The required API feature is only available for Obsidian v0.13.8+.
+The required API feature is only available for Obsidian v0.13.24+.
 
-本插件仅支持0.10.0以上的版本
+本插件仅支持v0.13.24以上的版本
 
 ## Installation 安装
 
