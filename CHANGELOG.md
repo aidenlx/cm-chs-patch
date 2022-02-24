@@ -1,3 +1,20 @@
+# [1.5.0](https://github.com/aidenlx/cm-chs-patch/compare/1.4.1...1.5.0) (2022-02-24)
+
+
+### Features
+
+* add button to reload user dict ([6ff2d44](https://github.com/aidenlx/cm-chs-patch/commit/6ff2d441678a25865423891ec4a32069c4e01959))
+* add hmm option, add user dict ([f6c6299](https://github.com/aidenlx/cm-chs-patch/commit/f6c6299edcb0676fb200ab6c8bb98b2e7dbcc7a1))
+* add 蓝奏云 download link ([eb4bdeb](https://github.com/aidenlx/cm-chs-patch/commit/eb4bdebcbfa7cbb58729230ddd095e1a1a3e355c))
+* migrate to @node-rs/jieba ([801621f](https://github.com/aidenlx/cm-chs-patch/commit/801621f6354b6ddc920cdbc5586deaf155445e7b))
+* migrate to jieba-wasm; enable mobile flag ([338245d](https://github.com/aidenlx/cm-chs-patch/commit/338245d7ce80509c5d6a5983ed4199a742114fc7))
+
+
+### Reverts
+
+* downgrade esbuild to support stable version of obsidian ([7dfc4bd](https://github.com/aidenlx/cm-chs-patch/commit/7dfc4bd14970e65e440bf5606c8488c53a479999))
+* remove api ([4144b91](https://github.com/aidenlx/cm-chs-patch/commit/4144b91cb7cbae824c3a3ec0193ac324b40851fa))
+
 ## [1.4.1](https://github.com/aidenlx/cm-chs-patch/compare/1.4.0...1.4.1) (2021-12-13)
 
 

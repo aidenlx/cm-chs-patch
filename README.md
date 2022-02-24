@@ -18,7 +18,7 @@ Special Thanks to [@fengkx](https://github.com/fengkx) for [jieba-wasm module](h
 
 ## Compatibility 兼容性
 
-The required API feature is only available for Obsidian v0.13.24+.
+The required API feature is only available for Obsidian v0.13.8+.
 
 本插件仅支持v0.13.24以上的版本
 
