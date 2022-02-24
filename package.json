@@ -33,7 +33,7 @@
     "cm6-view-src": "github:aidenlx/view",
     "cross-env": "^7.0.3",
     "cz-conventional-changelog": "^3.3.0",
-    "esbuild": "^0.14.23",
+    "esbuild": "^0.13.15",
     "eslint": "^8.9.0",
     "eslint-config-prettier": "^8.4.0",
     "eslint-import-resolver-typescript": "^2.5.0",
