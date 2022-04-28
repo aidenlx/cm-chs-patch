@@ -15,7 +15,9 @@ __metadata:
     "@aidenlx/prettier-config": ^0.1.0
     "@aidenlx/release-it-config": ^0.1.7
     "@aidenlx/ts-config": ^0.1.5
+    "@codemirror/commands": ^0.20.0
     "@codemirror/state": ^0.19.9
+    "@codemirror/text": ^0.19.6
     "@codemirror/view": 0.19.44
     "@release-it/bumper": ^3.0.1
     "@release-it/conventional-changelog": ^4.1.0
@@ -141,6 +143,31 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@codemirror/commands@npm:^0.20.0":
+  version: 0.20.0
+  resolution: "@codemirror/commands@npm:0.20.0"
+  dependencies:
+    "@codemirror/language": ^0.20.0
+    "@codemirror/state": ^0.20.0
+    "@codemirror/view": ^0.20.0
+    "@lezer/common": ^0.16.0
+  checksum: 4538de7200f9ac4c8482fd99bee8d49ae983ca2be3b81d5f1f3e3cf7d7821f64f3ddf396213dd56b2fd9bd46f6d72467846dad0e4c42a3b9c8ba8243522e0bc6
+  languageName: node
+  linkType: hard
+
+"@codemirror/language@npm:^0.20.0":
+  version: 0.20.0
+  resolution: "@codemirror/language@npm:0.20.0"
+  dependencies:
+    "@codemirror/state": ^0.20.0
+    "@codemirror/view": ^0.20.0
+    "@lezer/common": ^0.16.0
+    "@lezer/highlight": ^0.16.0
+    "@lezer/lr": ^0.16.0
+  checksum: e8ad6f1932b2f62b3c3d4307168813f8cd17f71947814a4e8228365de98aa470df79c44d47a27dcbc7426ccbdec71a377b1b6e16f7c4f76be241317404347c4a
+  languageName: node
+  linkType: hard
+
 "@codemirror/rangeset@npm:^0.19.5":
   version: 0.19.8
   resolution: "@codemirror/rangeset@npm:0.19.8::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2F%40codemirror%2Frangeset%2F-%2Frangeset-0.19.8.tgz"
@@ -168,9 +195,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@codemirror/state@npm:^0.20.0":
+  version: 0.20.0
+  resolution: "@codemirror/state@npm:0.20.0"
+  checksum: 900e4a0707916c65e379e88be986854b91567cea21e7505364aef687738ff069a8227465caf44e8ff77c81ed4e531f5d5ebeb1874db85aea168f19cb2dafce82
+  languageName: node
+  linkType: hard
+
 "@codemirror/text@npm:^0.19.0":
   version: 0.19.6
   resolution: "@codemirror/text@npm:0.19.6::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2F%40codemirror%2Ftext%2F-%2Ftext-0.19.6.tgz"
+  checksum: 685e46c1f0114a216081b7a070460e1b0db9c51b0a2b361e9ed90e5ea2ed89d86a7a834b76f7c63b27fd192809d9414e7a15e0d186bd15cdb5d4f85639d434f0
+  languageName: node
+  linkType: hard
+
+"@codemirror/text@npm:^0.19.6":
+  version: 0.19.6
+  resolution: "@codemirror/text@npm:0.19.6"
   checksum: 685e46c1f0114a216081b7a070460e1b0db9c51b0a2b361e9ed90e5ea2ed89d86a7a834b76f7c63b27fd192809d9414e7a15e0d186bd15cdb5d4f85639d434f0
   languageName: node
   linkType: hard
@@ -198,6 +239,17 @@ __metadata:
     style-mod: ^4.0.0
     w3c-keyname: ^2.2.4
   checksum: e8b60f7456677680676018c12965dad357dd097915ea9c2b128e3d385a0ed655020f5c45d30a70ec49644ba844c1ca790ab000d6fb8d7cadcfcbf3f473c5e876
+  languageName: node
+  linkType: hard
+
+"@codemirror/view@npm:^0.20.0":
+  version: 0.20.3
+  resolution: "@codemirror/view@npm:0.20.3"
+  dependencies:
+    "@codemirror/state": ^0.20.0
+    style-mod: ^4.0.0
+    w3c-keyname: ^2.2.4
+  checksum: 8dc90cf77170d627e3e0bfd607d643bc4fe8c356a1ae8c0e3fc0877f0ba84c81fecdd41f5641acaf123a9e3da900d9f285a17ced349677f4eaec3167c77363a4
   languageName: node
   linkType: hard
 
@@ -333,6 +385,31 @@ __metadata:
   version: 2.2.5
   resolution: "@iarna/toml@npm:2.2.5::__archiveUrl=https%3A%2F%2Fregistry.npmmirror.com%2F%40iarna%2Ftoml%2F-%2Ftoml-2.2.5.tgz"
   checksum: b63b2b2c4fd67969a6291543ada0303d45593801ee744b60f5390f183c03d9192bc67a217abb24be945158f1935f02840d9ffff40c0142aa171b5d3b6b6a3ea5
+  languageName: node
+  linkType: hard
+
+"@lezer/common@npm:^0.16.0":
+  version: 0.16.0
+  resolution: "@lezer/common@npm:0.16.0"
+  checksum: 344476eee85172c1dc00a74db7c3a973703eab10c3a537ea27f885069e4fd3edffa2c32388321934a39bff5e1049ef680385e1d5a7ee9f091fa9b0d1c21873a4
+  languageName: node
+  linkType: hard
+
+"@lezer/highlight@npm:^0.16.0":
+  version: 0.16.0
+  resolution: "@lezer/highlight@npm:0.16.0"
+  dependencies:
+    "@lezer/common": ^0.16.0
+  checksum: f1be44044096c6e58d7f48b8eb50eb3c6b561d72b1537e239e50df3c7686ea46fce3c068cb95ef4a79bb1eb939caf700ff4a3dcddb39dd0ae6bce46aeccbdaf3
+  languageName: node
+  linkType: hard
+
+"@lezer/lr@npm:^0.16.0":
+  version: 0.16.2
+  resolution: "@lezer/lr@npm:0.16.2"
+  dependencies:
+    "@lezer/common": ^0.16.0
+  checksum: 98d4deed3911a7bb13cc220de605bbd4ecf6b0eb60b8346b9e2b9e1ca684e13b3f329b17dcbadf6a614bcd78facc5733ce0d51af2eefd5cc6faeddea65a63398
   languageName: node
   linkType: hard
 

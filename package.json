@@ -21,8 +21,6 @@
     "@aidenlx/prettier-config": "^0.1.0",
     "@aidenlx/release-it-config": "^0.1.7",
     "@aidenlx/ts-config": "^0.1.5",
-    "@codemirror/state": "^0.19.9",
-    "@codemirror/view": "0.19.44",
     "@release-it/bumper": "^3.0.1",
     "@release-it/conventional-changelog": "^4.1.0",
     "@types/codemirror": "^5.60.5",
@@ -30,7 +28,6 @@
     "@typescript-eslint/eslint-plugin": "^5.12.1",
     "@typescript-eslint/parser": "^5.12.1",
     "assert-never": "^1.2.1",
-    "cm6-view-src": "github:aidenlx/view",
     "conventional-changelog-angular": "^5.0.13",
     "cross-env": "^7.0.3",
     "cz-conventional-changelog": "^3.3.0",
@@ -58,5 +55,11 @@
       "path": "./node_modules/cz-conventional-changelog"
     }
   },
-  "packageManager": "yarn@3.2.0"
+  "packageManager": "yarn@3.2.0",
+  "dependencies": {
+    "@codemirror/state": "^0.19.9",
+    "@codemirror/view": "0.19.44",
+    "@codemirror/text": "^0.19.6",
+    "cm6-view-src": "github:aidenlx/view"
+  }
 }
