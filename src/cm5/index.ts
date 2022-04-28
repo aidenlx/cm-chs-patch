@@ -21,7 +21,7 @@ const patchGetWordAt = (plugin: CMChsPatch) => {
           to = this.indexFromPos(toPos),
           text = this.getRange(fromPos, toPos);
 
-        const result = plugin.getChsSegFromRange(cursor, { from, to, text });
+        const result = plugin.getSegRangeFromCursor(cursor, { from, to, text });
 
         if (result) {
           const { from, to } = result;

@@ -15,8 +15,10 @@ export const getChsPatchExtension = (plugin: CMChsPatch) => {
     pos: number,
     bias: -1 | 1,
     type: number,
-  ): SelectionRange =>
-    cm6GetChsSeg(plugin, pos, groupAt(view.state, pos, bias), view.state);
+  ): SelectionRange => {
+    const range = groupAt(view.state, pos, bias);
+    return cm6GetChsSeg(plugin, pos, range, view.state) ?? range;
+  };
   const dblClickPatch = EditorView.mouseSelectionStyle.of((view, event) => {
     // Only handle double clicks
     if (event.button !== 0 || event.detail !== 2) return null;

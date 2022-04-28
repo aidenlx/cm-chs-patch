@@ -52,11 +52,10 @@ export default class CMChsPatch extends Plugin {
     return cut(text, this.settings.hmm);
   }
 
-  getChsSegFromRange(
+  getSegRangeFromCursor(
     cursor: number,
-    range: { from: number; to: number; text: string },
+    { from, to, text }: { from: number; to: number; text: string },
   ) {
-    let { from, to, text } = range;
     if (!/[\u4e00-\u9fa5]/.test(text)) {
       return null;
     } else {
@@ -87,5 +86,29 @@ export default class CMChsPatch extends Plugin {
       from += chunkStart;
       return { from, to };
     }
+  }
+
+  getSegRangeFromGroup(
+    startPos: number,
+    nextPos: number,
+    sliceDoc: (from: number, to: number) => string,
+  ): number | null {
+    const forward = startPos < nextPos;
+    if (Math.abs(startPos - nextPos) > RANGE_LIMIT) {
+      nextPos = startPos + RANGE_LIMIT * (forward ? 1 : -1);
+    }
+
+    const text = forward
+      ? sliceDoc(startPos, nextPos)
+      : sliceDoc(nextPos, startPos);
+
+    if (!/[\u4e00-\u9fa5]/.test(text)) {
+      return null;
+    }
+
+    const segResult = this.cut(text);
+    return forward
+      ? startPos + segResult.first().length
+      : startPos - segResult.last().length;
   }
 }
