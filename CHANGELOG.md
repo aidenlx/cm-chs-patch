@@ -1,3 +1,10 @@
+# [1.6.0](https://github.com/aidenlx/cm-chs-patch/compare/1.5.0...1.6.0) (2022-04-28)
+
+
+### Features
+
+* support navigate by chinese word ([3d33660](https://github.com/aidenlx/cm-chs-patch/commit/3d33660ac71a868f0927a1775e397f1a4b2e6860)), closes [#2](https://github.com/aidenlx/cm-chs-patch/issues/2)
+
 # [1.5.0](https://github.com/aidenlx/cm-chs-patch/compare/1.4.1...1.5.0) (2022-02-24)
 
 
