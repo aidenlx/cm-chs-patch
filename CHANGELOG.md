@@ -1,3 +1,10 @@
+# [1.7.0](https://github.com/aidenlx/cm-chs-patch/compare/1.6.0...1.7.0) (2022-04-28)
+
+
+### Features
+
+* support keyboard delete by chinese word ([7b9631c](https://github.com/aidenlx/cm-chs-patch/commit/7b9631c834c9b19159067c051d934b12a2d469ea)), closes [#2](https://github.com/aidenlx/cm-chs-patch/issues/2)
+
 # [1.6.0](https://github.com/aidenlx/cm-chs-patch/compare/1.5.0...1.6.0) (2022-04-28)
 
 
