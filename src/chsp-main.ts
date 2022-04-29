@@ -17,15 +17,23 @@ export default class CMChsPatch extends Plugin {
     this.addSettingTab(new ChsPatchSettingTab(this));
     await this.loadSettings();
 
-    if (await this.loadJieba()) {
+    if (await this.loadSegmenter()) {
       setupCM5(this);
       setupCM6(this);
       console.info("editor word splitting patched");
     }
   }
 
-  async loadJieba(): Promise<boolean> {
+  segmenter: any;
+
+  async loadSegmenter(): Promise<boolean> {
     const { vault } = this.app;
+    if (!this.settings.useJieba && (window.Intl as any)?.Segmenter) {
+      this.segmenter = new (Intl as any).Segmenter("zh-CN", {
+        granularity: "word",
+      });
+      return true;
+    }
     if (await vault.adapter.exists(this.libPath, true)) {
       await initJieba(
         this.app.vault.adapter.readBinary(this.libPath),
@@ -48,8 +56,12 @@ export default class CMChsPatch extends Plugin {
     await this.saveData(this.settings);
   }
 
-  cut(text: string) {
-    return cut(text, this.settings.hmm);
+  cut(text: string): string[] {
+    if (!this.settings.useJieba && this.segmenter) {
+      return Array.from(this.segmenter.segment(text)).map(
+        (seg) => (seg as any).segment,
+      );
+    } else return cut(text, this.settings.hmm);
   }
 
   getSegRangeFromCursor(
@@ -107,8 +119,9 @@ export default class CMChsPatch extends Plugin {
     }
 
     const segResult = this.cut(text);
+    if (segResult.length === 0) return null;
     return forward
-      ? startPos + segResult.first().length
-      : startPos - segResult.last().length;
+      ? startPos + segResult.first()!.length
+      : startPos - segResult.last()!.length;
   }
 }
