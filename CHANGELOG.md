@@ -1,3 +1,10 @@
+# [1.8.0](https://github.com/aidenlx/cm-chs-patch/compare/1.7.0...1.8.0) (2022-04-29)
+
+
+### Features
+
+* support native segmenter ([d642bf3](https://github.com/aidenlx/cm-chs-patch/commit/d642bf3c6114be5365728ada1da10b7940fd41ec))
+
 # [1.7.0](https://github.com/aidenlx/cm-chs-patch/compare/1.6.0...1.7.0) (2022-04-28)
 
 
