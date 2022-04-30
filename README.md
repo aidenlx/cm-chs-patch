@@ -6,7 +6,7 @@ A patch for Obsidian's built-in CodeMirror Editor to support Simplified Chinese 
 
 Special Thanks to [@fengkx](https://github.com/fengkx) for [jieba-wasm module](https://github.com/fengkx/jieba-wasm)
 
-注意：从v1.8.0开始，默认分词引擎由结巴分词更换为系统自带分词引擎，结巴分词不再是必须组件，若你仍需要使用结巴分词提供的新词发现、自定义词库，请在设置打开选项后重启obsidian，并按照弹窗提示进行安装（若系统不提供分词引擎，无论选项本插件仍会提示安装结巴分词）
+注意：从v1.8.0开始，默认分词引擎由结巴分词更换为系统自带分词引擎，结巴分词不再是必须组件，若你需要结合[omnisearch](https://github.com/scambier/obsidian-omnisearch)插件使用，或仍需要使用结巴分词提供的更精确的分词结果，以及新词发现、自定义词库功能，请在设置打开选项后重启obsidian，并按照弹窗提示进行安装（若系统不提供分词引擎，无论选项本插件仍会提示安装结巴分词）
 
 手动安装结巴分词组件：在设置中启用结巴分词后，从[蓝奏云](https://wwe.lanzoum.com/igUPR00jp02h)或[GitHub](https://github.com/aidenlx/cm-chs-patch/blob/master/assets/jiaba-wasm/jieba_rs_wasm_bg.wasm.zip?raw=true)下载并解压得到`jieba_rs_wasm_bg.wasm`，将wasm文件放在obsidian库的`.obsidian`或者其它指定的配置文件夹下后重启obsidian
 
