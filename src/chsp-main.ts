@@ -83,6 +83,12 @@ export default class CMChsPatch extends Plugin {
         to = newTo;
       }
       const segResult = this.cut(text);
+
+      if (cursor === to) {
+        const lastSeg = segResult.last()!;
+        return { from: to - lastSeg.length, to };
+      }
+
       let chunkStart = 0,
         chunkEnd = 0;
       const relativePos = cursor - from;
