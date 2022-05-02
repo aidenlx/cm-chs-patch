@@ -1,3 +1,10 @@
+## [1.8.1](https://github.com/aidenlx/cm-chs-patch/compare/1.8.0...1.8.1) (2022-05-02)
+
+
+### Bug Fixes
+
+* fix no chs word selected when cursor at end of line ([482f0b9](https://github.com/aidenlx/cm-chs-patch/commit/482f0b97def4a3ac71e5d60f009c490ceefbf6de))
+
 # [1.8.0](https://github.com/aidenlx/cm-chs-patch/compare/1.7.0...1.8.0) (2022-04-29)
 
 
