@@ -1,9 +1,6 @@
 /* eslint-disable prefer-arrow/prefer-arrow-functions */
-import {
-  EditorSelection,
-  EditorState,
-  SelectionRange,
-} from "@codemirror/state";
+import type { SelectionRange } from "@codemirror/state";
+import { EditorSelection, EditorState } from "@codemirror/state";
 import { EditorView } from "@codemirror/view";
 import { around } from "monkey-around";
 

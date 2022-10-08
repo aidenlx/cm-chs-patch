@@ -12,7 +12,7 @@ const patchGetWordAt = (plugin: CMChsPatch) => {
         this: CodeMirror.Editor,
         pos: CodeMirror.Position,
       ): CodeMirror.Range {
-        let srcRange = next.call(this, pos);
+        const srcRange = next.call(this, pos);
 
         const cursor = this.indexFromPos(pos),
           fromPos = srcRange.from(),

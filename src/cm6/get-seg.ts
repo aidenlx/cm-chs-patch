@@ -1,8 +1,5 @@
-import {
-  EditorSelection,
-  EditorState,
-  SelectionRange,
-} from "@codemirror/state";
+import type { EditorState, SelectionRange } from "@codemirror/state";
+import { EditorSelection } from "@codemirror/state";
 
 import type CMChsPatch from "../chsp-main";
 

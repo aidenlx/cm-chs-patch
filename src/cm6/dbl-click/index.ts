@@ -1,12 +1,12 @@
 /* eslint-disable prefer-arrow/prefer-arrow-functions */
 import { EditorSelection } from "@codemirror/state";
-import { SelectionRange } from "@codemirror/state";
-import { EditorView, MouseSelectionStyle } from "@codemirror/view";
+import type { SelectionRange } from "@codemirror/state";
+import type { MouseSelectionStyle } from "@codemirror/view";
+import { EditorView } from "@codemirror/view";
 
 import type CMChsPatch from "../../chsp-main";
 import cm6GetChsSeg from "../get-seg";
-import { groupAt } from "./from-src";
-import { queryPos } from "./from-src";
+import { groupAt, queryPos } from "./from-src";
 
 export const dblClickPatch = (plugin: CMChsPatch) => {
   /** only accept double click */
@@ -24,7 +24,7 @@ export const dblClickPatch = (plugin: CMChsPatch) => {
     if (event.button !== 0 || event.detail !== 2) return null;
 
     // From https://github.com/codemirror/view/blob/0.19.30/src/input.ts#L464-L495
-    let start = queryPos(view, event),
+    const start = queryPos(view, event),
       type = event.detail; // not targeting ie, no need for polyfill
     let startSel = view.state.selection;
     let last = start,
@@ -52,8 +52,8 @@ export const dblClickPatch = (plugin: CMChsPatch) => {
         if (!cur || !start) return startSel;
         let range = rangeForClick(view, cur.pos, cur.bias, type);
         if (start.pos != cur.pos && !extend) {
-          let startRange = rangeForClick(view, start.pos, start.bias, type);
-          let from = Math.min(startRange.from, range.from),
+          const startRange = rangeForClick(view, start.pos, start.bias, type);
+          const from = Math.min(startRange.from, range.from),
             to = Math.max(startRange.to, range.to);
           range =
             from < range.from

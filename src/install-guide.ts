@@ -1,7 +1,7 @@
 import { fileDialog } from "file-select-dialog";
 import { Modal } from "obsidian";
 
-import CMChsPatch from "./chsp-main";
+import type CMChsPatch from "./chsp-main";
 
 const colorSuccess = "var(--background-modifier-success)",
   colorDisabled = "var(--background-modifier-cover)";

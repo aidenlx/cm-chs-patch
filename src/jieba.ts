@@ -1,4 +1,7 @@
-import init, { add_word, cut as jiebaCut } from "jieba-wasm";
+import init, {
+  add_word,
+  cut as jiebaCut,
+} from "jieba-wasm/pkg/web/jieba_rs_wasm";
 
 const vaildateFreq = (freq: string): number | undefined =>
   freq && Number.isInteger(+freq) ? +freq : undefined;
@@ -12,7 +15,7 @@ export const initJieba = async (
   dict?: string,
 ) => {
   if (initialized) return;
-  let invaildLines = [] as string[];
+  const invaildLines = [] as string[];
   await init(wasm);
   if (dict)
     for (const line of dict.split(/\r?\n/)) {

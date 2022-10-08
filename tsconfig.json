@@ -1,4 +1,11 @@
 {
-  "extends": "@aidenlx/ts-config/tsconfig.json",
+  "extends": "@aidenlx/eslint-config",
+  "compilerOptions": {
+    "lib": ["esnext", "dom"],
+    "moduleResolution": "Node",
+    "module": "CommonJS",
+    "esModuleInterop": true,
+    "incremental": false
+  },
   "include": ["src/**/*.ts", "node_modules/cm6-view-src/src/*.ts"]
 }

@@ -1,41 +1,62 @@
 /* eslint-disable prefer-arrow/prefer-arrow-functions */
-import type { EditorState, Transaction } from "@codemirror/state";
-import { CharCategory, EditorSelection, StateCommand } from "@codemirror/state";
-import { findClusterBreak } from "@codemirror/text";
-import { EditorView, keymap, PluginField } from "@codemirror/view";
+import type {
+  EditorState,
+  Transaction,
+  CharCategory,
+  StateCommand,
+} from "@codemirror/state";
+import { EditorSelection, findClusterBreak } from "@codemirror/state";
+import { EditorView, keymap } from "@codemirror/view";
 
 import type CMChsPatch from "../chsp-main";
 
 export const patchKeymap = (plugin: CMChsPatch) => {
-  // based on https://github.com/codemirror/commands/releases/tag/0.19.8
+  // based on https://github.com/codemirror/commands/releases/tag/6.1.1
 
-  function deleteBy(
-    { state, dispatch }: CommandTarget,
-    by: (start: number) => number,
-  ) {
-    if (state.readOnly) return false;
+  function deleteBy(target: CommandTarget, by: (start: number) => number) {
+    if (target.state.readOnly) return false;
     let event = "delete.selection";
-    let changes = state.changeByRange((range) => {
+    const { state } = target;
+    const changes = state.changeByRange((range) => {
       let { from, to } = range;
       if (from == to) {
         let towards = by(from);
-        if (towards < from) event = "delete.backward";
-        else if (towards > from) event = "delete.forward";
+        if (towards < from) {
+          event = "delete.backward";
+          towards = skipAtomic(target, towards, false);
+        } else if (towards > from) {
+          event = "delete.forward";
+          towards = skipAtomic(target, towards, true);
+        }
         from = Math.min(from, towards);
         to = Math.max(to, towards);
+      } else {
+        from = skipAtomic(target, from, false);
+        to = skipAtomic(target, from, true);
       }
       return from == to
         ? { range }
         : { changes: { from, to }, range: EditorSelection.cursor(from) };
     });
     if (changes.changes.empty) return false;
-    dispatch(state.update(changes, { scrollIntoView: true, userEvent: event }));
+    target.dispatch(
+      state.update(changes, {
+        scrollIntoView: true,
+        userEvent: event,
+        effects:
+          event == "delete.selection"
+            ? EditorView.announce.of(state.phrase("Selection deleted"))
+            : undefined,
+      }),
+    );
     return true;
   }
 
   function skipAtomic(target: CommandTarget, pos: number, forward: boolean) {
     if (target instanceof EditorView)
-      for (let ranges of target.pluginField(PluginField.atomicRanges))
+      for (const ranges of target.state
+        .facet(EditorView.atomicRanges)
+        .map((f) => f(target)))
         ranges.between(pos, pos, (from, to) => {
           if (from < pos && to > pos) pos = forward ? to : from;
         });
@@ -44,33 +65,33 @@ export const patchKeymap = (plugin: CMChsPatch) => {
 
   const deleteByGroup = (target: CommandTarget, forward: boolean) =>
     deleteBy(target, (start) => {
-      let pos = start,
-        { state } = target,
+      let pos = start;
+      const { state } = target,
         line = state.doc.lineAt(pos);
-      let categorize = state.charCategorizer(pos);
+      const categorize = state.charCategorizer(pos);
       for (let cat: CharCategory | null = null; ; ) {
         if (pos == (forward ? line.to : line.from)) {
           if (pos == start && line.number != (forward ? state.doc.lines : 1))
             pos += forward ? 1 : -1;
           break;
         }
-        let next =
+        const next =
           findClusterBreak(line.text, pos - line.from, forward) + line.from;
-        let nextChar = line.text.slice(
+        const nextChar = line.text.slice(
           Math.min(pos, next) - line.from,
           Math.max(pos, next) - line.from,
         );
-        let nextCat = categorize(nextChar);
+        const nextCat = categorize(nextChar);
         if (cat != null && nextCat != cat) break;
         if (nextChar != " " || pos != start) cat = nextCat;
         pos = next;
       }
-      //#region modified
+      // #region modified
       pos =
         plugin.getSegRangeFromGroup(start, pos, state.sliceDoc.bind(state)) ??
         pos;
-      //#endregion
-      return skipAtomic(target, pos, forward);
+      // #endregion
+      return pos;
     });
 
   /// Delete the selection or backward until the end of the next
