@@ -1,3 +1,12 @@
+
+
+## [1.8.2](https://github.com/aidenlx/cm-chs-patch/compare/1.8.1...1.8.2) (2022-10-08)
+
+
+### Bug Fixes
+
+* should be compatable with codemirror v6 now ([1fba3bf](https://github.com/aidenlx/cm-chs-patch/commit/1fba3bf8deb35431e5f3d96ac6c92e770312eb3a)), closes [#15](https://github.com/aidenlx/cm-chs-patch/issues/15)
+
 ## [1.8.1](https://github.com/aidenlx/cm-chs-patch/compare/1.8.0...1.8.1) (2022-05-02)
 
 
@@ -89,4 +98,3 @@
 
 
 # [1.0.0](https://github.com/aidenlx/cm-chs-patch/compare/1.1.0...1.2.0) (2021-04-02)
-

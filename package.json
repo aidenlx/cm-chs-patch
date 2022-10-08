@@ -1,6 +1,6 @@
 {
   "name": "@aidenlx/chs-patch",
-  "version": "1.8.1",
+  "version": "1.8.2",
   "description": "A patch for Obsidian's built-in CodeMirror Editor to support Simplified Chinese word splitting",
   "private": true,
   "scripts": {
