@@ -19,6 +19,7 @@ export const initJieba = async (
   await init(wasm);
   if (dict)
     for (const line of dict.split(/\r?\n/)) {
+      // eg: 集团公司 1297 n
       const [word, freqOrTag, tag] = line.trim().split(/\s+/);
       let f: number | undefined, t: keyof typeof vaildTags | undefined;
       if (!word) {
@@ -46,32 +47,32 @@ export const cut = (text: string, hmm = false) => {
 };
 
 const vaildTags = {
-  n: undefined,
-  f: undefined,
-  s: undefined,
-  t: undefined,
-  nr: undefined,
-  ns: undefined,
-  nt: undefined,
-  nw: undefined,
-  nz: undefined,
-  v: undefined,
-  vd: undefined,
-  vn: undefined,
-  a: undefined,
-  ad: undefined,
-  an: undefined,
-  d: undefined,
-  m: undefined,
-  q: undefined,
-  r: undefined,
-  p: undefined,
-  c: undefined,
-  u: undefined,
-  xc: undefined,
-  w: undefined,
-  PER: undefined,
-  LOC: undefined,
-  ORG: undefined,
-  TIME: undefined,
+  n: undefined, // 普通名词
+  f: undefined, // 方位名词
+  s: undefined, // 处所名词
+  t: undefined, // 时间
+  nr: undefined, // 人名
+  ns: undefined, // 地名
+  nt: undefined, // 机构名
+  nw: undefined, // 作品名
+  nz: undefined, // 其他专名
+  v: undefined, // 普通动词
+  vd: undefined, // 动副词
+  vn: undefined, // 名动词
+  a: undefined, // 形容词
+  ad: undefined, // 副形词
+  an: undefined, // 名形词
+  d: undefined, // 副词
+  m: undefined, // 数量词
+  q: undefined, // 量词
+  r: undefined, // 代词
+  p: undefined, // 介词
+  c: undefined, // 连词
+  u: undefined, // 助词
+  xc: undefined, // 其他虚词
+  w: undefined, // 标点符号
+  PER: undefined, // 人名
+  LOC: undefined, // 地名
+  ORG: undefined, // 机构名
+  TIME: undefined, // 时间
 };

@@ -5,16 +5,22 @@ import setupCM6 from "./cm6";
 import GoToDownloadModal from "./install-guide";
 import { cut, initJieba } from "./jieba";
 import { ChsPatchSettingTab, DEFAULT_SETTINGS } from "./settings";
+import { VimPatcher } from "./chsp-vim";
 
 const RANGE_LIMIT = 6;
 
 export default class CMChsPatch extends Plugin {
   libName = "jieba_rs_wasm_bg.wasm";
+
+  private patcher: any;
+
   get libPath() {
     return this.app.vault.configDir + "/" + this.libName;
   }
+
   async onload() {
     this.addSettingTab(new ChsPatchSettingTab(this));
+
     await this.loadSettings();
 
     if (await this.loadSegmenter()) {
@@ -22,21 +28,38 @@ export default class CMChsPatch extends Plugin {
       setupCM6(this);
       console.info("editor word splitting patched");
     }
+
+    this.patcher = VimPatcher(this);
+    this.patcher.initialize();
+  }
+
+  settings = DEFAULT_SETTINGS;
+
+  async loadSettings() {
+    this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+  }
+
+  async saveSettings() {
+    this.patcher.initialize();
+    await this.saveData(this.settings);
   }
 
   segmenter: any;
 
   async loadSegmenter(): Promise<boolean> {
     const { vault } = this.app;
+
     if (!this.settings.useJieba && (window.Intl as any)?.Segmenter) {
       this.segmenter = new (Intl as any).Segmenter("zh-CN", {
         granularity: "word",
       });
+      console.info("window.Intl.Segmenter loaded");
       return true;
     }
+
     if (await vault.adapter.exists(this.libPath, true)) {
       await initJieba(
-        this.app.vault.adapter.readBinary(this.libPath),
+        vault.adapter.readBinary(this.libPath),
         this.settings.dict,
       );
       console.info("Jieba loaded");
@@ -45,15 +68,6 @@ export default class CMChsPatch extends Plugin {
       new GoToDownloadModal(this).open();
       return false;
     }
-  }
-
-  settings = DEFAULT_SETTINGS;
-  async loadSettings() {
-    this.settings = { ...DEFAULT_SETTINGS, ...(await this.loadData()) };
-  }
-
-  async saveSettings() {
-    await this.saveData(this.settings);
   }
 
   cut(text: string): string[] {
@@ -68,7 +82,7 @@ export default class CMChsPatch extends Plugin {
     cursor: number,
     { from, to, text }: { from: number; to: number; text: string },
   ) {
-    if (!/[\u4e00-\u9fa5]/.test(text)) {
+    if (!/[\u4e00-\u9fff]/.test(text)) { // 匹配中文字符
       return null;
     } else {
       // trim long text

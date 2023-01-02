@@ -8,12 +8,16 @@ export interface ChsPatchSetting {
   useJieba: boolean;
   hmm: boolean;
   dict: string;
+  moveByChineseWords: boolean;
+  moveTillChinesePunctuation: boolean;
 }
 
 export const DEFAULT_SETTINGS: ChsPatchSetting = {
   useJieba: false,
   hmm: false,
   dict: "",
+  moveByChineseWords: false,
+  moveTillChinesePunctuation: false,
 };
 
 type SettingKeyWithType<T> = {
@@ -67,6 +71,18 @@ export class ChsPatchSettingTab extends PluginSettingTab {
               await this.app.plugins.enablePlugin(this.plugin.manifest.id);
               this.app.setting.openTabById(this.plugin.manifest.id);
             }),
+        );
+
+      this.addToggle(containerEl, "moveByChineseWords")
+        .setName("使用结巴分词移动光标 in Normal Mode")
+        .setDesc(
+          "Motion w/e/b/ge 移动使用结巴分词移动光标 in Normal Mode",
+        );
+
+      this.addToggle(containerEl, "moveTillChinesePunctuation")
+        .setName("f<character> 和 t<character> 支持输入英文标点跳转到中文标点")
+        .setDesc(
+          "Motion f<character> 和 t<character> 支持输入英文标点跳转到中文标点",
         );
     }
   }
