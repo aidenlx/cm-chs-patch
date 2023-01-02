@@ -36,7 +36,8 @@ export class ChsPatchSettingTab extends PluginSettingTab {
 
     this.addToggle(containerEl, "useJieba")
       .setName("使用结巴分词")
-      .setDesc("支持新词发现、自定义词典，需要额外下载，重启obsidian生效");
+      .setDesc("支持新词发现、自定义词典，需要额外下载，重启 Obsidian 生效");
+
 
     if (this.plugin.settings.useJieba || !(window.Intl as any)?.Segmenter) {
       this.addToggle(containerEl, "hmm")
@@ -92,9 +93,11 @@ export class ChsPatchSettingTab extends PluginSettingTab {
       toggle
         .setValue(this.plugin.settings[key])
         .onChange(
-          (value) => (
-            (this.plugin.settings[key] = value), this.plugin.saveSettings()
-          ),
+          (value) => {
+            this.plugin.settings[key] = value;
+            this.plugin.saveSettings();
+            if (key == "useJieba") this.display();
+          }
         );
     });
   }
