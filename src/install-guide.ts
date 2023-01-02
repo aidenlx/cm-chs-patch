@@ -82,7 +82,7 @@ export default class GoToDownloadModal extends Modal {
       await file.arrayBuffer(),
     );
     if (this.selectButton) {
-      this.selectButton.setText("结巴分词插件加载成功");
+      this.selectButton.setText("结巴分词插件导入成功");
       this.selectButton.style.backgroundColor = colorSuccess;
     }
     if (this.reloadButton) {
