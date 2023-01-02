@@ -1,6 +1,7 @@
 import { debounce, PluginSettingTab, Setting } from "obsidian";
-
+import GoToDownloadModal from "./install-guide";
 import type CMChsPatch from "./chsp-main";
+
 
 type TextAreaSize = Partial<Record<"cols" | "rows", number>>;
 
@@ -38,7 +39,6 @@ export class ChsPatchSettingTab extends PluginSettingTab {
       .setName("使用结巴分词")
       .setDesc("支持新词发现、自定义词典，需要额外下载，重启 Obsidian 生效");
 
-
     if (this.plugin.settings.useJieba || !(window.Intl as any)?.Segmenter) {
       this.addToggle(containerEl, "hmm")
         .setName("新词发现功能")
@@ -74,17 +74,19 @@ export class ChsPatchSettingTab extends PluginSettingTab {
             }),
         );
 
-      this.addToggle(containerEl, "moveByChineseWords")
-        .setName("使用结巴分词移动光标 in Normal Mode")
-        .setDesc(
-          "Motion w/e/b/ge 移动使用结巴分词移动光标 in Normal Mode",
-        );
+      if (app.vault.config.vimMode == true) {
+        this.addToggle(containerEl, "moveByChineseWords")
+          .setName("【Vim Mode】使用结巴分词移动光标")
+          .setDesc(
+            "Motion w/e/b/ge 使用结巴分词移动光标 in Vim Normal Mode",
+            );
 
-      this.addToggle(containerEl, "moveTillChinesePunctuation")
-        .setName("f<character> 和 t<character> 支持输入英文标点跳转到中文标点")
-        .setDesc(
-          "Motion f<character> 和 t<character> 支持输入英文标点跳转到中文标点",
-        );
+        this.addToggle(containerEl, "moveTillChinesePunctuation")
+          .setName("【Vim Mode】f/t<character> 支持输入英文标点跳转到中文标点")
+          .setDesc(
+            "Motion f/t<character> 支持输入英文标点跳转到中文标点 in Vim Normal Mode",
+            );
+      }
     }
   }
 
@@ -96,7 +98,12 @@ export class ChsPatchSettingTab extends PluginSettingTab {
           (value) => {
             this.plugin.settings[key] = value;
             this.plugin.saveSettings();
-            if (key == "useJieba") this.display();
+            if (key == "useJieba") {
+              app.vault.adapter.exists(this.plugin.libPath, true).then((isExisted) => {
+                if (!isExisted && value == true) new GoToDownloadModal(this.plugin).open();
+              })
+              this.display();
+            }
           }
         );
     });
