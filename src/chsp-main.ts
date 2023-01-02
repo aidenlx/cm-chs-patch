@@ -125,17 +125,25 @@ export default class CMChsPatch extends Plugin {
     nextPos: number,
     sliceDoc: (from: number, to: number) => string,
   ): number | null {
+    const oldNextPos = nextPos;
     const forward = startPos < nextPos;
     if (Math.abs(startPos - nextPos) > RANGE_LIMIT) {
       nextPos = startPos + RANGE_LIMIT * (forward ? 1 : -1);
     }
 
-    const text = forward
+    let text = forward
       ? sliceDoc(startPos, nextPos)
       : sliceDoc(nextPos, startPos);
 
-    if (!/[\u4e00-\u9fa5]/.test(text)) {
-      return null;
+    if (!/[\u4e00-\u9fff]/.test(text)) {
+      if (oldNextPos == nextPos) {
+        return null;
+      } else { // 英文单词超过 RANGE_LIMIT 被截断，不执行截断优化策略
+        nextPos = oldNextPos;
+        text = forward
+        ? sliceDoc(startPos, nextPos)
+        : sliceDoc(nextPos, startPos);
+      }
     }
 
     const segResult = this.cut(text);
