@@ -5,8 +5,8 @@ export const VimPatcher = (plugin: CMChsPatch) => {
   const codeMirrorVimObject = (window as any).CodeMirrorAdapter?.Vim;
 
   function initialize() {
-    setEnableMoveByChineseWords(plugin.settings.useJieba && plugin.settings.moveByChineseWords);
-    setEnableMoveTillChinesePunctuation(plugin.settings.useJieba && plugin.settings.moveTillChinesePunctuation);
+    setEnableMoveByChineseWords((plugin.settings.useJieba || (window.Intl as any)?.Segmenter) && plugin.settings.moveByChineseWords);
+    setEnableMoveTillChinesePunctuation((plugin.settings.useJieba || (window.Intl as any)?.Segmenter) && plugin.settings.moveTillChinesePunctuation);
   }
 
   function setEnableMoveByChineseWords(enabled) {

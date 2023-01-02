@@ -73,20 +73,21 @@ export class ChsPatchSettingTab extends PluginSettingTab {
               this.app.setting.openTabById(this.plugin.manifest.id);
             }),
         );
+    }
 
-      if (app.vault.config.vimMode == true) {
-        this.addToggle(containerEl, "moveByChineseWords")
-          .setName("【Vim Mode】使用结巴分词移动光标")
-          .setDesc(
-            "Motion w/e/b/ge 使用结巴分词移动光标 in Vim Normal Mode",
-            );
+    if ((this.plugin.settings.useJieba || (window.Intl as any)?.Segmenter)
+      && app.vault.config.vimMode == true) {
+      this.addToggle(containerEl, "moveByChineseWords")
+      .setName("【Vim Mode】使用结巴分词移动光标")
+      .setDesc(
+        "Motion w/e/b/ge 使用结巴分词移动光标 in Vim Normal Mode",
+        );
 
-        this.addToggle(containerEl, "moveTillChinesePunctuation")
-          .setName("【Vim Mode】f/t<character> 支持输入英文标点跳转到中文标点")
-          .setDesc(
-            "Motion f/t<character> 支持输入英文标点跳转到中文标点 in Vim Normal Mode",
-            );
-      }
+      this.addToggle(containerEl, "moveTillChinesePunctuation")
+      .setName("【Vim Mode】f/t<character> 支持输入英文标点跳转到中文标点")
+      .setDesc(
+        "Motion f/t<character> 支持输入英文标点跳转到中文标点 in Vim Normal Mode",
+        );
     }
   }
 
