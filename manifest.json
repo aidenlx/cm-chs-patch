@@ -6,5 +6,5 @@
   "description": "A patch for Obsidian's built-in CodeMirror Editor to support Simplified Chinese word splitting",
   "author": "AidenLx",
   "authorUrl": "https://github.com/AidenLx",
-  "isDesktopOnly": false
+  "isDesktopOnly": true
 }
