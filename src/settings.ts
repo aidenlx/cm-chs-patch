@@ -16,8 +16,8 @@ export const DEFAULT_SETTINGS: ChsPatchSetting = {
   useJieba: false,
   hmm: false,
   dict: "",
-  moveByChineseWords: false,
-  moveTillChinesePunctuation: false,
+  moveByChineseWords: true,
+  moveTillChinesePunctuation: true,
 };
 
 type SettingKeyWithType<T> = {
