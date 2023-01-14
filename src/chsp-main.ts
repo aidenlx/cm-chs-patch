@@ -1,18 +1,17 @@
 import { Plugin } from "obsidian";
 
-import { VimPatcher } from "./chsp-vim";
+import { VimPatcher } from "./chsp-vim.js";
 import setupCM5 from "./cm5";
 import setupCM6 from "./cm6";
 import GoToDownloadModal from "./install-guide";
 import { cut, initJieba } from "./jieba";
 import { ChsPatchSettingTab, DEFAULT_SETTINGS } from "./settings";
+import { isChs } from "./utils.js";
 
 const RANGE_LIMIT = 6;
 
 export default class CMChsPatch extends Plugin {
   libName = "jieba_rs_wasm_bg.wasm";
-
-  private patcher: any;
 
   get libPath() {
     return this.app.vault.configDir + "/" + this.libName;
@@ -28,9 +27,7 @@ export default class CMChsPatch extends Plugin {
       setupCM6(this);
       console.info("editor word splitting patched");
     }
-
-    this.patcher = VimPatcher(this);
-    this.patcher.initialize();
+    this.addChild(new VimPatcher(this));
   }
 
   settings = DEFAULT_SETTINGS;
@@ -40,7 +37,6 @@ export default class CMChsPatch extends Plugin {
   }
 
   async saveSettings() {
-    this.patcher.initialize();
     await this.saveData(this.settings);
   }
 
@@ -82,7 +78,7 @@ export default class CMChsPatch extends Plugin {
     cursor: number,
     { from, to, text }: { from: number; to: number; text: string },
   ) {
-    if (!/[\u4e00-\u9fff]/.test(text)) {
+    if (!isChs(text)) {
       // 匹配中文字符
       return null;
     } else {
@@ -136,7 +132,7 @@ export default class CMChsPatch extends Plugin {
       ? sliceDoc(startPos, nextPos)
       : sliceDoc(nextPos, startPos);
 
-    if (!/[\u4e00-\u9fff]/.test(text)) {
+    if (!isChs(text)) {
       if (oldNextPos == nextPos) {
         return null;
       } else {

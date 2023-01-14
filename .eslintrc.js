@@ -31,6 +31,11 @@ module.exports = {
     "@aidenlx/eslint-config/prettier",
     // "@aidenlx/eslint-config/react",
   ],
-  rules: { "import/no-unresolved": [2, { ignore: ["\\.less$"] }] },
+  rules: {
+    "import/no-unresolved": [2, { ignore: ["\\.less$"] }],
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/naming-convention": "off",
+  },
   settings: { "import/resolver": { typescript: typescriptOptions } },
 };

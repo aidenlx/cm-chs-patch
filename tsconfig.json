@@ -7,5 +7,9 @@
     "esModuleInterop": true,
     "incremental": false
   },
-  "include": ["src/**/*.ts", "node_modules/cm6-view-src/src/*.ts"]
+  "include": [
+    "src/**/*.ts",
+    "node_modules/cm6-view-src/src/*.ts",
+    "src/chsp-vim.js"
+  ]
 }

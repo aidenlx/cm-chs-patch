@@ -33,7 +33,7 @@
     "obsidian": "0.16.3",
     "release-it": "^15.5.0",
     "semver": "^7.3.8",
-    "typescript": "^4.8.4"
+    "typescript": "^4.9.4"
   },
   "config": {
     "commitizen": {
@@ -42,10 +42,10 @@
   },
   "dependencies": {
     "assert-never": "^1.2.1",
+    "cm6-view-src": "https://github.com/aidenlx/view/tarball/main",
     "file-select-dialog": "^1.5.4",
     "jieba-wasm": "^0.0.2",
-    "unzipit": "^1.4.0",
     "monkey-around": "^2.3.0",
-    "cm6-view-src": "https://github.com/aidenlx/view/tarball/main"
+    "unzipit": "^1.4.0"
   }
 }
