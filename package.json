@@ -45,7 +45,6 @@
     "cm6-view-src": "https://github.com/aidenlx/view/tarball/main",
     "file-select-dialog": "^1.5.4",
     "jieba-wasm": "^0.0.2",
-    "monkey-around": "^2.3.0",
-    "unzipit": "^1.4.0"
+    "monkey-around": "^2.3.0"
   }
 }

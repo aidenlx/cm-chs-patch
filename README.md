@@ -8,7 +8,7 @@ Special Thanks to [@fengkx](https://github.com/fengkx) for [jieba-wasm module](h
 
 注意：从 v1.8.0 开始，默认分词引擎由结巴分词更换为系统自带分词引擎，结巴分词不再是必备组件，若你需要结合 [omnisearch](https://github.com/scambier/obsidian-omnisearch) 插件使用，或仍需要使用结巴分词提供的更精确的分词结果，以及新词发现、自定义词库功能，请在设置打开选项后，按照弹窗提示进行安装（若系统不提供分词引擎，无论选项是否打开，本插件仍会提示安装结巴分词）
 
-手动安装结巴分词组件：在设置中启用结巴分词后，从[蓝奏云](https://wwe.lanzoum.com/igUPR00jp02h)或[GitHub](https://github.com/aidenlx/cm-chs-patch/blob/master/assets/jiaba-wasm/jieba_rs_wasm_bg.wasm.zip?raw=true)下载并解压得到 `jieba_rs_wasm_bg.wasm` 文件，将 wasm 文件放在 Obsidian 库的 `.obsidian` 或者其它指定的配置文件夹下后重启 Obsidian
+手动安装结巴分词组件：在设置中启用结巴分词后，从[CDN](https://unpkg.com/jieba-wasm@0.0.2/pkg/web/jieba_rs_wasm_bg.wasm)下载得到 `jieba_rs_wasm_bg.wasm` 文件，将 wasm 文件放在 Obsidian 库的 `.obsidian` 或者其它指定的配置文件夹下后重启 Obsidian
 
 ## Demo
 

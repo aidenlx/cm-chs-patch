@@ -1,11 +1,13 @@
 import { fileDialog } from "file-select-dialog";
-import { Modal, Notice, requestUrl } from "obsidian";
-import { unzip } from "unzipit";
+import { Modal, Notice } from "obsidian";
 
 import type CMChsPatch from "./chsp-main";
 
 const colorSuccess = "var(--background-modifier-success)",
   colorDisabled = "var(--background-modifier-cover)";
+
+const wasmUrl =
+  "https://unpkg.com/jieba-wasm@0.0.2/pkg/web/jieba_rs_wasm_bg.wasm";
 
 export default class GoToDownloadModal extends Modal {
   reloadButton: HTMLButtonElement | null = null;
@@ -16,9 +18,6 @@ export default class GoToDownloadModal extends Modal {
     super(plugin.app);
     this.modalEl.addClass("zt-install-guide");
   }
-
-  downloadLink = `https://raw.githubusercontent.com/aidenlx/cm-chs-patch/main/assets/jiaba-wasm/${this.libName}.zip`;
-  lanzoumLink = "https://wwe.lanzoum.com/igUPR00jp02h";
 
   get libName() {
     return this.plugin.libName;
@@ -35,18 +34,15 @@ export default class GoToDownloadModal extends Modal {
             text: this.libName + ".zip",
           });
           li.createEl("br");
-          li.appendText("从 ");
-          li.createEl("a", { href: this.downloadLink, text: "GitHub" });
-          li.appendText(" 或 ");
-          li.createEl("a", { href: this.lanzoumLink, text: "蓝奏云" });
-          li.appendText(" 手动下载");
-          li.appendText(" 或 ");
-
           this.downloadButton = li.createEl(
             "button",
             { text: "自动下载" },
             (btn) => (btn.onclick = this.onDownloadingFile.bind(this)),
           );
+          li.appendText(" 或 ");
+          li.appendText("从 ");
+          li.createEl("a", { href: wasmUrl, text: "CDN" });
+          li.appendText(" 手动下载");
         });
         ol.createEl("li", {}, (li) => {
           li.appendText("解压缩 zip 包得到 ");
@@ -107,17 +103,11 @@ export default class GoToDownloadModal extends Modal {
       this.reloadButton.style.backgroundColor = colorDisabled;
     }
 
-    const resp = await requestUrl({
-      url: this.downloadLink,
-      contentType: "application/octet-stream",
-    });
-    const { entries } = await unzip(resp.arrayBuffer);
-    if (entries[`${this.libName}`]) {
-      await this.app.vault.adapter.writeBinary(
-        this.plugin.libPath,
-        await entries[`${this.libName}`].arrayBuffer(),
-      );
-    }
+    const resp = await fetch(wasmUrl);
+    await this.app.vault.adapter.writeBinary(
+      this.plugin.libPath,
+      await resp.arrayBuffer(),
+    );
 
     if (this.selectButton) {
       this.selectButton.setText("结巴分词插件导入成功");
