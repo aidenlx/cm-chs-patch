@@ -1,7 +1,6 @@
 import { debounce, PluginSettingTab, Setting } from "obsidian";
-import GoToDownloadModal from "./install-guide";
 import type CMChsPatch from "./chsp-main";
-
+import GoToDownloadModal from "./install-guide";
 
 type TextAreaSize = Partial<Record<"cols" | "rows", number>>;
 
@@ -75,38 +74,37 @@ export class ChsPatchSettingTab extends PluginSettingTab {
         );
     }
 
-    if ((this.plugin.settings.useJieba || (window.Intl as any)?.Segmenter)
-      && app.vault.config.vimMode == true) {
+    if (
+      (this.plugin.settings.useJieba || (window.Intl as any)?.Segmenter) &&
+      app.vault.config.vimMode == true
+    ) {
       this.addToggle(containerEl, "moveByChineseWords")
-      .setName("【Vim Mode】使用结巴分词移动光标")
-      .setDesc(
-        "Motion w/e/b/ge 使用结巴分词移动光标 in Vim Normal Mode",
-        );
+        .setName("【Vim Mode】使用结巴分词移动光标")
+        .setDesc("Motion w/e/b/ge 使用结巴分词移动光标 in Vim Normal Mode");
 
       this.addToggle(containerEl, "moveTillChinesePunctuation")
-      .setName("【Vim Mode】f/t<character> 支持输入英文标点跳转到中文标点")
-      .setDesc(
-        "Motion f/t<character> 支持输入英文标点跳转到中文标点 in Vim Normal Mode",
+        .setName("【Vim Mode】f/t<character> 支持输入英文标点跳转到中文标点")
+        .setDesc(
+          "Motion f/t<character> 支持输入英文标点跳转到中文标点 in Vim Normal Mode",
         );
     }
   }
 
   addToggle(addTo: HTMLElement, key: SettingKeyWithType<boolean>): Setting {
     return new Setting(addTo).addToggle((toggle) => {
-      toggle
-        .setValue(this.plugin.settings[key])
-        .onChange(
-          (value) => {
-            this.plugin.settings[key] = value;
-            this.plugin.saveSettings();
-            if (key == "useJieba") {
-              app.vault.adapter.exists(this.plugin.libPath, true).then((isExisted) => {
-                if (!isExisted && value == true) new GoToDownloadModal(this.plugin).open();
-              })
-              this.display();
-            }
-          }
-        );
+      toggle.setValue(this.plugin.settings[key]).onChange((value) => {
+        this.plugin.settings[key] = value;
+        this.plugin.saveSettings();
+        if (key == "useJieba") {
+          app.vault.adapter
+            .exists(this.plugin.libPath, true)
+            .then((isExisted) => {
+              if (!isExisted && value == true)
+                new GoToDownloadModal(this.plugin).open();
+            });
+          this.display();
+        }
+      });
     });
   }
   addTextField(

@@ -1,11 +1,11 @@
 import { Plugin } from "obsidian";
 
+import { VimPatcher } from "./chsp-vim";
 import setupCM5 from "./cm5";
 import setupCM6 from "./cm6";
 import GoToDownloadModal from "./install-guide";
 import { cut, initJieba } from "./jieba";
 import { ChsPatchSettingTab, DEFAULT_SETTINGS } from "./settings";
-import { VimPatcher } from "./chsp-vim";
 
 const RANGE_LIMIT = 6;
 
@@ -82,7 +82,8 @@ export default class CMChsPatch extends Plugin {
     cursor: number,
     { from, to, text }: { from: number; to: number; text: string },
   ) {
-    if (!/[\u4e00-\u9fff]/.test(text)) { // 匹配中文字符
+    if (!/[\u4e00-\u9fff]/.test(text)) {
+      // 匹配中文字符
       return null;
     } else {
       // trim long text
@@ -138,11 +139,12 @@ export default class CMChsPatch extends Plugin {
     if (!/[\u4e00-\u9fff]/.test(text)) {
       if (oldNextPos == nextPos) {
         return null;
-      } else { // 英文单词超过 RANGE_LIMIT 被截断，不执行截断优化策略
+      } else {
+        // 英文单词超过 RANGE_LIMIT 被截断，不执行截断优化策略
         nextPos = oldNextPos;
         text = forward
-        ? sliceDoc(startPos, nextPos)
-        : sliceDoc(nextPos, startPos);
+          ? sliceDoc(startPos, nextPos)
+          : sliceDoc(nextPos, startPos);
       }
     }
 

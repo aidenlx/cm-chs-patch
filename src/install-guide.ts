@@ -1,6 +1,6 @@
 import { fileDialog } from "file-select-dialog";
 import { Modal, Notice, requestUrl } from "obsidian";
-import { unzip } from 'unzipit';
+import { unzip } from "unzipit";
 
 import type CMChsPatch from "./chsp-main";
 
@@ -107,10 +107,16 @@ export default class GoToDownloadModal extends Modal {
       this.reloadButton.style.backgroundColor = colorDisabled;
     }
 
-    const resp = await requestUrl({url: this.downloadLink, contentType: "application/octet-stream"});
+    const resp = await requestUrl({
+      url: this.downloadLink,
+      contentType: "application/octet-stream",
+    });
     const { entries } = await unzip(resp.arrayBuffer);
     if (entries[`${this.libName}`]) {
-      await this.app.vault.adapter.writeBinary(this.plugin.libPath, await entries[`${this.libName}`].arrayBuffer());
+      await this.app.vault.adapter.writeBinary(
+        this.plugin.libPath,
+        await entries[`${this.libName}`].arrayBuffer(),
+      );
     }
 
     if (this.selectButton) {
