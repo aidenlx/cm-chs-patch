@@ -1,5 +1,26 @@
 
 
+# [1.9.0](https://github.com/aidenlx/cm-chs-patch/compare/1.8.2...1.9.0) (2023-01-14)
+
+
+### Bug Fixes
+
+* display vim mode settings only if vimMode is enabled ([2f9e9ad](https://github.com/aidenlx/cm-chs-patch/commit/2f9e9ad9c112c94f0c966532642afadfbbef4613))
+* fix English word truncated out of RANGE_LIMIT [#14](https://github.com/aidenlx/cm-chs-patch/issues/14) ([6794478](https://github.com/aidenlx/cm-chs-patch/commit/6794478311a419778d11a37ff11ad72c865d4554))
+* refresh settings if useJieba toggled ([2eaa113](https://github.com/aidenlx/cm-chs-patch/commit/2eaa113807a4d24d3e7244304c3bcc84a495586a))
+* Vim mode toggle is available even if useJieba is false ([a220965](https://github.com/aidenlx/cm-chs-patch/commit/a2209658af95edf76cfc80fd1046379656f06513))
+
+
+### Features
+
+* support background download jieba-wasm file from GitHub ([94511a5](https://github.com/aidenlx/cm-chs-patch/commit/94511a522cec38ee6e2d4bce0c2525da1584d3c3))
+* support moveByWords and moveTillChinesePunctuation in Vim normal mode [#4](https://github.com/aidenlx/cm-chs-patch/issues/4) ([2cbfdf6](https://github.com/aidenlx/cm-chs-patch/commit/2cbfdf6139d416860ba758b8aaba52da848a693d))
+
+
+### Performance Improvements
+
+* auto download from cdn directly, remove unzipit to reduce bundle size ([05736e9](https://github.com/aidenlx/cm-chs-patch/commit/05736e9713560733bf949c7fccd3bb9029243c83))
+
 ## [1.8.2](https://github.com/aidenlx/cm-chs-patch/compare/1.8.1...1.8.2) (2022-10-08)
 
 
