@@ -40,13 +40,13 @@ export default class CMChsPatch extends Plugin {
     await this.saveData(this.settings);
   }
 
-  segmenter: any;
+  segmenter?: Intl.Segmenter;
 
   async loadSegmenter(): Promise<boolean> {
     const { vault } = this.app;
 
-    if (!this.settings.useJieba && (window.Intl as any)?.Segmenter) {
-      this.segmenter = new (Intl as any).Segmenter("zh-CN", {
+    if (!this.settings.useJieba && window.Intl?.Segmenter) {
+      this.segmenter = new Intl.Segmenter("zh-CN", {
         granularity: "word",
       });
       console.info("window.Intl.Segmenter loaded");
@@ -68,9 +68,7 @@ export default class CMChsPatch extends Plugin {
 
   cut(text: string): string[] {
     if (!this.settings.useJieba && this.segmenter) {
-      return Array.from(this.segmenter.segment(text)).map(
-        (seg) => (seg as any).segment,
-      );
+      return Array.from(this.segmenter.segment(text)).map((seg) => seg.segment);
     } else return cut(text, this.settings.hmm);
   }
 

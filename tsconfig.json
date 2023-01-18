@@ -1,7 +1,7 @@
 {
   "extends": "@aidenlx/eslint-config",
   "compilerOptions": {
-    "lib": ["esnext", "dom"],
+    "lib": ["esnext", "dom", "ES2022.Intl"],
     "moduleResolution": "Node",
     "module": "CommonJS",
     "esModuleInterop": true,
