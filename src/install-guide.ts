@@ -29,34 +29,33 @@ export default class GoToDownloadModal extends Modal {
       div.appendText("新版分词插件需要安装 jieba-wasm，请按照下面的步骤安装：");
       div.createEl("ol", {}, (ol) => {
         ol.createEl("li", {}, (li) => {
-          li.appendText("点击链接下载 ");
-          li.createEl("code", {
-            text: this.libName + ".zip",
-          });
-          li.createEl("br");
           this.downloadButton = li.createEl(
             "button",
             { text: "自动下载" },
             (btn) => (btn.onclick = this.onDownloadingFile.bind(this)),
           );
-          li.appendText(" 或 ");
-          li.appendText("从 ");
-          li.createEl("a", { href: wasmUrl, text: "CDN" });
-          li.appendText(" 手动下载");
-        });
-        ol.createEl("li", {}, (li) => {
-          li.appendText("解压缩 zip 包得到 ");
-          li.createEl("code", { text: this.libName });
-        });
-        ol.createEl("li", {}, (li) => {
-          li.appendText("在弹出的窗口选择 ");
-          li.createEl("code", { text: this.libName });
-          li.appendText("  ");
-          this.selectButton = li.createEl(
-            "button",
-            { text: "选择文件" },
-            (btn) => (btn.onclick = this.onSelectingFile.bind(this)),
-          );
+          li.createEl("br");
+          li.appendText("或");
+          li.createEl("ol", {}, (ol) => {
+            ol.createEl("li", {}, (li) => {
+              li.appendText("点击链接手动下载");
+              li.createEl("code", {
+                text: this.libName,
+              });
+              li.createEl("br");
+              li.createEl("a", { href: wasmUrl, text: wasmUrl });
+            });
+            ol.createEl("li", {}, (li) => {
+              li.appendText("在弹出的窗口选择下载好的 ");
+              li.createEl("code", { text: this.libName });
+              li.appendText("  ");
+              this.selectButton = li.createEl(
+                "button",
+                { text: "选择文件" },
+                (btn) => (btn.onclick = this.onSelectingFile.bind(this)),
+              );
+            });
+          });
         });
         ol.createEl("li", {}, (li) => {
           li.appendText("重新加载分词插件:  ");
