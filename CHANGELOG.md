@@ -1,5 +1,17 @@
 
 
+# [1.10.0](https://github.com/aidenlx/cm-chs-patch/compare/1.9.0...1.10.0) (2023-01-18)
+
+
+### Bug Fixes
+
+* improve install guide ([2864ad1](https://github.com/aidenlx/cm-chs-patch/commit/2864ad19434959b400d23606299d3ac1b27360d1))
+
+
+### Features
+
+* jieba binary can be reused across vault ([d38f9cb](https://github.com/aidenlx/cm-chs-patch/commit/d38f9cb6e4426e27eea6c9808573fca848fc0836))
+
 # [1.9.0](https://github.com/aidenlx/cm-chs-patch/compare/1.8.2...1.9.0) (2023-01-14)
 
 
