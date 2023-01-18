@@ -1,4 +1,4 @@
-import { Plugin } from "obsidian";
+import { Platform, Plugin } from "obsidian";
 
 import { VimPatcher } from "./chsp-vim.js";
 import setupCM5 from "./cm5";
@@ -10,11 +10,72 @@ import { isChs } from "./utils.js";
 
 const RANGE_LIMIT = 6;
 
+const userDataDir = Platform.isDesktopApp
+  ? // eslint-disable-next-line @typescript-eslint/no-var-requires
+    require("@electron/remote").app.getPath("userData")
+  : null;
+
 export default class CMChsPatch extends Plugin {
   libName = "jieba_rs_wasm_bg.wasm";
-
-  get libPath() {
-    return this.app.vault.configDir + "/" + this.libName;
+  async loadLib(): Promise<ArrayBuffer | null> {
+    if (userDataDir) {
+      const { readFile } =
+        // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/consistent-type-imports
+        require("fs/promises") as typeof import("fs/promises");
+      // read file to arraybuffer in nodejs
+      try {
+        const buf = await readFile(this.libPath);
+        return buf;
+      } catch (e) {
+        if ((e as NodeJS.ErrnoException).code === "ENOENT") {
+          return null;
+        }
+        throw e;
+      }
+    } else {
+      if (!(await app.vault.adapter.exists(this.libPath, true))) {
+        return null;
+      }
+      const buf = await app.vault.adapter.readBinary(this.libPath);
+      return buf;
+    }
+  }
+  async libExists(): Promise<boolean> {
+    if (userDataDir) {
+      const { access } =
+        // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/consistent-type-imports
+        require("fs/promises") as typeof import("fs/promises");
+      try {
+        await access(this.libPath);
+        return true;
+      } catch (e) {
+        if ((e as NodeJS.ErrnoException).code === "ENOENT") {
+          return false;
+        }
+        throw e;
+      }
+    } else {
+      return await app.vault.adapter.exists(this.libPath, true);
+    }
+  }
+  async saveLib(ab: ArrayBuffer): Promise<void> {
+    if (userDataDir) {
+      const { writeFile } =
+        // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/consistent-type-imports
+        require("fs/promises") as typeof import("fs/promises");
+      await writeFile(this.libPath, Buffer.from(ab));
+    } else {
+      await app.vault.adapter.writeBinary(this.libPath, ab);
+    }
+  }
+  get libPath(): string {
+    if (userDataDir) {
+      // eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/consistent-type-imports
+      const { join } = require("path") as typeof import("path");
+      return join(userDataDir, this.libName);
+    } else {
+      return [app.vault.configDir, this.libName].join("/");
+    }
   }
 
   async onload() {
@@ -43,8 +104,6 @@ export default class CMChsPatch extends Plugin {
   segmenter?: Intl.Segmenter;
 
   async loadSegmenter(): Promise<boolean> {
-    const { vault } = this.app;
-
     if (!this.settings.useJieba && window.Intl?.Segmenter) {
       this.segmenter = new Intl.Segmenter("zh-CN", {
         granularity: "word",
@@ -53,17 +112,14 @@ export default class CMChsPatch extends Plugin {
       return true;
     }
 
-    if (await vault.adapter.exists(this.libPath, true)) {
-      await initJieba(
-        vault.adapter.readBinary(this.libPath),
-        this.settings.dict,
-      );
-      console.info("Jieba loaded");
-      return true;
-    } else {
+    const jiebaBinary = await this.loadLib();
+    if (!jiebaBinary) {
       new GoToDownloadModal(this).open();
       return false;
     }
+    await initJieba(jiebaBinary, this.settings.dict);
+    console.info("Jieba loaded");
+    return true;
   }
 
   cut(text: string): string[] {

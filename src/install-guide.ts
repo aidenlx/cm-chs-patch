@@ -84,10 +84,7 @@ export default class GoToDownloadModal extends Modal {
       strict: true,
     });
     if (!file) return;
-    await this.app.vault.adapter.writeBinary(
-      this.plugin.libPath,
-      await file.arrayBuffer(),
-    );
+    await this.plugin.saveLib(await file.arrayBuffer());
     if (this.selectButton) {
       this.selectButton.setText("结巴分词插件导入成功");
       this.selectButton.style.backgroundColor = colorSuccess;
@@ -104,10 +101,7 @@ export default class GoToDownloadModal extends Modal {
     }
 
     const resp = await fetch(wasmUrl);
-    await this.app.vault.adapter.writeBinary(
-      this.plugin.libPath,
-      await resp.arrayBuffer(),
-    );
+    await this.plugin.saveLib(await resp.arrayBuffer());
 
     if (this.selectButton) {
       this.selectButton.setText("结巴分词插件导入成功");
@@ -119,7 +113,7 @@ export default class GoToDownloadModal extends Modal {
     }
   }
   async onReloadPlugin() {
-    if (await app.vault.adapter.exists(this.plugin.libPath, true)) {
+    if (await this.plugin.libExists()) {
       const stat = await app.vault.adapter.stat(this.plugin.libPath);
       if (stat && stat.type == "file" && stat.size > 0) {
         await this.app.plugins.disablePlugin(this.plugin.manifest.id);
