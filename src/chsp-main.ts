@@ -139,13 +139,17 @@ export default class CMChsPatch extends Plugin {
       // trim long text
       if (cursor - from > RANGE_LIMIT) {
         const newFrom = cursor - RANGE_LIMIT;
-        text = text.slice(newFrom - from);
-        from = newFrom;
+        if (isChs(text.slice(newFrom, cursor))) { // 英文单词超过 RANGE_LIMIT 被截断，不执行截断优化策略
+          text = text.slice(newFrom - from);
+          from = newFrom;
+        }
       }
       if (to - cursor > RANGE_LIMIT) {
         const newTo = cursor + RANGE_LIMIT;
-        text = text.slice(0, newTo - to);
-        to = newTo;
+        if (isChs(text.slice(cursor, newTo))) { // 英文单词超过 RANGE_LIMIT 被截断，不执行截断优化策略
+          text = text.slice(0, newTo - to);
+          to = newTo;
+        }
       }
       const segResult = this.cut(text);
 
