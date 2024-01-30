@@ -1,4 +1,4 @@
-import obPlugin from "@aidenlx/esbuild-plugin-obsidian";
+import obPlugin from "./scripts/ob.esbuild.mjs";
 import { build } from "esbuild";
 import { join, resolve } from "path";
 
