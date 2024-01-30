@@ -1,7 +1,6 @@
 import { Platform, Plugin } from "obsidian";
 
 import { VimPatcher } from "./chsp-vim.js";
-import setupCM5 from "./cm5";
 import setupCM6 from "./cm6";
 import GoToDownloadModal from "./install-guide";
 import { cut, initJieba } from "./jieba";
@@ -84,7 +83,6 @@ export default class CMChsPatch extends Plugin {
     await this.loadSettings();
 
     if (await this.loadSegmenter()) {
-      setupCM5(this);
       setupCM6(this);
       console.info("editor word splitting patched");
     }
@@ -139,14 +137,16 @@ export default class CMChsPatch extends Plugin {
       // trim long text
       if (cursor - from > RANGE_LIMIT) {
         const newFrom = cursor - RANGE_LIMIT;
-        if (isChs(text.slice(newFrom, cursor))) { // 英文单词超过 RANGE_LIMIT 被截断，不执行截断优化策略
+        if (isChs(text.slice(newFrom, cursor))) {
+          // 英文单词超过 RANGE_LIMIT 被截断，不执行截断优化策略
           text = text.slice(newFrom - from);
           from = newFrom;
         }
       }
       if (to - cursor > RANGE_LIMIT) {
         const newTo = cursor + RANGE_LIMIT;
-        if (isChs(text.slice(cursor, newTo))) { // 英文单词超过 RANGE_LIMIT 被截断，不执行截断优化策略
+        if (isChs(text.slice(cursor, newTo))) {
+          // 英文单词超过 RANGE_LIMIT 被截断，不执行截断优化策略
           text = text.slice(0, newTo - to);
           to = newTo;
         }
