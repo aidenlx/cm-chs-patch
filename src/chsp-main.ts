@@ -204,8 +204,14 @@ export default class CMChsPatch extends Plugin {
 
     const segResult = this.cut(text);
     if (segResult.length === 0) return null;
-    return forward
-      ? startPos + segResult.first()!.length
-      : startPos - segResult.last()!.length;
+
+    let length = 0;
+    let seg;
+    do {
+      seg = forward ? segResult.shift()! : segResult.pop()!;
+      length += seg.length;
+    } while(/\s+/.test(seg));
+
+    return forward ? startPos + length : startPos - length;
   }
 }
