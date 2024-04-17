@@ -27,11 +27,11 @@ const setupCM6 = (plugin: CMChsPatch) => {
 
   // 光标选择移动方向类型
   enum Direction {
-    BeginAndForward     = "BeginAndForward",
-    BeginAndBackward    = "BeginAndBackward",
-    ForwardAndForward   = "ForwardAndForward",
-    ForwardAndBackward  = "ForwardAndBackward",
-    BackwardAndForward  = "BackwardAndForward",
+    BeginAndForward = "BeginAndForward",
+    BeginAndBackward = "BeginAndBackward",
+    ForwardAndForward = "ForwardAndForward",
+    ForwardAndBackward = "ForwardAndBackward",
+    BackwardAndForward = "BackwardAndForward",
     BackwardAndBackward = "BackwardAndBackward",
   }
 
@@ -41,16 +41,22 @@ const setupCM6 = (plugin: CMChsPatch) => {
         function (this: EditorView, start: SelectionRange, forward: boolean) {
           const dest = next.call(this, start, forward);
           if (dest.empty || start.empty) {
-	    let direction : Direction | null;
+            let direction: Direction | null;
             if (dest.empty && start.empty) {
-              direction = forward ? Direction.BeginAndForward : Direction.BeginAndBackward;
+              direction = forward
+                ? Direction.BeginAndForward
+                : Direction.BeginAndBackward;
               origPos = start.from;
+            } else if (forward) {
+              direction =
+                origPos != start.to
+                  ? Direction.ForwardAndForward
+                  : Direction.BackwardAndForward;
             } else {
-              if (forward) {
-                direction = origPos != start.to ? Direction.ForwardAndForward : Direction.BackwardAndForward;
-              } else {
-                direction = origPos != start.from ? Direction.BackwardAndBackward : Direction.ForwardAndBackward;
-              }
+              direction =
+                origPos != start.from
+                  ? Direction.BackwardAndBackward
+                  : Direction.ForwardAndBackward;
             }
 
             let startPos: number;
@@ -59,6 +65,7 @@ const setupCM6 = (plugin: CMChsPatch) => {
                 startPos = start.from;
                 break;
               case Direction.BeginAndBackward:
+              case Direction.ForwardAndBackward:
                 startPos = start.to;
                 break;
               case Direction.ForwardAndForward:
@@ -78,19 +85,16 @@ const setupCM6 = (plugin: CMChsPatch) => {
                   startPos = start.to;
                 }
                 break;
-              case Direction.ForwardAndBackward:
-                startPos = start.to;
-                break;
               default:
                 startPos = start.from;
                 break;
             }
 
-            const destPos = plugin.getSegRangeFromGroup(
+            const destPos = plugin.getSegDestFromGroup(
               startPos,
               forward ? dest.from : dest.to,
               this.state.sliceDoc.bind(this.state),
-              );
+            );
 
             if (destPos) return EditorSelection.range(destPos, destPos);
           }

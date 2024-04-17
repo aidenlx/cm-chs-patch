@@ -88,7 +88,7 @@ export const patchKeymap = (plugin: CMChsPatch) => {
       }
       // #region modified
       pos =
-        plugin.getSegRangeFromGroup(start, pos, state.sliceDoc.bind(state)) ??
+        plugin.getSegDestFromGroup(start, pos, state.sliceDoc.bind(state)) ??
         pos;
       // #endregion
       return pos;

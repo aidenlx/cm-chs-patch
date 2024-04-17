@@ -175,7 +175,7 @@ export default class CMChsPatch extends Plugin {
     }
   }
 
-  getSegRangeFromGroup(
+  getSegDestFromGroup(
     startPos: number,
     nextPos: number,
     sliceDoc: (from: number, to: number) => string,
@@ -210,7 +210,7 @@ export default class CMChsPatch extends Plugin {
     do {
       seg = forward ? segResult.shift()! : segResult.pop()!;
       length += seg.length;
-    } while(/\s+/.test(seg));
+    } while (/\s+/.test(seg));
 
     return forward ? startPos + length : startPos - length;
   }
