@@ -1,4 +1,5 @@
-const chsTest = /[\u4e00-\u9fff]/;
+const chsPattern = /[\u4e00-\u9fff]/;
+export const chsPatternGlobal = new RegExp(chsPattern, "g");
 export const isChs = (str: string) => {
-  return chsTest.test(str);
+  return chsPattern.test(str);
 };

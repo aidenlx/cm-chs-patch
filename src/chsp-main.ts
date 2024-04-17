@@ -5,9 +5,9 @@ import setupCM6 from "./cm6";
 import GoToDownloadModal from "./install-guide";
 import { cut, initJieba } from "./jieba";
 import { ChsPatchSettingTab, DEFAULT_SETTINGS } from "./settings";
-import { isChs } from "./utils.js";
+import { chsPatternGlobal, isChs } from "./utils.js";
 
-const RANGE_LIMIT = 6;
+const CHS_RANGE_LIMIT = 10;
 
 const userDataDir = Platform.isDesktopApp
   ? // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -135,16 +135,16 @@ export default class CMChsPatch extends Plugin {
       return null;
     } else {
       // trim long text
-      if (cursor - from > RANGE_LIMIT) {
-        const newFrom = cursor - RANGE_LIMIT;
+      if (cursor - from > CHS_RANGE_LIMIT) {
+        const newFrom = cursor - CHS_RANGE_LIMIT;
         if (isChs(text.slice(newFrom, cursor))) {
           // 英文单词超过 RANGE_LIMIT 被截断，不执行截断优化策略
           text = text.slice(newFrom - from);
           from = newFrom;
         }
       }
-      if (to - cursor > RANGE_LIMIT) {
-        const newTo = cursor + RANGE_LIMIT;
+      if (to - cursor > CHS_RANGE_LIMIT) {
+        const newTo = cursor + CHS_RANGE_LIMIT;
         if (isChs(text.slice(cursor, newTo))) {
           // 英文单词超过 RANGE_LIMIT 被截断，不执行截断优化策略
           text = text.slice(0, newTo - to);
@@ -180,33 +180,16 @@ export default class CMChsPatch extends Plugin {
     nextPos: number,
     sliceDoc: (from: number, to: number) => string,
   ): number | null {
-    const oldNextPos = nextPos;
     const forward = startPos < nextPos;
-    if (Math.abs(startPos - nextPos) > RANGE_LIMIT) {
-      nextPos = startPos + RANGE_LIMIT * (forward ? 1 : -1);
-    }
-
-    let text = forward
-      ? sliceDoc(startPos, nextPos)
-      : sliceDoc(nextPos, startPos);
-
-    if (!isChs(text)) {
-      if (oldNextPos == nextPos) {
-        return null;
-      } else {
-        // 英文单词超过 RANGE_LIMIT 被截断，不执行截断优化策略
-        nextPos = oldNextPos;
-        text = forward
-          ? sliceDoc(startPos, nextPos)
-          : sliceDoc(nextPos, startPos);
-      }
-    }
-
+    const text = limitChsChars(
+      forward ? sliceDoc(startPos, nextPos) : sliceDoc(nextPos, startPos),
+      forward,
+    );
     const segResult = this.cut(text);
     if (segResult.length === 0) return null;
 
     let length = 0;
-    let seg;
+    let seg: string;
     do {
       seg = forward ? segResult.shift()! : segResult.pop()!;
       length += seg.length;
@@ -214,4 +197,22 @@ export default class CMChsPatch extends Plugin {
 
     return forward ? startPos + length : startPos - length;
   }
+}
+
+function limitChsChars(input: string, forward: boolean) {
+  if (!forward) {
+    input = [...input].reverse().join("");
+  }
+  let endingIndex = input.length - 1;
+  let chsCount = 0;
+  for (const { index } of input.matchAll(chsPatternGlobal)) {
+    chsCount++;
+    endingIndex = index;
+    if (chsCount > CHS_RANGE_LIMIT) break;
+  }
+  const output = input.slice(0, endingIndex + 1);
+  if (!forward) {
+    return [...output].reverse().join("");
+  }
+  return output;
 }

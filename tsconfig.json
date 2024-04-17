@@ -4,6 +4,7 @@
     "lib": ["esnext", "dom", "ES2022.Intl"],
     "moduleResolution": "Node",
     "module": "CommonJS",
+    "target": "ES2020",
     "esModuleInterop": true,
     "incremental": false
   },
