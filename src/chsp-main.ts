@@ -3,7 +3,7 @@ import { Platform, Plugin } from "obsidian";
 import { VimPatcher } from "./chsp-vim.js";
 import setupCM6 from "./cm6";
 import GoToDownloadModal from "./install-guide";
-import { cut, initJieba } from "./jieba";
+import { cut, cutForSearch, initJieba } from "./jieba";
 import { ChsPatchSettingTab, DEFAULT_SETTINGS } from "./settings";
 import { chsPatternGlobal, isChs } from "./utils.js";
 
@@ -120,10 +120,14 @@ export default class CMChsPatch extends Plugin {
     return true;
   }
 
-  cut(text: string): string[] {
+  cut(text: string, { search = false }: { search?: boolean } = {}): string[] {
     if (!this.settings.useJieba && this.segmenter) {
       return Array.from(this.segmenter.segment(text)).map((seg) => seg.segment);
-    } else return cut(text, this.settings.hmm);
+    }
+    if (search) {
+      return cutForSearch(text, this.settings.hmm);
+    }
+    return cut(text, this.settings.hmm);
   }
 
   getSegRangeFromCursor(

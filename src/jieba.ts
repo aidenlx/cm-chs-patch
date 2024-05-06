@@ -1,6 +1,7 @@
 import init, {
   add_word,
   cut as jiebaCut,
+  cut_for_search as jiebaCutForSearch,
 } from "jieba-wasm/pkg/web/jieba_rs_wasm";
 
 const vaildateFreq = (freq: string): number | undefined =>
@@ -44,6 +45,10 @@ export const initJieba = async (
 export const cut = (text: string, hmm = false) => {
   if (!initialized) throw new Error("jieba not loaded");
   return jiebaCut(text, hmm);
+};
+export const cutForSearch = (text: string, hmm = false) => {
+  if (!initialized) throw new Error("jieba not loaded");
+  return jiebaCutForSearch(text, hmm);
 };
 
 const vaildTags = {
