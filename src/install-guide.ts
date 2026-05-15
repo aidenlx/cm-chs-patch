@@ -1,7 +1,19 @@
-import { fileDialog } from "file-select-dialog";
 import { Modal, Notice } from "obsidian";
 
 import type CMChsPatch from "./chsp-main";
+
+function pickFile(accept: string): Promise<File | null> {
+  return new Promise((resolve) => {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = accept;
+    input.addEventListener("change", () =>
+      resolve(input.files?.[0] ?? null),
+    );
+    input.addEventListener("cancel", () => resolve(null));
+    input.click();
+  });
+}
 
 const colorSuccess = "var(--background-modifier-success)",
   colorDisabled = "var(--background-modifier-cover)";
@@ -77,12 +89,8 @@ export default class GoToDownloadModal extends Modal {
   }
 
   async onSelectingFile() {
-    const file = await fileDialog({
-      multiple: false,
-      accept: ".wasm",
-      strict: true,
-    });
-    if (!file) return;
+    const file = await pickFile(".wasm");
+    if (!file || !file.name.toLowerCase().endsWith(".wasm")) return;
     await this.plugin.saveLib(await file.arrayBuffer());
     if (this.selectButton) {
       this.selectButton.setText("结巴分词插件导入成功");
