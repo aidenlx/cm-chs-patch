@@ -2,7 +2,7 @@ import init, {
   add_word,
   cut as jiebaCut,
   cut_for_search as jiebaCutForSearch,
-} from "jieba-wasm/pkg/web/jieba_rs_wasm";
+} from "jieba-wasm/web";
 
 const vaildateFreq = (freq: string): number | undefined =>
   freq && Number.isInteger(+freq) ? +freq : undefined;

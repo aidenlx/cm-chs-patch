@@ -15,8 +15,8 @@ importers:
         specifier: https://github.com/aidenlx/view/tarball/main
         version: '@codemirror/view@https://github.com/aidenlx/view/tarball/main'
       jieba-wasm:
-        specifier: ^0.0.2
-        version: 0.0.2
+        specifier: ^2.4.0
+        version: 2.4.0
       monkey-around:
         specifier: ^2.3.0
         version: 2.3.0
@@ -2395,8 +2395,8 @@ packages:
     resolution: {integrity: sha512-H0dkQoCa3b2VEeKQBOxFph+JAbcrQdE7KC0UkqwpLmv2EC4P41QXP+rqo9wYodACiG5/WM5s9oDApTU8utwj9g==}
     engines: {node: '>= 0.4'}
 
-  jieba-wasm@0.0.2:
-    resolution: {integrity: sha512-CPmS+U/klii3LWKrccDqm/BvWmgBB3x4HV/WBxC/l7GsitVfzCzsZ8cWz+vh2riv6M5P8rvHJzCz4xsoFA79cw==}
+  jieba-wasm@2.4.0:
+    resolution: {integrity: sha512-ZvQdS+FGifrFXZIXSgOyOgEz+1wdy1P4vSvwe37FVtku9ycSdHTZbHqF5i9tMN1JucoAmeiLBeI6/YaqcGD+KA==}
 
   jiti@1.17.1:
     resolution: {integrity: sha512-NZIITw8uZQFuzQimqjUxIrIcEdxYDFIe/0xYfIlVXTkiBjjyBEvgasj5bb0/cHtPRD/NziPbT312sFrkI5ALpw==}
@@ -6574,7 +6574,7 @@ snapshots:
       has-symbols: 1.1.0
       set-function-name: 2.0.2
 
-  jieba-wasm@0.0.2: {}
+  jieba-wasm@2.4.0: {}
 
   jiti@1.17.1: {}
 

@@ -45,7 +45,7 @@
   "dependencies": {
     "assert-never": "^1.2.1",
     "cm6-view-src": "https://github.com/aidenlx/view/tarball/main",
-    "jieba-wasm": "^0.0.2",
+    "jieba-wasm": "^2.4.0",
     "monkey-around": "^2.3.0"
   }
 }

@@ -19,7 +19,7 @@ const colorSuccess = "var(--background-modifier-success)",
   colorDisabled = "var(--background-modifier-cover)";
 
 const wasmUrl =
-  "https://unpkg.com/jieba-wasm@0.0.2/pkg/web/jieba_rs_wasm_bg.wasm";
+  "https://unpkg.com/jieba-wasm@2.4.0/pkg/web/jieba_rs_wasm_bg.wasm";
 
 export default class GoToDownloadModal extends Modal {
   reloadButton: HTMLButtonElement | null = null;
