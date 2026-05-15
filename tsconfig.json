@@ -1,16 +1,37 @@
 {
-  "extends": "@aidenlx/eslint-config",
+  "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
-    "lib": ["esnext", "dom", "ES2022.Intl"],
-    "moduleResolution": "Node",
-    "module": "CommonJS",
-    "target": "ES2020",
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "lib": ["ES2022", "ES2022.Intl", "DOM"],
+
+    "strict": true,
+    "noImplicitAny": false,
+    "noUncheckedIndexedAccess": false,
+
+    "allowJs": true,
+    "checkJs": false,
+    "isolatedModules": true,
     "esModuleInterop": true,
-    "incremental": false
+    "resolveJsonModule": true,
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+    "types": ["node"],
+
+    "noEmit": true,
+    "incremental": false,
+    "paths": {
+      "jieba-wasm/web": ["./node_modules/jieba-wasm/pkg/web/jieba_rs_wasm.d.ts"],
+      "cm6-view-src/*": ["./node_modules/cm6-view-src/*"]
+    }
   },
   "include": [
     "src/**/*.ts",
-    "node_modules/cm6-view-src/src/*.ts",
-    "src/chsp-vim.js"
-  ]
+    "src/**/*.d.ts",
+    "src/chsp-vim.js",
+    "src/vim-utils.js",
+    "src/vim.js"
+  ],
+  "exclude": ["node_modules", "build", "dist"]
 }

@@ -121,8 +121,8 @@ export default class GoToDownloadModal extends Modal {
   }
   async onReloadPlugin() {
     if (await this.plugin.libExists()) {
-      const stat = await app.vault.adapter.stat(this.plugin.libPath);
-      if (stat && stat.type == "file" && stat.size > 0) {
+      const stat = await this.plugin.app.vault.adapter.stat(this.plugin.libPath);
+      if (stat && stat.type === "file" && stat.size > 0) {
         await this.app.plugins.disablePlugin(this.plugin.manifest.id);
         this.close();
         await this.app.plugins.enablePlugin(this.plugin.manifest.id);

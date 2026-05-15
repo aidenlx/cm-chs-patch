@@ -76,7 +76,7 @@ export class ChsPatchSettingTab extends PluginSettingTab {
 
     if (
       (this.plugin.settings.useJieba || (window.Intl as any)?.Segmenter) &&
-      app.vault.getConfig("vimMode") == true
+      this.plugin.app.vault.getConfig("vimMode") === true
     ) {
       this.addToggle(containerEl, "moveByChineseWords")
         .setName("【Vim Mode】使用结巴分词移动光标")
@@ -97,11 +97,11 @@ export class ChsPatchSettingTab extends PluginSettingTab {
       toggle.setValue(this.plugin.settings[key]).onChange((value) => {
         this.plugin.settings[key] = value;
         this.plugin.saveSettings();
-        if (key == "useJieba") {
-          app.vault.adapter
+        if (key === "useJieba") {
+          this.app.vault.adapter
             .exists(this.plugin.libPath, true)
             .then((isExisted) => {
-              if (!isExisted && value == true)
+              if (!isExisted && value === true)
                 new GoToDownloadModal(this.plugin).open();
             });
           this.display();

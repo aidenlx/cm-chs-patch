@@ -1,10 +1,16 @@
 # npm
 node_modules
 package-lock.json
-# yarn.lock
+yarn.lock
 
 # build
 build
+dist
+.vite
+
+# misc
+.DS_Store
+*.log
 
 # https://yarnpkg.com/getting-started/qa#which-files-should-be-gitignored
 .pnp.*

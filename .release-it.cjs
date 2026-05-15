@@ -3,7 +3,6 @@ module.exports = {
     // "before:init": ["npm run eslint"],
     "after:bump": [
       "pnpm build",
-      "node ./scripts/zip.mjs",
       "git add .",
     ],
     "after:release":
@@ -33,7 +32,7 @@ module.exports = {
       "build/main.js",
       "build/manifest.json",
       "build/styles.css",
-      "build/zotlit.zip",
+      "build/cm-chs-patch.zip",
     ],
     proxy: process.env.HTTPS_PROXY,
     releaseName: "${version}",
