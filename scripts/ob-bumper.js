@@ -1,6 +1,6 @@
-import { promises } from "fs";
-import { copyFile } from "fs/promises";
-import { join } from "path";
+import { promises } from "node:fs";
+import { copyFile } from "node:fs/promises";
+import { join } from "node:path";
 const { readFile, writeFile } = promises;
 import { Plugin } from "release-it";
 import semverPrerelease from "semver/functions/prerelease.js";
@@ -40,8 +40,8 @@ class ObsidianVersionBump extends Plugin {
     const latest = isPreRelease(this.config.contextOptions.latestVersion);
     let manifestToRead = this.getManifest(latest);
     this.log.exec(`Reading manifest from ${manifestToRead}`, isDryRun);
-    let manifest;
-    if (!(manifest = await this.readJson(manifestToRead))) {
+    let manifest = await this.readJson(manifestToRead);
+    if (!manifest) {
       manifestToRead = this.getManifest(!latest);
       this.log.exec(`retry reading manifest from ${manifestToRead}`, isDryRun);
       manifest = await this.readJson(manifestToRead);
@@ -54,7 +54,7 @@ class ObsidianVersionBump extends Plugin {
     const { isDryRun } = this.config;
     const manifestToWrite = this.getManifest(isPreRelease(targetVersion));
     const updatedMainfest = { ...manifest, version: targetVersion };
-    !isDryRun && (await this.writeJson(manifestToWrite, updatedMainfest));
+    if (!isDryRun) await this.writeJson(manifestToWrite, updatedMainfest);
     this.log.exec(
       `Wrote version ${targetVersion} to ${manifestToWrite}`,
       isDryRun,
@@ -70,7 +70,7 @@ class ObsidianVersionBump extends Plugin {
     const target = isPreRelease(targetVersion);
     const { isDryRun } = this.config;
     if (!target) {
-      !isDryRun && (await copyFile(mainManifest, betaManifest));
+      if (!isDryRun) await copyFile(mainManifest, betaManifest);
       this.log.exec(`Syncing ${betaManifest} with ${mainManifest}`, isDryRun);
     }
   }
@@ -98,7 +98,7 @@ class ObsidianVersionBump extends Plugin {
     const { isDryRun } = this.config;
     const versions = await this.readJson(versionsList);
     versions[targetVersion] = minAppVersion;
-    !isDryRun && (await this.writeJson(versionsList, versions));
+    if (!isDryRun) await this.writeJson(versionsList, versions);
     this.log.exec(
       `Wrote version ${targetVersion} to ${versionsList}`,
       isDryRun,

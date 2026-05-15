@@ -1,10 +1,12 @@
 {
   "name": "cm-chs-patch",
   "version": "1.12.0",
-  "description": "A patch for Obsidian's built-in CodeMirror Editor to support Simplified Chinese word splitting",
   "private": true,
+  "description": "A patch for Obsidian's built-in CodeMirror Editor to support Simplified Chinese word splitting",
+  "keywords": [],
+  "license": "MIT",
+  "author": "AidenLx",
   "type": "module",
-  "packageManager": "pnpm@11.0.9",
   "scripts": {
     "dev": "vite build --watch --mode development",
     "build": "vite build --mode production",
@@ -15,12 +17,6 @@
     "format": "oxfmt --check",
     "format:fix": "oxfmt",
     "release": "release-it"
-  },
-  "keywords": [],
-  "author": "AidenLx",
-  "license": "MIT",
-  "engines": {
-    "node": ">=26"
   },
   "dependencies": {
     "cm6-view-src": "https://github.com/aidenlx/view/tarball/main",
@@ -49,5 +45,9 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
-  }
+  },
+  "engines": {
+    "node": ">=26"
+  },
+  "packageManager": "pnpm@11.0.9"
 }

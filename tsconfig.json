@@ -22,7 +22,9 @@
     "noEmit": true,
     "incremental": false,
     "paths": {
-      "jieba-wasm/web": ["./node_modules/jieba-wasm/pkg/web/jieba_rs_wasm.d.ts"],
+      "jieba-wasm/web": [
+        "./node_modules/jieba-wasm/pkg/web/jieba_rs_wasm.d.ts"
+      ],
       "cm6-view-src/*": ["./node_modules/cm6-view-src/*"]
     }
   },

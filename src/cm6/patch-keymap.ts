@@ -53,14 +53,15 @@ export const patchKeymap = (plugin: CMChsPatch) => {
   }
 
   function skipAtomic(target: CommandTarget, pos: number, forward: boolean) {
+    let _pos = pos;
     if (target instanceof EditorView)
       for (const ranges of target.state
         .facet(EditorView.atomicRanges)
         .map((f) => f(target)))
-        ranges.between(pos, pos, (from, to) => {
-          if (from < pos && to > pos) pos = forward ? to : from;
+        ranges.between(_pos, _pos, (from, to) => {
+          if (from < _pos && to > _pos) _pos = forward ? to : from;
         });
-    return pos;
+    return _pos;
   }
 
   const deleteByGroup = (target: CommandTarget, forward: boolean) =>

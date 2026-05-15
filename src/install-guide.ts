@@ -7,9 +7,7 @@ function pickFile(accept: string): Promise<File | null> {
     const input = document.createElement("input");
     input.type = "file";
     input.accept = accept;
-    input.addEventListener("change", () =>
-      resolve(input.files?.[0] ?? null),
-    );
+    input.addEventListener("change", () => resolve(input.files?.[0] ?? null));
     input.addEventListener("cancel", () => resolve(null));
     input.click();
   });
@@ -121,7 +119,9 @@ export default class GoToDownloadModal extends Modal {
   }
   async onReloadPlugin() {
     if (await this.plugin.libExists()) {
-      const stat = await this.plugin.app.vault.adapter.stat(this.plugin.libPath);
+      const stat = await this.plugin.app.vault.adapter.stat(
+        this.plugin.libPath,
+      );
       if (stat && stat.type === "file" && stat.size > 0) {
         await this.app.plugins.disablePlugin(this.plugin.manifest.id);
         this.close();

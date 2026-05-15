@@ -14,7 +14,7 @@ export const dblClickPatch = (plugin: CMChsPatch) => {
     view: EditorView,
     pos: number,
     bias: -1 | 1,
-    type: number,
+    _type: number,
   ): SelectionRange => {
     const range = groupAt(view.state, pos, bias);
     return cm6GetChsSeg(plugin, pos, range, view.state) ?? range;

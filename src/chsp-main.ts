@@ -1,4 +1,3 @@
-
 import { Platform, Plugin } from "obsidian";
 import { VimPatcher } from "./chsp-vim.js";
 import setupCM6 from "./cm6";
@@ -21,7 +20,10 @@ export default class CMChsPatch extends Plugin {
     if (userDataDir) {
       try {
         const buf = await requireFs().readFile(this.libPath);
-        return buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength) as ArrayBuffer;
+        return buf.buffer.slice(
+          buf.byteOffset,
+          buf.byteOffset + buf.byteLength,
+        ) as ArrayBuffer;
       } catch (e) {
         if ((e as NodeJS.ErrnoException).code === "ENOENT") {
           return null;
@@ -39,7 +41,7 @@ export default class CMChsPatch extends Plugin {
   async libExists(): Promise<boolean> {
     if (userDataDir) {
       try {
-        await requireFs(). access(this.libPath);
+        await requireFs().access(this.libPath);
         return true;
       } catch (e) {
         if ((e as NodeJS.ErrnoException).code === "ENOENT") {
@@ -121,8 +123,9 @@ export default class CMChsPatch extends Plugin {
 
   getSegRangeFromCursor(
     cursor: number,
-    { from, to, text }: { from: number; to: number; text: string },
+    range: { from: number; to: number; text: string },
   ) {
+    let { from, to, text } = range;
     if (!isChs(text)) {
       // 匹配中文字符
       return null;
@@ -193,17 +196,15 @@ export default class CMChsPatch extends Plugin {
 }
 
 function limitChsChars(input: string, forward: boolean) {
-  if (!forward) {
-    input = [...input].reverse().join("");
-  }
-  let endingIndex = input.length - 1;
+  const s = forward ? input : [...input].reverse().join("");
+  let endingIndex = s.length - 1;
   let chsCount = 0;
-  for (const { index } of input.matchAll(chsPatternGlobal)) {
+  for (const { index } of s.matchAll(chsPatternGlobal)) {
     chsCount++;
     endingIndex = index;
     if (chsCount > CHS_RANGE_LIMIT) break;
   }
-  const output = input.slice(0, endingIndex + 1);
+  const output = s.slice(0, endingIndex + 1);
   if (!forward) {
     return [...output].reverse().join("");
   }

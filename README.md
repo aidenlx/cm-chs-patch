@@ -13,9 +13,9 @@ Special Thanks to [@fengkx](https://github.com/fengkx) for [jieba-wasm module](h
 
 ## Demo
 
-| Obsidian's Default Word Splitting<br>默认分词 | Patched<br>安装插件后 |
-| ------------------ | ----------- |
-| ![ob-default-splitting](https://img.aidenlx.top/img/ob-default-splitting.gif)                   | ![ob-patched-splitting](https://img.aidenlx.top/img/ob-patched-splitting.gif)            |
+| Obsidian's Default Word Splitting<br>默认分词                                 | Patched<br>安装插件后                                                         |
+| ----------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| ![ob-default-splitting](https://img.aidenlx.top/img/ob-default-splitting.gif) | ![ob-patched-splitting](https://img.aidenlx.top/img/ob-patched-splitting.gif) |
 
 ## Compatibility 兼容性
 
@@ -34,7 +34,7 @@ The required API feature is only available for Obsidian v0.15.0+
 5. Click `Install`
 6. Once installed, close the community plugins window and the patch is ready to use.
 
-***
+---
 
 1. 打开`设置`>`第三方插件`
 2. 确保安全模式为`关闭`
@@ -49,12 +49,12 @@ The required API feature is only available for Obsidian v0.15.0+
 2. Put files to your vault's plugins folder: `<vault>/.obsidian/plugins/cm-chs-patch`
 3. Reload Obsidian
 4. If prompted about Safe Mode, you can disable safe mode and enable the plugin.
-Otherwise head to Settings, third-party plugins, make sure safe mode is off and
-enable the plugin from there.
+   Otherwise head to Settings, third-party plugins, make sure safe mode is off and
+   enable the plugin from there.
 
 > Note: The `.obsidian` folder may be hidden. On macOS you should be able to press `Command+Shift+Dot` to show the folder in Finder.
 
-***
+---
 
 1. 从 GitHub 仓库的 Releases 下载最新版本
 2. 把文件放在对应 Vault 的插件文件夹下：`<vault>/.obsidian/plugins/cm-chs-patch`

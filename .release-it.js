@@ -1,10 +1,7 @@
-module.exports = {
+export default {
   hooks: {
     // "before:init": ["npm run eslint"],
-    "after:bump": [
-      "pnpm build",
-      "git add .",
-    ],
+    "after:bump": ["pnpm build", "git add ."],
     "after:release":
       "echo Successfully released obsidian plugin ${name} v${version} to ${repo.repository}.",
   },

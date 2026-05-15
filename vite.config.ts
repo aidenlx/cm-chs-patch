@@ -20,11 +20,16 @@ export default defineConfig(({ mode }) => {
 
   return {
     define: {
-      "process.env.NODE_ENV": JSON.stringify(isProd ? "production" : "development"),
+      "process.env.NODE_ENV": JSON.stringify(
+        isProd ? "production" : "development",
+      ),
     },
     resolve: {
       alias: {
-        "cm6-view-src": resolve(import.meta.dirname, "node_modules/cm6-view-src"),
+        "cm6-view-src": resolve(
+          import.meta.dirname,
+          "node_modules/cm6-view-src",
+        ),
       },
     },
     build: {
@@ -53,7 +58,9 @@ export default defineConfig(({ mode }) => {
         },
       },
     },
-    plugins: [obsidianBuildPlugin({ beta: isBeta, hotreload: !isProd && !isBeta })],
+    plugins: [
+      obsidianBuildPlugin({ beta: isBeta, hotreload: !isProd && !isBeta }),
+    ],
   };
 });
 
