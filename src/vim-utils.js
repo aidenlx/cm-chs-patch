@@ -179,15 +179,20 @@ export function utils({ vim, CodeMirror, cut }) {
           to = Math.min(pos + 6, line.length);
         const text = line.slice(from, to);
         if (isChs(text)) {
+          const segments = cut(line);
           for (let i = 0; i < charTests.length && !foundWord; ++i) {
-            if (!charTests[i](line.charAt(pos))) continue;
-            wordStart = pos;
-            const segments = cut(line);
+            const currentChar = line.charAt(pos);
             let segment;
+            if (!charTests[i](currentChar)) {
+              if (currentChar === "") continue;
+              segment = segmentAt(segments, pos);
+              if (!charTests[i](segment.text)) continue;
+            }
+            wordStart = pos;
             while (pos != stop) {
               // 获取当前光标下的分词，跳过分隔字符
               segment = segmentAt(segments, pos);
-              if (!charTests[i](segment.text)) continue;
+              if (!charTests[i](segment.text)) break;
               if (forward) {
                 pos = segment.end;
                 pos = Math.min(pos, stop);
@@ -203,6 +208,7 @@ export function utils({ vim, CodeMirror, cut }) {
             wordEnd = pos;
 
             foundWord = wordStart != wordEnd;
+            if (!foundWord) continue;
             const foundEnd = forward
               ? Math.min(wordStart + dir, stop)
               : Math.max(wordStart + dir, stop);
