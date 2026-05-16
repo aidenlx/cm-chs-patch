@@ -1,4 +1,10 @@
-import { debounce, Notice, PluginSettingTab, Setting } from "obsidian";
+import {
+  debounce,
+  Notice,
+  PluginSettingTab,
+  Setting,
+  SettingGroup,
+} from "obsidian";
 import type CMChsPatch from "./chsp-main";
 import GoToDownloadModal from "./install-guide";
 
@@ -37,67 +43,80 @@ export class ChsPatchSettingTab extends PluginSettingTab {
 
     containerEl.empty();
 
-    this.addToggle(containerEl, "useJieba")
-      .setName("使用结巴分词")
-      .setDesc("支持新词发现、自定义词典，需要额外下载，重启 Obsidian 生效");
+    const jiebaGroup = new SettingGroup(containerEl).setHeading("结巴分词");
 
-    const deleteLibContainer = containerEl.createDiv();
+    jiebaGroup.addSetting((setting) =>
+      this.bindToggle(setting, "useJieba")
+        .setName("使用结巴分词")
+        .setDesc("支持新词发现、自定义词典，需要额外下载，重启 Obsidian 生效"),
+    );
+
     this.plugin
       .libExists()
       .then((isInstalled) => {
         if (displayVersion !== this.displayVersion || !isInstalled) return;
-        this.addDeleteLibSetting(deleteLibContainer);
+        jiebaGroup.addSetting((setting) => this.bindDeleteLib(setting));
       })
       .catch((e) => {
         console.error("Failed to check jieba wasm binary", e);
       });
 
     if (this.plugin.settings.useJieba || !(window.Intl as any)?.Segmenter) {
-      this.addToggle(containerEl, "hmm")
-        .setName("新词发现功能")
-        .setDesc(
-          "采用基于汉字成词能力的 HMM 模型，使用 Viterbi 算法推算未存在于词库内的词。若效果不理想，可选择关闭此选项",
-        );
+      jiebaGroup.addSetting((setting) =>
+        this.bindToggle(setting, "hmm")
+          .setName("新词发现功能")
+          .setDesc(
+            "采用基于汉字成词能力的 HMM 模型，使用 Viterbi 算法推算未存在于词库内的词。若效果不理想，可选择关闭此选项",
+          ),
+      );
       // TODO: 增加添加词的界面、导入词库文件
-      this.addTextField(
-        containerEl,
-        { get: "dict", set: "dict" },
-        { cols: 30, rows: 5 },
-      )
-        .setName("用户自定义词典")
-        .setDesc(
-          createFragment((el) => {
-            el.appendText("通过用户自定义词典来增强歧义纠错能力");
-            el.createEl("br");
-            el.appendText(
-              "词典格式：一个词占一行；每一行分三部分：词语、词频（可省略）、词性（可省略），用空格隔开，顺序不可颠倒",
-            );
-            el.createEl("br");
-            el.appendText("重启 Obsidian 后生效");
-          }),
-        );
+      jiebaGroup.addSetting((setting) =>
+        this.bindTextArea(
+          setting,
+          { get: "dict", set: "dict" },
+          { cols: 30, rows: 5 },
+        )
+          .setName("用户自定义词典")
+          .setDesc(
+            createFragment((el) => {
+              el.appendText("通过用户自定义词典来增强歧义纠错能力");
+              el.createEl("br");
+              el.appendText(
+                "词典格式：一个词占一行；每一行分三部分：词语、词频（可省略）、词性（可省略），用空格隔开，顺序不可颠倒",
+              );
+              el.createEl("br");
+              el.appendText("重启 Obsidian 后生效");
+            }),
+          ),
+      );
     }
 
     if (
       (this.plugin.settings.useJieba || (window.Intl as any)?.Segmenter) &&
       this.plugin.app.vault.getConfig("vimMode") === true
     ) {
-      this.addToggle(containerEl, "moveByChineseWords")
-        .setName("【Vim Mode】使用结巴分词移动光标")
-        .setDesc(
-          "Motion w/e/b/ge 使用结巴分词移动光标 in Vim Normal Mode, 重启Obsidian生效",
-        );
+      const vimGroup = new SettingGroup(containerEl).setHeading("Vim Mode");
 
-      this.addToggle(containerEl, "moveTillChinesePunctuation")
-        .setName("【Vim Mode】f/t<character> 支持输入英文标点跳转到中文标点")
-        .setDesc(
-          "Motion f/t<character> 支持输入英文标点跳转到中文标点 in Vim Normal Mode, 重启Obsidian生效",
-        );
+      vimGroup.addSetting((setting) =>
+        this.bindToggle(setting, "moveByChineseWords")
+          .setName("使用结巴分词移动光标")
+          .setDesc(
+            "Motion w/e/b/ge 使用结巴分词移动光标 in Vim Normal Mode, 重启Obsidian生效",
+          ),
+      );
+
+      vimGroup.addSetting((setting) =>
+        this.bindToggle(setting, "moveTillChinesePunctuation")
+          .setName("f/t<character> 支持输入英文标点跳转到中文标点")
+          .setDesc(
+            "Motion f/t<character> 支持输入英文标点跳转到中文标点 in Vim Normal Mode, 重启Obsidian生效",
+          ),
+      );
     }
   }
 
-  addDeleteLibSetting(addTo: HTMLElement): Setting {
-    return new Setting(addTo)
+  private bindDeleteLib(setting: Setting): Setting {
+    return setting
       .setName("删除结巴分词组件")
       .setDesc(
         createFragment((el) => {
@@ -129,8 +148,11 @@ export class ChsPatchSettingTab extends PluginSettingTab {
       );
   }
 
-  addToggle(addTo: HTMLElement, key: SettingKeyWithType<boolean>): Setting {
-    return new Setting(addTo).addToggle((toggle) => {
+  private bindToggle(
+    setting: Setting,
+    key: SettingKeyWithType<boolean>,
+  ): Setting {
+    return setting.addToggle((toggle) => {
       toggle.setValue(this.plugin.settings[key]).onChange((value) => {
         this.plugin.settings[key] = value;
         this.plugin.saveSettings();
@@ -144,8 +166,9 @@ export class ChsPatchSettingTab extends PluginSettingTab {
       });
     });
   }
-  addTextField(
-    addTo: HTMLElement,
+
+  private bindTextArea(
+    setting: Setting,
     key: {
       get: SettingKeyWithType<string> | (() => string);
       set: SettingKeyWithType<string> | ((value: string) => void);
@@ -153,7 +176,7 @@ export class ChsPatchSettingTab extends PluginSettingTab {
     size: TextAreaSize = {},
     timeout = 500,
   ): Setting {
-    return new Setting(addTo).addTextArea((text) => {
+    return setting.addTextArea((text) => {
       const { get, set } = key;
       const getter =
           typeof get === "function" ? get : () => this.plugin.settings[get],
