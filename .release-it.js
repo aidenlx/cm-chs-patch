@@ -16,7 +16,7 @@ export default {
     //   preset: "angular",
     //   infile: "CHANGELOG.md",
     // },
-    "./scripts/ob-bumper.mjs": {
+    "./scripts/ob-bumper.js": {
       indent: 2,
     },
   },
