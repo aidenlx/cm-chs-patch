@@ -3,8 +3,13 @@ name: Release
 on:
   push:
     tags:
-      - "[0-9]+.[0-9]+.[0-9]+"
-      - "[0-9]+.[0-9]+.[0-9]+-*"
+      - "**"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Existing release tag to publish, for example 1.13.0"
+        required: true
+        type: string
 
 jobs:
   build:
@@ -12,11 +17,32 @@ jobs:
     permissions:
       contents: read
     outputs:
+      tag: ${{ steps.meta.outputs.tag }}
       prerelease: ${{ steps.meta.outputs.prerelease }}
     steps:
+      - name: Resolve release metadata
+        id: meta
+        env:
+          TAG: ${{ inputs.tag || github.ref_name }}
+        run: |
+          if [[ ! "$TAG" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?(\+[0-9A-Za-z.-]+)?$ ]]; then
+            echo "::error::Tag '$TAG' is not a SemVer release tag."
+            exit 1
+          fi
+
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
+          if [[ "$TAG" == *-* ]]; then
+            echo "prerelease=true" >> "$GITHUB_OUTPUT"
+            echo "script=build:beta" >> "$GITHUB_OUTPUT"
+          else
+            echo "prerelease=false" >> "$GITHUB_OUTPUT"
+            echo "script=build" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          ref: ${{ steps.meta.outputs.tag }}
           submodules: recursive
           persist-credentials: false
 
@@ -31,18 +57,6 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
-
-      - name: Resolve build mode
-        id: meta
-        run: |
-          tag="${GITHUB_REF_NAME}"
-          if [[ "$tag" == *-* ]]; then
-            echo "prerelease=true" >> "$GITHUB_OUTPUT"
-            echo "script=build:beta" >> "$GITHUB_OUTPUT"
-          else
-            echo "prerelease=false" >> "$GITHUB_OUTPUT"
-            echo "script=build" >> "$GITHUB_OUTPUT"
-          fi
 
       - name: Build
         run: pnpm run ${{ steps.meta.outputs.script }}
@@ -72,7 +86,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
-          TAG: ${{ github.ref_name }}
+          TAG: ${{ needs.build.outputs.tag }}
           PRERELEASE: ${{ needs.build.outputs.prerelease }}
         run: |
           flags=(--title "$TAG" --generate-notes)
