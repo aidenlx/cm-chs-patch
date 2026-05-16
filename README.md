@@ -15,7 +15,7 @@ Special Thanks to [@fengkx](https://github.com/fengkx) for [jieba-wasm module](h
 
 | Obsidian's Default Word Splitting<br>默认分词                                 | Patched<br>安装插件后                                                         |
 | ----------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| ![ob-default-splitting](https://img.aidenlx.top/img/ob-default-splitting.gif) | ![ob-patched-splitting](https://img.aidenlx.top/img/ob-patched-splitting.gif) |
+| ![ob-default-splitting](assets/before.gif) | ![ob-patched-splitting](assets/after.gif) |
 
 ## Compatibility 兼容性
 
