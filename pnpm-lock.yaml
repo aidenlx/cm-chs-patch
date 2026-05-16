@@ -4,13 +4,16 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  jieba-wasm@2.4.0: 95f4e5d34da5b037566e83806cd8022a93106a390d853b895a3a0e896d791833
+
 importers:
 
   .:
     dependencies:
       jieba-wasm:
         specifier: ^2.4.0
-        version: 2.4.0
+        version: 2.4.0(patch_hash=95f4e5d34da5b037566e83806cd8022a93106a390d853b895a3a0e896d791833)
       monkey-around:
         specifier: ^2.3.0
         version: 2.3.0
@@ -4089,7 +4092,7 @@ snapshots:
 
   ist@1.1.7: {}
 
-  jieba-wasm@2.4.0: {}
+  jieba-wasm@2.4.0(patch_hash=95f4e5d34da5b037566e83806cd8022a93106a390d853b895a3a0e896d791833): {}
 
   jiti@2.6.1:
     optional: true

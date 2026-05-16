@@ -4,3 +4,5 @@ allowBuilds:
   esbuild: true
   unrs-resolver: true
 minimumReleaseAge: 1440 # delay one day to reduce the risk of installing compromised packages
+patchedDependencies:
+  jieba-wasm@2.4.0: patches/jieba-wasm@2.4.0.patch

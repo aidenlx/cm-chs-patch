@@ -1,0 +1,13 @@
+diff --git a/pkg/web/jieba_rs_wasm.js b/pkg/web/jieba_rs_wasm.js
+index 7281ce643d1614e89b81e147588fd5967aa0a1cb..84ea6e9148977ad8cabb71817118a425f1d87fcf 100644
+--- a/pkg/web/jieba_rs_wasm.js
++++ b/pkg/web/jieba_rs_wasm.js
+@@ -419,7 +419,7 @@ async function __wbg_init(module_or_path) {
+     }
+ 
+     if (typeof module_or_path === 'undefined') {
+-        module_or_path = new URL('jieba_rs_wasm_bg.wasm', import.meta.url);
++        throw new Error('jieba_rs_wasm: a wasm module/path must be passed to init() (patched: implicit `new URL(..., import.meta.url)` removed to prevent bundlers from inlining the wasm asset)');
+     }
+     const imports = __wbg_get_imports();
+ 
