@@ -15,8 +15,7 @@ function pickFile(accept: string): Promise<File | null> {
 
 const colorSuccess = "var(--background-modifier-success)";
 
-const wasmUrl =
-  "https://unpkg.com/jieba-wasm@2.4.0/pkg/web/jieba_rs_wasm_bg.wasm";
+const wasmUrl = `https://unpkg.com/jieba-wasm@${__JIEBA_VERSION__}/pkg/web/jieba_rs_wasm_bg.wasm`;
 
 export default class GoToDownloadModal extends Modal {
   selectButton: HTMLButtonElement | null = null;

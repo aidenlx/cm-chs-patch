@@ -8,6 +8,7 @@ import { chsPatternGlobal, isChs } from "./utils.js";
 import { requireFs, requirePath } from "./require.js";
 
 const CHS_RANGE_LIMIT = 10;
+const JIEBA_WASM_CLEANUP_PATTERN = /^jieba_rs_wasm_(?:bg|\d+_\d+_\d+)\.wasm$/;
 
 const userDataDir = Platform.isDesktopApp
   ? // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -15,7 +16,7 @@ const userDataDir = Platform.isDesktopApp
   : null;
 
 export default class CMChsPatch extends Plugin {
-  libName = "jieba_rs_wasm_bg.wasm";
+  libName = `jieba_rs_wasm_${__JIEBA_VERSION__.replaceAll(".", "_")}.wasm`;
   async loadLib(): Promise<ArrayBuffer | null> {
     if (userDataDir) {
       try {
@@ -61,23 +62,53 @@ export default class CMChsPatch extends Plugin {
     }
   }
   async deleteLib(): Promise<boolean> {
+    const handledPath = this.libPath;
+    let deleted = false;
+
     if (userDataDir) {
+      const fs = requireFs();
       try {
-        await requireFs().unlink(this.libPath);
-        return true;
+        await fs.unlink(handledPath);
+        deleted = true;
       } catch (e) {
-        if ((e as NodeJS.ErrnoException).code === "ENOENT") {
-          return false;
+        if ((e as NodeJS.ErrnoException).code !== "ENOENT") throw e;
+      }
+
+      for (const name of await fs.readdir(userDataDir)) {
+        if (!JIEBA_WASM_CLEANUP_PATTERN.test(name)) continue;
+        const path = requirePath().join(userDataDir, name);
+        if (path === handledPath) continue;
+        try {
+          await fs.unlink(path);
+          deleted = true;
+        } catch (e) {
+          if ((e as NodeJS.ErrnoException).code !== "ENOENT") throw e;
         }
-        throw e;
       }
     } else {
-      if (!(await this.app.vault.adapter.exists(this.libPath, true))) {
-        return false;
+      const adapter = this.app.vault.adapter;
+      if (await adapter.exists(handledPath, true)) {
+        try {
+          await adapter.remove(handledPath);
+          deleted = true;
+        } catch (e) {
+          if ((e as NodeJS.ErrnoException).code !== "ENOENT") throw e;
+        }
       }
-      await this.app.vault.adapter.remove(this.libPath);
-      return true;
+
+      const { files } = await adapter.list(this.app.vault.configDir);
+      for (const path of files) {
+        const name = path.slice(path.lastIndexOf("/") + 1);
+        if (!JIEBA_WASM_CLEANUP_PATTERN.test(name) || path === handledPath) continue;
+        try {
+          await adapter.remove(path);
+          deleted = true;
+        } catch (e) {
+          if ((e as NodeJS.ErrnoException).code !== "ENOENT") throw e;
+        }
+      }
     }
+    return deleted;
   }
   get libPath(): string {
     if (userDataDir) {

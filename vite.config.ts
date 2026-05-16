@@ -2,6 +2,9 @@ import { cp, writeFile } from "node:fs/promises";
 import { builtinModules } from "node:module";
 import { join, resolve } from "node:path";
 import { defineConfig, type Plugin } from "vite";
+import jiabaPackage from "./node_modules/jieba-wasm/package.json" with { type: "json" };
+
+const jiebaVersion = jiabaPackage.version;
 
 const builtins = [...builtinModules, "original-fs"].flatMap((mod) => [
   mod,
@@ -23,6 +26,7 @@ export default defineConfig(({ mode }) => {
       "process.env.NODE_ENV": JSON.stringify(
         isProd ? "production" : "development",
       ),
+      __JIEBA_VERSION__: JSON.stringify(jiebaVersion),
     },
     build: {
       lib: {
