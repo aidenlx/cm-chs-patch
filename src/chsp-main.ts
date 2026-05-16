@@ -181,6 +181,7 @@ export default class CMChsPatch extends Plugin {
       forward ? sliceDoc(startPos, nextPos) : sliceDoc(nextPos, startPos),
       forward,
     );
+    if (!isChs(text)) return null;
     const segResult = this.cut(text);
     if (segResult.length === 0) return null;
 
