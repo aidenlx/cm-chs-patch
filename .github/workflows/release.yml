@@ -39,6 +39,16 @@ jobs:
             echo "script=build" >> "$GITHUB_OUTPUT"
           fi
 
+      - name: Verify release tag exists
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.meta.outputs.tag }}
+        run: |
+          if ! gh api "repos/${GITHUB_REPOSITORY}/git/ref/tags/${TAG}" --silent >/dev/null 2>&1; then
+            echo "::error::Tag '$TAG' does not exist in ${GITHUB_REPOSITORY}."
+            exit 1
+          fi
+
       - name: Checkout
         uses: actions/checkout@v4
         with:
