@@ -1,6 +1,6 @@
-# Word Splitting for Simplified Chinese in Edit Mode and Vim Mode
+# Simplified Chinese Word Splitting
 
-A patch for Obsidian's built-in CodeMirror Editor to support Simplified Chinese word splitting in Edit Mode and Vim Mode
+Adds Simplified Chinese word splitting support for the editor and Vim mode for Obsidian.md
 
 增加 Obsidian 内置编辑器的(简体)中文分词支持，使得编辑模式的双击可以选中中文，以及在 Vim 模式下可以按中文分词移动光标
 
@@ -30,7 +30,7 @@ The required API feature is only available for Obsidian v0.15.0+
 1. Open `Settings` > `Third-party plugin`
 2. Make sure Safe mode is **off**
 3. Click `Browse community plugins`
-4. Search for this plugin `Word Splitting for Simplified Chinese in Edit Mode and Vim Mode`
+4. Search for this plugin `Simplified Chinese Word Splitting`
 5. Click `Install`
 6. Once installed, close the community plugins window and the patch is ready to use.
 
