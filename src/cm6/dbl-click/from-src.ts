@@ -1,11 +1,10 @@
 /* eslint-disable prefer-arrow/prefer-arrow-functions */
 import type { EditorView } from "@codemirror/view";
-import { LineView } from "cm6-view-src/src/blockview";
-import type { Rect } from "cm6-view-src/src/dom";
+import { LineView, type Rect } from "@codemirror/view/internal";
 
 // From https://github.com/codemirror/view/blob/0.19.30/src/input.ts
 
-export { groupAt } from "cm6-view-src/src/cursor";
+export { groupAt } from "@codemirror/view/internal";
 export { LineView };
 
 const insideY = (y: number, rect: Rect) => y >= rect.top && y <= rect.bottom;

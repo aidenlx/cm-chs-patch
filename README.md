@@ -62,3 +62,15 @@ The required API feature is only available for Obsidian v0.15.0+
 4. 如果出现有关安全模式的提示，则可以禁用安全模式并启用插件。否则，请转到`设置`→`第三方插件`，确保关闭安全模式，然后从`第三方插件`启用插件
 
 > 注意，`.obsidian` 文件夹为隐藏文件夹，在 macOS 的 Finder 下可以按 `Command+Shift+.` 以显示隐藏文件夹
+
+## Development
+
+This repo uses a git submodule at `packages/cm-view` (a thin fork of `@codemirror/view` exposing internal helpers). Fresh checkouts:
+
+```bash
+git clone --recurse-submodules <repo-url>
+# or, after a plain clone:
+git submodule update --init --recursive
+```
+
+`pnpm install` will auto-init the submodule via a `preinstall` hook.

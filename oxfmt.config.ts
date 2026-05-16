@@ -17,6 +17,7 @@ export default defineConfig({
     "build/**",
     "dist/**",
     "node_modules/**",
+    "packages/**",
     "src/vim.js",
     "src/vim-utils.js",
     "src/chsp-vim.js",

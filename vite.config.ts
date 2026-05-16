@@ -24,14 +24,6 @@ export default defineConfig(({ mode }) => {
         isProd ? "production" : "development",
       ),
     },
-    resolve: {
-      alias: {
-        "cm6-view-src": resolve(
-          import.meta.dirname,
-          "node_modules/cm6-view-src",
-        ),
-      },
-    },
     build: {
       lib: {
         entry: resolve(import.meta.dirname, "src/chsp-main.ts"),

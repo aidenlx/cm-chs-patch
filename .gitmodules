@@ -1,0 +1,3 @@
+[submodule "packages/cm-view"]
+	path = packages/cm-view
+	url = https://github.com/aidenlx/view.git
