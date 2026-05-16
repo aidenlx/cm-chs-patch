@@ -24,14 +24,7 @@ export default {
     publish: false,
   },
   github: {
-    release: true,
-    assets: [
-      "build/main.js",
-      "build/manifest.json",
-      "build/styles.css",
-      "build/cm-chs-patch.zip",
-    ],
-    proxy: process.env.HTTPS_PROXY,
-    releaseName: "${version}",
+    // GitHub release is created by .github/workflows/release.yml on tag push.
+    release: false,
   },
 };
