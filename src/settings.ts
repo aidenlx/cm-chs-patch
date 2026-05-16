@@ -1,4 +1,4 @@
-import { debounce, PluginSettingTab, Setting } from "obsidian";
+import { debounce, Notice, PluginSettingTab, Setting } from "obsidian";
 import type CMChsPatch from "./chsp-main";
 import GoToDownloadModal from "./install-guide";
 
@@ -25,18 +25,32 @@ type SettingKeyWithType<T> = {
 }[keyof ChsPatchSetting];
 
 export class ChsPatchSettingTab extends PluginSettingTab {
+  private displayVersion = 0;
+
   constructor(public plugin: CMChsPatch) {
     super(plugin.app, plugin);
   }
 
   display(): void {
     const { containerEl } = this;
+    const displayVersion = ++this.displayVersion;
 
     containerEl.empty();
 
     this.addToggle(containerEl, "useJieba")
       .setName("使用结巴分词")
       .setDesc("支持新词发现、自定义词典，需要额外下载，重启 Obsidian 生效");
+
+    const deleteLibContainer = containerEl.createDiv();
+    this.plugin
+      .libExists()
+      .then((isInstalled) => {
+        if (displayVersion !== this.displayVersion || !isInstalled) return;
+        this.addDeleteLibSetting(deleteLibContainer);
+      })
+      .catch((e) => {
+        console.error("Failed to check jieba wasm binary", e);
+      });
 
     if (this.plugin.settings.useJieba || !(window.Intl as any)?.Segmenter) {
       this.addToggle(containerEl, "hmm")
@@ -59,18 +73,8 @@ export class ChsPatchSettingTab extends PluginSettingTab {
               "词典格式：一个词占一行；每一行分三部分：词语、词频（可省略）、词性（可省略），用空格隔开，顺序不可颠倒",
             );
             el.createEl("br");
-            el.appendText("按下按钮生效");
+            el.appendText("重启 Obsidian 后生效");
           }),
-        )
-        .addButton((btn) =>
-          btn
-            .setIcon("reset")
-            .setTooltip("重新加载词典")
-            .onClick(async () => {
-              await this.app.plugins.disablePlugin(this.plugin.manifest.id);
-              await this.app.plugins.enablePlugin(this.plugin.manifest.id);
-              this.app.setting.openTabById(this.plugin.manifest.id);
-            }),
         );
     }
 
@@ -92,18 +96,49 @@ export class ChsPatchSettingTab extends PluginSettingTab {
     }
   }
 
+  addDeleteLibSetting(addTo: HTMLElement): Setting {
+    return new Setting(addTo)
+      .setName("删除结巴分词组件")
+      .setDesc(
+        createFragment((el) => {
+          el.appendText("删除已下载的 ");
+          el.createEl("code", { text: this.plugin.libName });
+          el.appendText("，重启 Obsidian 后生效");
+        }),
+      )
+      .addButton((btn) =>
+        btn
+          .setButtonText("删除")
+          .setWarning()
+          .onClick(async () => {
+            btn.setDisabled(true);
+            try {
+              const deleted = await this.plugin.deleteLib();
+              new Notice(
+                deleted
+                  ? "✔️ 已删除结巴分词组件，请重启 Obsidian"
+                  : "未找到结巴分词组件",
+              );
+              this.display();
+            } catch (e) {
+              console.error("Failed to delete jieba wasm binary", e);
+              new Notice("❌ 删除结巴分词组件失败，详情请查看控制台");
+              btn.setDisabled(false);
+            }
+          }),
+      );
+  }
+
   addToggle(addTo: HTMLElement, key: SettingKeyWithType<boolean>): Setting {
     return new Setting(addTo).addToggle((toggle) => {
       toggle.setValue(this.plugin.settings[key]).onChange((value) => {
         this.plugin.settings[key] = value;
         this.plugin.saveSettings();
         if (key === "useJieba") {
-          this.app.vault.adapter
-            .exists(this.plugin.libPath, true)
-            .then((isExisted) => {
-              if (!isExisted && value === true)
-                new GoToDownloadModal(this.plugin).open();
-            });
+          this.plugin.libExists().then((isExisted) => {
+            if (!isExisted && value === true)
+              new GoToDownloadModal(this.plugin).open();
+          });
           this.display();
         }
       });

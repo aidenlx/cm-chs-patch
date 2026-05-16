@@ -60,6 +60,25 @@ export default class CMChsPatch extends Plugin {
       await this.app.vault.adapter.writeBinary(this.libPath, ab);
     }
   }
+  async deleteLib(): Promise<boolean> {
+    if (userDataDir) {
+      try {
+        await requireFs().unlink(this.libPath);
+        return true;
+      } catch (e) {
+        if ((e as NodeJS.ErrnoException).code === "ENOENT") {
+          return false;
+        }
+        throw e;
+      }
+    } else {
+      if (!(await this.app.vault.adapter.exists(this.libPath, true))) {
+        return false;
+      }
+      await this.app.vault.adapter.remove(this.libPath);
+      return true;
+    }
+  }
   get libPath(): string {
     if (userDataDir) {
       return requirePath().join(userDataDir, this.libName);

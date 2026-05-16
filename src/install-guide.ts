@@ -13,14 +13,12 @@ function pickFile(accept: string): Promise<File | null> {
   });
 }
 
-const colorSuccess = "var(--background-modifier-success)",
-  colorDisabled = "var(--background-modifier-cover)";
+const colorSuccess = "var(--background-modifier-success)";
 
 const wasmUrl =
   "https://unpkg.com/jieba-wasm@2.4.0/pkg/web/jieba_rs_wasm_bg.wasm";
 
 export default class GoToDownloadModal extends Modal {
-  reloadButton: HTMLButtonElement | null = null;
   selectButton: HTMLButtonElement | null = null;
   downloadButton: HTMLButtonElement | null = null;
 
@@ -68,16 +66,7 @@ export default class GoToDownloadModal extends Modal {
           });
         });
         ol.createEl("li", {}, (li) => {
-          li.appendText("重新加载分词插件:  ");
-          this.reloadButton = li.createEl(
-            "button",
-            { text: "重新加载" },
-            (btn) => {
-              btn.disabled = true;
-              btn.style.backgroundColor = colorDisabled;
-              btn.onclick = this.onReloadPlugin.bind(this);
-            },
-          );
+          li.appendText("重启 Obsidian 后生效");
         });
       });
     });
@@ -94,43 +83,16 @@ export default class GoToDownloadModal extends Modal {
       this.selectButton.setText("结巴分词插件导入成功");
       this.selectButton.style.backgroundColor = colorSuccess;
     }
-    if (this.reloadButton) {
-      this.reloadButton.disabled = false;
-      this.reloadButton.style.backgroundColor = "";
-    }
+    new Notice("✔️ 安装成功，请重启 Obsidian 使结巴分词生效");
   }
   async onDownloadingFile() {
-    if (this.reloadButton) {
-      this.reloadButton.disabled = true;
-      this.reloadButton.style.backgroundColor = colorDisabled;
-    }
-
     const resp = await fetch(wasmUrl);
     await this.plugin.saveLib(await resp.arrayBuffer());
 
-    if (this.selectButton) {
-      this.selectButton.setText("结巴分词插件导入成功");
-      this.selectButton.style.backgroundColor = colorSuccess;
+    if (this.downloadButton) {
+      this.downloadButton.setText("结巴分词插件下载成功");
+      this.downloadButton.style.backgroundColor = colorSuccess;
     }
-    if (this.reloadButton) {
-      this.reloadButton.disabled = false;
-      this.reloadButton.style.backgroundColor = "";
-    }
-  }
-  async onReloadPlugin() {
-    if (await this.plugin.libExists()) {
-      const stat = await this.plugin.app.vault.adapter.stat(
-        this.plugin.libPath,
-      );
-      if (stat && stat.type === "file" && stat.size > 0) {
-        await this.app.plugins.disablePlugin(this.plugin.manifest.id);
-        this.close();
-        await this.app.plugins.enablePlugin(this.plugin.manifest.id);
-        await this.app.setting.openTabById(this.plugin.manifest.id);
-      }
-      new Notice("✔️ 安装结巴分词插件成功");
-    } else {
-      new Notice("❌ 安装结巴分词插件失败");
-    }
+    new Notice("✔️ 安装成功，请重启 Obsidian 使结巴分词生效");
   }
 }
