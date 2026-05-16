@@ -11,6 +11,30 @@ Special Thanks to [@fengkx](https://github.com/fengkx) for [jieba-wasm module](h
 
 手动安装结巴分词组件：在设置中启用结巴分词后，从[CDN](https://unpkg.com/jieba-wasm@2.4.0/pkg/web/jieba_rs_wasm_bg.wasm)下载得到 `jieba_rs_wasm_bg.wasm` 文件，将 wasm 文件放在 Obsidian 库的 `.obsidian` 或者其它指定的配置文件夹下后重启 Obsidian
 
+## Disclosure 安全声明
+
+> [!WARNING]
+> **Direct Filesystem Access**: On desktop, this plugin uses the Node.js `fs` module to read and write files outside of the Obsidian vault API. This is used to store the jieba WASM binary (`jieba_rs_wasm_bg.wasm`) in Obsidian's shared `userData` directory so that it does not need to be duplicated in every vault:
+>
+> | Platform | Path |
+> | -------- | ---- |
+> | macOS | `~/Library/Application Support/obsidian/jieba_rs_wasm_bg.wasm` |
+> | Windows | `%APPDATA%\obsidian\jieba_rs_wasm_bg.wasm` |
+> | Linux | `~/.config/obsidian/jieba_rs_wasm_bg.wasm` |
+>
+> On mobile, the file is stored inside the vault's config directory (`<vault>/.obsidian/jieba_rs_wasm_bg.wasm`) using the standard Obsidian vault API, and no direct filesystem access is involved.
+
+> [!WARNING]
+> **直接文件系统访问**：在桌面端，本插件使用 Node.js `fs` 模块在 Obsidian Vault API 之外读写文件。这用于将结巴分词 WASM 文件（`jieba_rs_wasm_bg.wasm`）存储在 Obsidian 的共享 `userData` 目录中，从而避免在每个库中重复安装：
+>
+> | 平台 | 路径 |
+> | ---- | ---- |
+> | macOS | `~/Library/Application Support/obsidian/jieba_rs_wasm_bg.wasm` |
+> | Windows | `%APPDATA%\obsidian\jieba_rs_wasm_bg.wasm` |
+> | Linux | `~/.config/obsidian/jieba_rs_wasm_bg.wasm` |
+>
+> 在移动端，该文件通过标准 Obsidian Vault API 存储在库的配置目录（`<vault>/.obsidian/jieba_rs_wasm_bg.wasm`）中，不涉及直接文件系统访问。
+
 ## Demo
 
 | Obsidian's Default Word Splitting<br>默认分词                                 | Patched<br>安装插件后                                                         |
