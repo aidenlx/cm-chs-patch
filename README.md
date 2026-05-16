@@ -11,32 +11,31 @@ Special Thanks to [@fengkx](https://github.com/fengkx) for [jieba-wasm module](h
 
 ## Demo
 
-| Obsidian's Default Word Splitting<br>默认分词                                 | Patched<br>安装插件后                                                         |
-| ----------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| ![ob-default-splitting](assets/before.gif) | ![ob-patched-splitting](assets/after.gif) |
+| Obsidian's Default Word Splitting<br>默认分词 | Patched<br>安装插件后                     |
+| --------------------------------------------- | ----------------------------------------- |
+| ![ob-default-splitting](assets/before.gif)    | ![ob-patched-splitting](assets/after.gif) |
 
 ## Disclosure 安全声明
 
 > [!WARNING]
 > **直接文件系统访问**：在桌面端，本插件使用 Node.js `fs` 模块在 Obsidian Vault API 之外读写文件。这用于将结巴分词 WASM 文件（`jieba_rs_wasm_<版本号>.wasm`）存储在 Obsidian 的共享 `userData` 目录中，从而避免在每个库中重复安装：
 >
-> | 平台 | 路径 |
-> | ---- | ---- |
-> | macOS | `~/Library/Application Support/obsidian/jieba_rs_wasm_<版本号>.wasm` |
-> | Windows | `%APPDATA%\obsidian\jieba_rs_wasm_<版本号>.wasm` |
-> | Linux | `~/.config/obsidian/jieba_rs_wasm_<版本号>.wasm` |
+> | 平台    | 路径                                                                 |
+> | ------- | -------------------------------------------------------------------- |
+> | macOS   | `~/Library/Application Support/obsidian/jieba_rs_wasm_<版本号>.wasm` |
+> | Windows | `%APPDATA%\obsidian\jieba_rs_wasm_<版本号>.wasm`                     |
+> | Linux   | `~/.config/obsidian/jieba_rs_wasm_<版本号>.wasm`                     |
 >
 > 在移动端，该文件通过标准 Obsidian Vault API 存储在库的配置目录（`<vault>/.obsidian/jieba_rs_wasm_<版本号>.wasm`）中，不涉及直接文件系统访问。
-
 
 > [!WARNING]
 > **Direct Filesystem Access**: On desktop, this plugin uses the Node.js `fs` module to read and write files outside of the Obsidian vault API. This is used to store the jieba WASM binary (`jieba_rs_wasm_<version>.wasm`) in Obsidian's shared `userData` directory so that it does not need to be duplicated in every vault:
 >
-> | Platform | Path |
-> | -------- | ---- |
-> | macOS | `~/Library/Application Support/obsidian/jieba_rs_wasm_<version>.wasm` |
-> | Windows | `%APPDATA%\obsidian\jieba_rs_wasm_<version>.wasm` |
-> | Linux | `~/.config/obsidian/jieba_rs_wasm_<version>.wasm` |
+> | Platform | Path                                                                  |
+> | -------- | --------------------------------------------------------------------- |
+> | macOS    | `~/Library/Application Support/obsidian/jieba_rs_wasm_<version>.wasm` |
+> | Windows  | `%APPDATA%\obsidian\jieba_rs_wasm_<version>.wasm`                     |
+> | Linux    | `~/.config/obsidian/jieba_rs_wasm_<version>.wasm`                     |
 >
 > On mobile, the file is stored inside the vault's config directory (`<vault>/.obsidian/jieba_rs_wasm_<version>.wasm`) using the standard Obsidian vault API, and no direct filesystem access is involved.
 
@@ -108,15 +107,15 @@ pnpm install
 
 ### Scripts
 
-| Command           | Purpose                                                                                 |
-| ----------------- | --------------------------------------------------------------------------------------- |
+| Command           | Purpose                                                                                   |
+| ----------------- | ----------------------------------------------------------------------------------------- |
 | `pnpm dev`        | Vite watch build to `build/`; also writes `.hotreload` for the Obsidian Hot-Reload plugin |
-| `pnpm build`      | Production bundle to `build/main.js`                                                    |
-| `pnpm build:beta` | Beta build (uses `manifest-beta.json`)                                                  |
-| `pnpm typecheck`  | `tsc --noEmit`                                                                          |
-| `pnpm lint`       | oxlint (`pnpm lint:fix` to autofix)                                                     |
-| `pnpm format`     | oxfmt check (`pnpm format:fix` to apply)                                                |
-| `pnpm release`    | release-it (maintainers only)                                                           |
+| `pnpm build`      | Production bundle to `build/main.js`                                                      |
+| `pnpm build:beta` | Beta build (uses `manifest-beta.json`)                                                    |
+| `pnpm typecheck`  | `tsc --noEmit`                                                                            |
+| `pnpm lint`       | oxlint (`pnpm lint:fix` to autofix)                                                       |
+| `pnpm format`     | oxfmt check (`pnpm format:fix` to apply)                                                  |
+| `pnpm release`    | release-it (maintainers only)                                                             |
 
 ### Loading the build into Obsidian
 

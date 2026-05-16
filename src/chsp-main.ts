@@ -99,7 +99,8 @@ export default class CMChsPatch extends Plugin {
       const { files } = await adapter.list(this.app.vault.configDir);
       for (const path of files) {
         const name = path.slice(path.lastIndexOf("/") + 1);
-        if (!JIEBA_WASM_CLEANUP_PATTERN.test(name) || path === handledPath) continue;
+        if (!JIEBA_WASM_CLEANUP_PATTERN.test(name) || path === handledPath)
+          continue;
         try {
           await adapter.remove(path);
           deleted = true;
