@@ -1,7 +1,7 @@
 {
   "id": "cm-chs-patch",
   "name": "Simplified Chinese Word Splitting",
-  "version": "1.13.2",
+  "version": "1.13.3",
   "minAppVersion": "1.12.3",
   "description": "Adds Simplified Chinese word splitting support for the editor and Vim mode.",
   "author": "AidenLx",
