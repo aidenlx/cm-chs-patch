@@ -1,7 +1,6 @@
 export default {
   hooks: {
-    // "before:init": ["npm run eslint"],
-    "after:bump": ["pnpm build", "git add ."],
+    "before:init": ["pnpm run format", "pnpm run lint"],
     "after:release":
       "echo Successfully released obsidian plugin ${name} v${version} to ${repo.repository}.",
   },
