@@ -17,7 +17,7 @@ export const initJieba = async (
 ) => {
   if (initialized) return;
   const invaildLines = [] as string[];
-  await init(wasm);
+  await init({ module_or_path: wasm });
   if (dict)
     for (const line of dict.split(/\r?\n/)) {
       // eg: 集团公司 1297 n
