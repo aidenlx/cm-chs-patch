@@ -16,6 +16,8 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
+      id-token: write
+      attestations: write
     outputs:
       tag: ${{ steps.meta.outputs.tag }}
       prerelease: ${{ steps.meta.outputs.prerelease }}
@@ -70,6 +72,11 @@ jobs:
 
       - name: Build
         run: pnpm run ${{ steps.meta.outputs.script }}
+
+      - name: Attest build provenance
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: build/main.js
 
       - name: Upload build artifacts
         uses: actions/upload-artifact@v4
