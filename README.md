@@ -65,12 +65,42 @@ The required API feature is only available for Obsidian v0.15.0+
 
 ## Development
 
-This repo uses a git submodule at `packages/cm-view` (a thin fork of `@codemirror/view` exposing internal helpers). Fresh checkouts:
+### Prerequisites
+
+- **Node.js 26+** — pinned in [`mise.toml`](mise.toml); the easiest way to provision it is [mise](https://mise.jdx.dev). If you manage Node yourself, run `corepack enable` to activate pnpm.
+- **pnpm 11.0.9** — sourced from `packageManager` in [`package.json`](package.json) via corepack. No global install needed.
+- **Git** with submodule support (any modern version).
+
+### One-time setup
 
 ```bash
-git clone --recurse-submodules <repo-url>
-# or, after a plain clone:
+# 1. Clone with the cm-view submodule populated.
+#    If you already cloned without `--recurse-submodules`, run the second line instead.
+git clone --recurse-submodules https://github.com/aidenlx/cm-chs-patch.git
 git submodule update --init --recursive
+
+cd cm-chs-patch
+
+# 2. Provision Node 26 + enable corepack (skip if you manage Node yourself).
+mise install
+
+# 3. Install dependencies. The `packages/cm-view` workspace package's `prepare`
+#    hook builds its `dist/` (the @codemirror/view internal bundle) automatically.
+pnpm install
 ```
 
-`pnpm install` will auto-init the submodule via a `preinstall` hook.
+### Scripts
+
+| Command           | Purpose                                                                                 |
+| ----------------- | --------------------------------------------------------------------------------------- |
+| `pnpm dev`        | Vite watch build to `build/`; also writes `.hotreload` for the Obsidian Hot-Reload plugin |
+| `pnpm build`      | Production bundle to `build/main.js`                                                    |
+| `pnpm build:beta` | Beta build (uses `manifest-beta.json`)                                                  |
+| `pnpm typecheck`  | `tsc --noEmit`                                                                          |
+| `pnpm lint`       | oxlint (`pnpm lint:fix` to autofix)                                                     |
+| `pnpm format`     | oxfmt check (`pnpm format:fix` to apply)                                                |
+| `pnpm release`    | release-it (maintainers only)                                                           |
+
+### Loading the build into Obsidian
+
+Symlink (or copy) `build/` into a test vault as `<vault>/.obsidian/plugins/cm-chs-patch`, then enable the plugin in Obsidian's Community Plugins settings. With [Hot-Reload](https://github.com/pjeby/hot-reload) installed in the same vault, `pnpm dev` triggers live reloads on rebuild.
