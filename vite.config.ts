@@ -1,8 +1,9 @@
-import { cp, writeFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
 import { builtinModules } from "node:module";
 import { join, resolve } from "node:path";
 import { defineConfig, type Plugin } from "vite";
 import jiabaPackage from "./node_modules/jieba-wasm/package.json" with { type: "json" };
+import pkg from "./package.json" with { type: "json" };
 
 const jiebaVersion = jiabaPackage.version;
 
@@ -19,7 +20,6 @@ if you want to view the source visit the plugin's github repository
 
 export default defineConfig(({ mode }) => {
   const isProd = mode === "production";
-  const isBeta = mode === "beta";
 
   return {
     define: {
@@ -36,8 +36,8 @@ export default defineConfig(({ mode }) => {
       },
       outDir: "build",
       emptyOutDir: false,
-      sourcemap: isProd || isBeta ? false : "inline",
-      minify: isProd || isBeta,
+      sourcemap: isProd ? false : "inline",
+      minify: isProd,
       target: "es2022",
       copyPublicDir: false,
       rollupOptions: {
@@ -54,25 +54,23 @@ export default defineConfig(({ mode }) => {
         },
       },
     },
-    plugins: [
-      obsidianBuildPlugin({ beta: isBeta, hotreload: !isProd && !isBeta }),
-    ],
+    plugins: [obsidianBuildPlugin({ hotreload: !isProd })],
   };
 });
 
-function obsidianBuildPlugin({
-  beta,
-  hotreload,
-}: {
-  beta: boolean;
-  hotreload: boolean;
-}): Plugin {
+function obsidianBuildPlugin({ hotreload }: { hotreload: boolean }): Plugin {
   return {
     name: "obsidian-build",
     async writeBundle(options) {
       const outDir = options.dir ?? "build";
-      const manifestSrc = beta ? "manifest-beta.json" : "manifest.json";
-      await cp(manifestSrc, join(outDir, "manifest.json"));
+      // Stamp the release version (release-it bumps package.json, including
+      // pre-releases) onto the manifest so betas don't need a separate file.
+      const manifest = JSON.parse(await readFile("manifest.json", "utf8"));
+      manifest.version = pkg.version;
+      await writeFile(
+        join(outDir, "manifest.json"),
+        `${JSON.stringify(manifest, null, 2)}\n`,
+      );
       if (hotreload) {
         await writeFile(join(outDir, ".hotreload"), "").catch((err) => {
           if (err.code !== "EEXIST") throw err;

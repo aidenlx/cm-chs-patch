@@ -107,15 +107,14 @@ pnpm install
 
 ### Scripts
 
-| Command           | Purpose                                                                                   |
-| ----------------- | ----------------------------------------------------------------------------------------- |
-| `pnpm dev`        | Vite watch build to `build/`; also writes `.hotreload` for the Obsidian Hot-Reload plugin |
-| `pnpm build`      | Production bundle to `build/main.js`                                                      |
-| `pnpm build:beta` | Beta build (uses `manifest-beta.json`)                                                    |
-| `pnpm typecheck`  | `tsc --noEmit`                                                                            |
-| `pnpm lint`       | oxlint (`pnpm lint:fix` to autofix)                                                       |
-| `pnpm format`     | oxfmt check (`pnpm format:fix` to apply)                                                  |
-| `pnpm release`    | release-it (maintainers only)                                                             |
+| Command          | Purpose                                                                                               |
+| ---------------- | ----------------------------------------------------------------------------------------------------- |
+| `pnpm dev`       | Vite watch build to `build/`; also writes `.hotreload` for the Obsidian Hot-Reload plugin             |
+| `pnpm build`     | Production bundle to `build/main.js`; the version from `package.json` is stamped onto `manifest.json` |
+| `pnpm typecheck` | `tsc --noEmit`                                                                                        |
+| `pnpm lint`      | oxlint (`pnpm lint:fix` to autofix)                                                                   |
+| `pnpm format`    | oxfmt check (`pnpm format:fix` to apply)                                                              |
+| `pnpm release`   | release-it (maintainers only)                                                                         |
 
 ### Loading the build into Obsidian
 

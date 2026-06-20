@@ -35,10 +35,8 @@ jobs:
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           if [[ "$TAG" == *-* ]]; then
             echo "prerelease=true" >> "$GITHUB_OUTPUT"
-            echo "script=build:beta" >> "$GITHUB_OUTPUT"
           else
             echo "prerelease=false" >> "$GITHUB_OUTPUT"
-            echo "script=build" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Verify release tag exists
@@ -71,7 +69,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build
-        run: pnpm run ${{ steps.meta.outputs.script }}
+        run: pnpm run build
 
       - name: Attest build provenance
         uses: actions/attest-build-provenance@v2

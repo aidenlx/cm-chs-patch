@@ -6,15 +6,13 @@ import { Plugin } from "release-it";
 import semverPrerelease from "semver/functions/prerelease.js";
 
 const mainManifest = "manifest.json",
-  betaManifest = "manifest-beta.json",
   versionsList = "versions.json";
-const targets = [mainManifest, betaManifest, versionsList];
+const targets = [mainManifest, versionsList];
 
 const isPreRelease = (version) => semverPrerelease(version) !== null;
 
 class ObsidianVersionBump extends Plugin {
   async readJson(path) {
-    // const { isDryRun } = this.config;
     try {
       const result = JSON.parse(await readFile(path, "utf8"));
       return result;
@@ -26,53 +24,33 @@ class ObsidianVersionBump extends Plugin {
     }
   }
   async writeJson(file, data) {
-    // const { isDryRun } = this.config;
     const { indent = 4 } = this.getContext();
     await writeFile(file, JSON.stringify(data, null, indent));
-    // this.log.exec(`Write to ${file}`, isDryRun);
   }
 
-  /**
-   * always read from previous version of manifest
-   */
   async readManifest() {
     const { isDryRun } = this.config;
-    const latest = isPreRelease(this.config.contextOptions.latestVersion);
-    let manifestToRead = this.getManifest(latest);
-    this.log.exec(`Reading manifest from ${manifestToRead}`, isDryRun);
-    let manifest = await this.readJson(manifestToRead);
-    if (!manifest) {
-      manifestToRead = this.getManifest(!latest);
-      this.log.exec(`retry reading manifest from ${manifestToRead}`, isDryRun);
-      manifest = await this.readJson(manifestToRead);
-    }
+    this.log.exec(`Reading manifest from ${mainManifest}`, isDryRun);
+    const manifest = await this.readJson(mainManifest);
     if (!manifest) throw new Error("Missing manifest data");
     return manifest;
   }
 
+  /**
+   * Only stable releases touch manifest.json so that `main` always reflects the
+   * latest stable version. Pre-release versions are carried by package.json
+   * (bumped by release-it) and stamped onto the build output by vite, so BRAT
+   * resolves them straight from the GitHub pre-release.
+   */
   async writeManifest(targetVersion, manifest) {
+    if (isPreRelease(targetVersion)) return;
     const { isDryRun } = this.config;
-    const manifestToWrite = this.getManifest(isPreRelease(targetVersion));
     const updatedMainfest = { ...manifest, version: targetVersion };
-    if (!isDryRun) await this.writeJson(manifestToWrite, updatedMainfest);
+    if (!isDryRun) await this.writeJson(mainManifest, updatedMainfest);
     this.log.exec(
-      `Wrote version ${targetVersion} to ${manifestToWrite}`,
+      `Wrote version ${targetVersion} to ${mainManifest}`,
       isDryRun,
     );
-    await this.syncManifest(targetVersion);
-  }
-
-  /**
-   * if bump to official release
-   * sync manifest-beta.json with manifest.json
-   */
-  async syncManifest(targetVersion) {
-    const target = isPreRelease(targetVersion);
-    const { isDryRun } = this.config;
-    if (!target) {
-      if (!isDryRun) await copyFile(mainManifest, betaManifest);
-      this.log.exec(`Syncing ${betaManifest} with ${mainManifest}`, isDryRun);
-    }
   }
 
   async copyToRoot() {
@@ -92,9 +70,12 @@ class ObsidianVersionBump extends Plugin {
   }
 
   /**
-   * update versions.json with target version and minAppVersion from manifest.json
+   * update versions.json with target version and minAppVersion from manifest.json.
+   * pre-releases are skipped — versions.json feeds the Obsidian community store,
+   * which only cares about stable versions.
    */
   async writeVersion(targetVersion, { minAppVersion }) {
+    if (isPreRelease(targetVersion)) return;
     const { isDryRun } = this.config;
     const versions = await this.readJson(versionsList);
     versions[targetVersion] = minAppVersion;
@@ -103,10 +84,6 @@ class ObsidianVersionBump extends Plugin {
       `Wrote version ${targetVersion} to ${versionsList}`,
       isDryRun,
     );
-  }
-
-  getManifest(isPreRelease) {
-    return isPreRelease ? betaManifest : mainManifest;
   }
 
   async bump(targetVersion) {

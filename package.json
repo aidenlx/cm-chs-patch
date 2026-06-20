@@ -10,7 +10,6 @@
   "scripts": {
     "dev": "vite build --watch --mode development",
     "build": "vite build --mode production",
-    "build:beta": "vite build --mode beta",
     "typecheck": "tsc --noEmit",
     "lint": "oxlint",
     "lint:fix": "oxlint --fix",
