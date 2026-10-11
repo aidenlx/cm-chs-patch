@@ -1,5 +1,5 @@
 import { Notice, Plugin } from "obsidian";
-import { VimPatcher } from "./chsp-vim.js";
+import { VimPatcher } from "./chsp-vim";
 import setupCM6 from "./cm6";
 import GoToDownloadModal from "./install-guide";
 import { cut, cutForSearch, initJieba } from "./jieba";

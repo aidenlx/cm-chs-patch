@@ -1,5 +1,4 @@
 import obsidianmd from "eslint-plugin-obsidianmd";
-import { globalIgnores } from "eslint/config";
 
 // Obsidian policy checks only; oxlint owns general JavaScript/TypeScript linting.
 const reviewRules = new Set([
@@ -17,7 +16,6 @@ const reviewRules = new Set([
 ]);
 
 export default [
-  globalIgnores(["src/vim-utils.js"]),
   {
     languageOptions: {
       parserOptions: {

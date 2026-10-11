@@ -1,29 +1,26 @@
-// @ts-check
 import { Component } from "obsidian";
-import { utils } from "./vim-utils.js";
+import { utils } from "./vim-utils";
+import type CMChsPatch from "./chsp-main";
+import type { VimApi } from "./vim-types";
 
 export class VimPatcher extends Component {
-  /**
-   * @param {import("./chsp-main.js").default} plugin
-   */
-  constructor(plugin) {
+  private readonly utils: ReturnType<typeof utils> | null;
+
+  constructor(private readonly plugin: CMChsPatch) {
     super();
-    this.plugin = plugin;
-    this.utils = this.vim ? utils(
-      {
-        CodeMirror: window.CodeMirror,
-        vim: this.vim,
-        cut: plugin.cut.bind(plugin),
-      },
-    ) : null;
+    this.utils = this.vim
+      ? utils({
+          CodeMirror: window.CodeMirror,
+          vim: this.vim,
+          cut: plugin.cut.bind(plugin),
+        })
+      : null;
   }
   get vim() {
     return window.CodeMirrorAdapter?.Vim;
   }
   get enabled() {
-    return (
-      (this.plugin.settings.useJieba || window.Intl?.Segmenter)
-    );
+    return this.plugin.settings.useJieba || !!window.Intl?.Segmenter;
   }
 
   onload() {
@@ -39,10 +36,7 @@ export class VimPatcher extends Component {
     }
   }
 
-  /**
-   * @param {import("./vim-types").VimApi} vim
-   */
-  enableMoveByChineseWords(vim) {
+  enableMoveByChineseWords(vim: VimApi) {
     const helpers = this.utils;
     if (!helpers) return;
     vim.defineMotion("moveByWords", (cm, head, motionArgs) => {
@@ -52,14 +46,11 @@ export class VimPatcher extends Component {
         motionArgs.repeat,
         !!motionArgs.forward,
         !!motionArgs.wordEnd,
-        !!motionArgs.bigWord
+        !!motionArgs.bigWord,
       );
     });
   }
-  /**
-   * @param {import("./vim-types").VimApi} vim
-   */
-  enableMoveTillChinesePunctuation(vim) {
+  enableMoveTillChinesePunctuation(vim: VimApi) {
     if (!this.utils) return;
     const { recordLastCharacterSearch, moveToCharacter } = this.utils;
     vim.defineMotion("moveToCharacter", (cm, head, motionArgs) => {
@@ -71,7 +62,7 @@ export class VimPatcher extends Component {
           repeat,
           motionArgs.forward,
           motionArgs.selectedCharacter,
-          head
+          head,
         ) || head
       );
     });
@@ -83,7 +74,7 @@ export class VimPatcher extends Component {
         repeat,
         motionArgs.forward,
         motionArgs.selectedCharacter,
-        head
+        head,
       );
       const increment = motionArgs.forward ? -1 : 1;
       recordLastCharacterSearch(increment, motionArgs);
@@ -99,12 +90,12 @@ export class VimPatcher extends Component {
       const forward = motionArgs.forward === lastSearch.forward;
       const increment = (lastSearch.increment ? 1 : 0) * (forward ? -1 : 1);
       cm.moveH(-increment, "char");
-      motionArgs.inclusive = forward ? true : false;
+      motionArgs.inclusive = forward;
       const curEnd = moveToCharacter(
         cm,
         repeat,
         forward,
-        lastSearch.selectedCharacter
+        lastSearch.selectedCharacter,
       );
       if (!curEnd) {
         cm.moveH(increment, "char");
