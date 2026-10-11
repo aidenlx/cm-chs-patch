@@ -117,8 +117,6 @@ pnpm install
 
 Symlink (or copy) `build/` into a test vault as `<vault>/.obsidian/plugins/cm-chs-patch`, then enable the plugin in Obsidian's Community Plugins settings. With [Hot-Reload](https://github.com/pjeby/hot-reload) installed in the same vault, `pnpm dev` triggers live reloads on rebuild.
 
-### Double-click regression checks
+### Target Obsidian version
 
 This release targets Obsidian 1.14.4, with `@codemirror/view` 6.43.13 and `@codemirror/state` 6.7.6, as specified by that Obsidian API package.
-
-Start a test Obsidian instance with `--remote-debugging-port=9222`, open a note, then run `pnpm test:browser`. The checks use temporary editors and remove them when complete. Set `OBSIDIAN_CDP_URL` to use a different debugging endpoint.

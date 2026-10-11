@@ -15,8 +15,7 @@
     "lint:fix": "oxlint --fix",
     "format": "oxfmt --check",
     "format:fix": "oxfmt",
-    "release": "release-it",
-    "test:browser": "node scripts/test-double-click.mjs"
+    "release": "release-it"
   },
   "dependencies": {
     "jieba-wasm": "^2.4.0",
