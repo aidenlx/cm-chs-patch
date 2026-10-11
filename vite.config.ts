@@ -51,6 +51,7 @@ export default defineConfig(({ mode }) => {
         ],
         output: {
           banner: jsBanner,
+          comments: { legal: true },
         },
       },
     },
