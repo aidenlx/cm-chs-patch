@@ -1,4 +1,4 @@
-/*
+/*!
 MIT License
 
 Copyright (C) 2018-2021 by Marijn Haverbeke <marijn@haverbeke.berlin> and others
