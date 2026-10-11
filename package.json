@@ -1,6 +1,6 @@
 {
   "name": "cm-chs-patch",
-  "version": "1.13.5",
+  "version": "1.14.0",
   "private": true,
   "description": "A patch for Obsidian's built-in CodeMirror Editor to support Simplified Chinese word splitting",
   "keywords": [],
@@ -15,25 +15,30 @@
     "lint:fix": "oxlint --fix",
     "format": "oxfmt --check",
     "format:fix": "oxfmt",
-    "release": "release-it"
+    "release": "release-it",
+    "review:plugin": "pnpm lint && pnpm lint:obsidian && node scripts/review-plugin.mjs",
+    "lint:obsidian": "eslint src"
   },
   "dependencies": {
+    "idb": "^8.0.4",
     "jieba-wasm": "^2.4.0",
     "monkey-around": "^2.3.0"
   },
   "devDependencies": {
     "@codemirror/state": "6.7.6",
     "@codemirror/view": "6.43.13",
-    "@electron/remote": "^2.1.3",
     "@release-it/conventional-changelog": "^11.0.0",
     "@types/codemirror": "^5.60.17",
     "@types/node": "^25.8.0",
     "conventional-changelog-angular": "^5.0.13",
     "cz-conventional-changelog": "^3.3.0",
+    "eslint": "9.37.0",
+    "eslint-plugin-obsidianmd": "0.4.1",
     "jszip": "^3.10.1",
     "obsidian": "1.14.4",
     "oxfmt": "^0.49.0",
     "oxlint": "^1.64.0",
+    "oxlint-tsgolint": "^7.0.2004",
     "release-it": "^20.0.1",
     "semver": "^7.3.8",
     "typescript": "^6.0.3",

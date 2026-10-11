@@ -9,35 +9,40 @@ Special Thanks to [@fengkx](https://github.com/fengkx) for [jieba-wasm module](h
 
 注意：从 v1.8.0 开始，默认分词引擎由结巴分词更换为系统自带分词引擎，结巴分词不再是必备组件，若你需要结合 [omnisearch](https://github.com/scambier/obsidian-omnisearch) 插件使用，或仍需要使用结巴分词提供的更精确的分词结果，以及新词发现、自定义词库功能，请在设置打开选项后，按照弹窗提示进行安装（若系统不提供分词引擎，无论选项是否打开，本插件仍会提示安装结巴分词）
 
+After disabling this plugin, fully reload Obsidian to remove its Vim mode patches.
+
+禁用本插件后，需要完全重新加载 Obsidian 才能移除 Vim 模式补丁。
+
 ## Demo
 
 | Obsidian's Default Word Splitting<br>默认分词 | Patched<br>安装插件后                     |
 | --------------------------------------------- | ----------------------------------------- |
 | ![ob-default-splitting](assets/before.gif)    | ![ob-patched-splitting](assets/after.gif) |
 
-## Disclosure 安全声明
+## Jieba component storage 结巴分词组件存储
 
-> [!WARNING]
-> **直接文件系统访问**：在桌面端，本插件使用 Node.js `fs` 模块在 Obsidian Vault API 之外读写文件。这用于将结巴分词 WASM 文件（`jieba_rs_wasm_<版本号>.wasm`）存储在 Obsidian 的共享 `userData` 目录中，从而避免在每个库中重复安装：
->
-> | 平台    | 路径                                                                 |
-> | ------- | -------------------------------------------------------------------- |
-> | macOS   | `~/Library/Application Support/obsidian/jieba_rs_wasm_<版本号>.wasm` |
-> | Windows | `%APPDATA%\obsidian\jieba_rs_wasm_<版本号>.wasm`                     |
-> | Linux   | `~/.config/obsidian/jieba_rs_wasm_<版本号>.wasm`                     |
->
-> 在移动端，该文件通过标准 Obsidian Vault API 存储在库的配置目录（`<vault>/.obsidian/jieba_rs_wasm_<版本号>.wasm`）中，不涉及直接文件系统访问。
+The jieba WASM binary is cached in IndexedDB using `idb`, keyed by the jieba-wasm version. Vaults sharing the same Obsidian browser origin and storage partition reuse the cache. Separate devices and storage partitions need their own installation; Obsidian Sync does not sync this cache.
 
-> [!WARNING]
-> **Direct Filesystem Access**: On desktop, this plugin uses the Node.js `fs` module to read and write files outside of the Obsidian vault API. This is used to store the jieba WASM binary (`jieba_rs_wasm_<version>.wasm`) in Obsidian's shared `userData` directory so that it does not need to be duplicated in every vault:
->
-> | Platform | Path                                                                  |
-> | -------- | --------------------------------------------------------------------- |
-> | macOS    | `~/Library/Application Support/obsidian/jieba_rs_wasm_<version>.wasm` |
-> | Windows  | `%APPDATA%\obsidian\jieba_rs_wasm_<version>.wasm`                     |
-> | Linux    | `~/.config/obsidian/jieba_rs_wasm_<version>.wasm`                     |
->
-> On mobile, the file is stored inside the vault's config directory (`<vault>/.obsidian/jieba_rs_wasm_<version>.wasm`) using the standard Obsidian vault API, and no direct filesystem access is involved.
+Open the plugin settings and choose **安装或导入结巴分词组件** to download the component or import a local `.wasm` file. The component is enabled immediately after installation. When upgrading to 1.14.0 from a version that used filesystem storage, reinstall Jieba through this action. Previous cache files are no longer loaded or managed by the plugin.
+
+Choose **管理结巴分词缓存** to manually delete IndexedDB cache versions. Deleting a shared cache affects future loads in every vault using it; already-loaded engines continue working.
+
+结巴分词 WASM 按版本缓存在 IndexedDB 中。同一浏览器源和存储分区内的库可共享缓存，不同设备需分别安装，Obsidian Sync 不会同步此缓存。
+
+在插件设置选择「安装或导入结巴分词组件」，可自动下载或导入本地 `.wasm` 文件，安装后立即启用，无需重启。从使用文件系统缓存的旧版本升级到 1.14.0 后，需要在此重新安装结巴分词；插件不再读取或管理旧缓存文件。
+
+选择「管理结巴分词缓存」可手动删除各版本 IndexedDB 缓存。删除共享缓存会影响所有使用它的库下次加载组件，已加载的分词引擎仍可继续使用。
+
+To free the space used by previous versions, manually delete files named `jieba_rs_wasm_bg.wasm` or `jieba_rs_wasm_<version>.wasm` (for example, `jieba_rs_wasm_2_4_0.wasm`) from the location below. Only remove these Jieba cache files.
+
+旧版本缓存不会自动清理。如需释放空间，请在下列位置手动删除 `jieba_rs_wasm_bg.wasm` 或 `jieba_rs_wasm_<版本号>.wasm`（例如 `jieba_rs_wasm_2_4_0.wasm`），仅删除这些结巴分词缓存文件。
+
+| Platform 平台 | Previous cache location 旧缓存位置                                         |
+| ------------- | -------------------------------------------------------------------------- |
+| macOS         | `~/Library/Application Support/obsidian/`                                  |
+| Windows       | `%APPDATA%\obsidian\`                                                      |
+| Linux         | `~/.config/obsidian/`                                                      |
+| Mobile 移动端 | The vault configuration folder, usually `<vault>/.obsidian/`（库配置目录） |
 
 ## Installation 安装
 
@@ -83,8 +88,8 @@ Special Thanks to [@fengkx](https://github.com/fengkx) for [jieba-wasm module](h
 
 ### Prerequisites
 
-- **Node.js 26+** — pinned in [`mise.toml`](mise.toml); the easiest way to provision it is [mise](https://mise.jdx.dev). If you manage Node yourself, run `corepack enable` to activate pnpm.
-- **pnpm 11.0.9** — sourced from `packageManager` in [`package.json`](package.json) via corepack. No global install needed.
+- **Node.js 26+** — pinned in [`mise.toml`](mise.toml); the easiest way to provision it is [mise](https://mise.jdx.dev).
+- **pnpm 11.0.9** — pinned in `mise.toml` and `packageManager` in `package.json`.
 - **Git**.
 
 ### One-time setup
@@ -95,7 +100,7 @@ git clone https://github.com/aidenlx/cm-chs-patch.git
 
 cd cm-chs-patch
 
-# 2. Provision Node 26 + enable corepack (skip if you manage Node yourself).
+# 2. Provision Node 26 + pnpm (skip if you manage Node yourself).
 mise install
 
 # 3. Install dependencies.
@@ -104,14 +109,16 @@ pnpm install
 
 ### Scripts
 
-| Command          | Purpose                                                                                               |
-| ---------------- | ----------------------------------------------------------------------------------------------------- |
-| `pnpm dev`       | Vite watch build to `build/`; also writes `.hotreload` for the Obsidian Hot-Reload plugin             |
-| `pnpm build`     | Production bundle to `build/main.js`; the version from `package.json` is stamped onto `manifest.json` |
-| `pnpm typecheck` | `tsc --noEmit`                                                                                        |
-| `pnpm lint`      | oxlint (`pnpm lint:fix` to autofix)                                                                   |
-| `pnpm format`    | oxfmt check (`pnpm format:fix` to apply)                                                              |
-| `pnpm release`   | release-it (maintainers only)                                                                         |
+| Command              | Purpose                                                                                               |
+| -------------------- | ----------------------------------------------------------------------------------------------------- |
+| `pnpm dev`           | Vite watch build to `build/`; also writes `.hotreload` for the Obsidian Hot-Reload plugin             |
+| `pnpm build`         | Production bundle to `build/main.js`; the version from `package.json` is stamped onto `manifest.json` |
+| `pnpm typecheck`     | `tsc --noEmit`                                                                                        |
+| `pnpm lint`          | oxlint (`pnpm lint:fix` to autofix)                                                                   |
+| `pnpm lint:obsidian` | Obsidian policy checks only; general linting stays in oxlint                                          |
+| `pnpm format`        | oxfmt check (`pnpm format:fix` to apply)                                                              |
+| `pnpm review:plugin` | Official Obsidian plugin review, with a local summary under `.scratch/obsidian-review/`               |
+| `pnpm release`       | release-it (maintainers only)                                                                         |
 
 ### Loading the build into Obsidian
 
@@ -120,3 +127,11 @@ Symlink (or copy) `build/` into a test vault as `<vault>/.obsidian/plugins/cm-ch
 ### Target Obsidian version
 
 This release targets Obsidian 1.14.4, with `@codemirror/view` 6.43.13 and `@codemirror/state` 6.7.6, as specified by that Obsidian API package.
+
+### Plugin review environment
+
+The PR workflow and `pnpm review:plugin` run the official [Obsidian Workflows](https://github.com/obsidianmd/obsidian-workflows) reviewer at the same pinned revision. Both run `pnpm lint:obsidian` for Obsidian policy rules and `pnpm lint` for general code checks through oxlint. The reviewer's bundled ESLint pass is disabled to avoid duplicating general lint rules. The local command downloads the bundled reviewer. It runs PR checks only and writes `.scratch/obsidian-review/summary.md`; it does not publish a release. Obsidian ESLint errors fail the local command and CI. Other official policy findings are advisory; build and validation failures fail the run.
+
+The Vim reference is not stored in this repository. To obtain it, extract `lib/codemirror/vim.js` from the **Obsidian 1.14.4** runtime archive using an ASAR extraction tool such as `@electron/asar`. Use `obsidian-1.14.4.asar`, or a bundled `obsidian.asar` whose internal `package.json` reports version `1.14.4`; `app.asar` contains the launcher instead.
+
+`src/vim-utils.ts` adapts helpers from that version for Chinese segmentation, and `src/chsp-vim.ts` registers the patched motions. Both are TypeScript and checked by ESLint and oxlint. Oxlint uses `oxlint-tsgolint` for type-aware checks, including `typescript/unbound-method` as an error.

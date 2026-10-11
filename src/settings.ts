@@ -1,14 +1,12 @@
 import {
-  debounce,
   Notice,
   PluginSettingTab,
-  Setting,
-  SettingGroup,
+  type SettingDefinitionItem,
+  type SettingDefinitionRender,
 } from "obsidian";
 import type CMChsPatch from "./chsp-main";
 import GoToDownloadModal from "./install-guide";
-
-type TextAreaSize = Partial<Record<"cols" | "rows", number>>;
+import { listWasmVersions, deleteWasm } from "./wasm-cache";
 
 export interface ChsPatchSetting {
   useJieba: boolean;
@@ -26,170 +24,145 @@ export const DEFAULT_SETTINGS: ChsPatchSetting = {
   moveTillChinesePunctuation: true,
 };
 
-type SettingKeyWithType<T> = {
-  [K in keyof ChsPatchSetting]: ChsPatchSetting[K] extends T ? K : never;
-}[keyof ChsPatchSetting];
-
 export class ChsPatchSettingTab extends PluginSettingTab {
-  private displayVersion = 0;
+  private cachedVersions: string[] = [];
+  private cacheStatus = "点击刷新以查看缓存";
+
+  private async refreshCaches() {
+    try {
+      this.cachedVersions = await listWasmVersions();
+      this.cacheStatus = "缓存列表已更新";
+    } catch (error) {
+      this.cachedVersions = [];
+      this.cacheStatus = "缓存无法读取，请查看控制台";
+      console.error("Failed to list jieba caches", error);
+    }
+    this.update();
+  }
+
+  private cacheEntry(key: string): SettingDefinitionRender {
+    return {
+      name: key,
+      desc: "同源库共享此缓存",
+      searchable: false,
+      render: (setting) => {
+        setting.addButton((btn) =>
+          btn
+            .setButtonText("删除")
+            .setDestructive()
+            .onClick(() => {
+              btn.buttonEl.blur();
+              btn.setDisabled(true);
+              void deleteWasm(key)
+                .then(() => {
+                  btn.setButtonText("已删除");
+                  new Notice("已删除缓存，点击刷新查看缓存列表");
+                })
+                .catch((error: unknown) => {
+                  console.error("Failed to delete jieba cache", error);
+                  new Notice("删除缓存失败，请刷新列表后重试");
+                  btn.setDisabled(false);
+                });
+            }),
+        );
+      },
+    };
+  }
 
   constructor(public plugin: CMChsPatch) {
     super(plugin.app, plugin);
   }
 
-  display(): void {
-    const { containerEl } = this;
-    const displayVersion = ++this.displayVersion;
-
-    containerEl.empty();
-
-    const jiebaGroup = new SettingGroup(containerEl).setHeading("结巴分词");
-
-    jiebaGroup.addSetting((setting) =>
-      this.bindToggle(setting, "useJieba")
-        .setName("使用结巴分词")
-        .setDesc("支持新词发现、自定义词典，需要额外下载，重启 Obsidian 生效"),
-    );
-
-    this.plugin
-      .libExists()
-      .then((isInstalled) => {
-        if (displayVersion !== this.displayVersion || !isInstalled) return;
-        jiebaGroup.addSetting((setting) => this.bindDeleteLib(setting));
-      })
-      .catch((e) => {
-        console.error("Failed to check jieba wasm binary", e);
-      });
-
-    if (this.plugin.settings.useJieba || !(window.Intl as any)?.Segmenter) {
-      jiebaGroup.addSetting((setting) =>
-        this.bindToggle(setting, "hmm")
-          .setName("新词发现功能")
-          .setDesc(
-            "采用基于汉字成词能力的 HMM 模型，使用 Viterbi 算法推算未存在于词库内的词。若效果不理想，可选择关闭此选项",
-          ),
-      );
-      // TODO: 增加添加词的界面、导入词库文件
-      jiebaGroup.addSetting((setting) =>
-        this.bindTextArea(
-          setting,
-          { get: "dict", set: "dict" },
-          { cols: 30, rows: 5 },
-        )
-          .setName("用户自定义词典")
-          .setDesc(
-            createFragment((el) => {
-              el.appendText("通过用户自定义词典来增强歧义纠错能力");
-              el.createEl("br");
-              el.appendText(
-                "词典格式：一个词占一行；每一行分三部分：词语、词频（可省略）、词性（可省略），用空格隔开，顺序不可颠倒",
-              );
-              el.createEl("br");
-              el.appendText("重启 Obsidian 后生效");
-            }),
-          ),
-      );
-    }
-
-    if (
-      (this.plugin.settings.useJieba || (window.Intl as any)?.Segmenter) &&
-      this.plugin.app.vault.getConfig("vimMode") === true
-    ) {
-      const vimGroup = new SettingGroup(containerEl).setHeading("Vim Mode");
-
-      vimGroup.addSetting((setting) =>
-        this.bindToggle(setting, "moveByChineseWords")
-          .setName("使用结巴分词移动光标")
-          .setDesc(
-            "Motion w/e/b/ge 使用结巴分词移动光标 in Vim Normal Mode, 重启Obsidian生效",
-          ),
-      );
-
-      vimGroup.addSetting((setting) =>
-        this.bindToggle(setting, "moveTillChinesePunctuation")
-          .setName("f/t<character> 支持输入英文标点跳转到中文标点")
-          .setDesc(
-            "Motion f/t<character> 支持输入英文标点跳转到中文标点 in Vim Normal Mode, 重启Obsidian生效",
-          ),
-      );
+  async setControlValue(key: string, value: unknown): Promise<void> {
+    await super.setControlValue(key, value);
+    this.refreshDomState();
+    if (key === "useJieba") {
+      try {
+        await this.plugin.applySegmenter();
+      } catch (error) {
+        console.error("Failed to switch word splitting engine", error);
+        new Notice("无法切换分词引擎，请尝试重新导入结巴分词组件");
+      }
     }
   }
 
-  private bindDeleteLib(setting: Setting): Setting {
-    return setting
-      .setName("删除结巴分词组件")
-      .setDesc(
-        createFragment((el) => {
-          el.appendText("删除已下载的 ");
-          el.createEl("code", { text: this.plugin.libName });
-          el.appendText("，重启 Obsidian 后生效");
-        }),
-      )
-      .addButton((btn) =>
-        btn
-          .setButtonText("删除")
-          .setWarning()
-          .onClick(async () => {
-            btn.setDisabled(true);
-            try {
-              const deleted = await this.plugin.deleteLib();
-              new Notice(
-                deleted
-                  ? "✔️ 已删除结巴分词组件，请重启 Obsidian"
-                  : "未找到结巴分词组件",
-              );
-              this.display();
-            } catch (e) {
-              console.error("Failed to delete jieba wasm binary", e);
-              new Notice("❌ 删除结巴分词组件失败，详情请查看控制台");
-              btn.setDisabled(false);
-            }
-          }),
-      );
-  }
-
-  private bindToggle(
-    setting: Setting,
-    key: SettingKeyWithType<boolean>,
-  ): Setting {
-    return setting.addToggle((toggle) => {
-      toggle.setValue(this.plugin.settings[key]).onChange((value) => {
-        this.plugin.settings[key] = value;
-        this.plugin.saveSettings();
-        if (key === "useJieba") {
-          this.plugin.libExists().then((isExisted) => {
-            if (!isExisted && value === true)
-              new GoToDownloadModal(this.plugin).open();
-          });
-          this.display();
-        }
-      });
-    });
-  }
-
-  private bindTextArea(
-    setting: Setting,
-    key: {
-      get: SettingKeyWithType<string> | (() => string);
-      set: SettingKeyWithType<string> | ((value: string) => void);
-    },
-    size: TextAreaSize = {},
-    timeout = 500,
-  ): Setting {
-    return setting.addTextArea((text) => {
-      const { get, set } = key;
-      const getter =
-          typeof get === "function" ? get : () => this.plugin.settings[get],
-        setter =
-          typeof set === "function"
-            ? set
-            : (value: string) => (this.plugin.settings[set] = value);
-      const onChange = async (value: string) => {
-        setter(value);
-        await this.plugin.saveSettings();
-      };
-      text.setValue(getter()).onChange(debounce(onChange, timeout, true));
-      Object.assign(text.inputEl, { cols: 30, rows: 5, ...size });
-    });
+  getSettingDefinitions(): SettingDefinitionItem<keyof ChsPatchSetting>[] {
+    const usesJieba = () =>
+      this.plugin.settings.useJieba || !window.Intl?.Segmenter;
+    return [
+      {
+        type: "group",
+        heading: "结巴分词",
+        items: [
+          {
+            name: "使用结巴分词",
+            desc: "支持新词发现、自定义词典，首次使用需要下载或导入组件，安装后立即生效",
+            control: { type: "toggle", key: "useJieba" },
+          },
+          {
+            name: "安装或导入结巴分词组件",
+            desc: "自动下载或选择本地 WASM 文件，缓存保存在 IndexedDB，同源库可共享",
+            action: () => new GoToDownloadModal(this.plugin).open(),
+          },
+          {
+            type: "page",
+            name: "管理结巴分词缓存",
+            desc: "手动删除任意 IndexedDB 缓存版本，共享缓存删除会影响所有同源库",
+            items: [
+              {
+                name: "刷新缓存列表",
+                desc: this.cacheStatus,
+                action: (el) => {
+                  el.blur();
+                  void this.refreshCaches();
+                },
+              },
+              {
+                type: "group",
+                heading: "IndexedDB 缓存版本",
+                items: this.cachedVersions.length
+                  ? this.cachedVersions.map((key) => this.cacheEntry(key))
+                  : [{ name: "未找到 IndexedDB 缓存" }],
+              },
+            ],
+          },
+          {
+            name: "新词发现功能",
+            desc: "使用 HMM 模型推算词库之外的新词，若效果不理想可关闭",
+            visible: usesJieba,
+            control: { type: "toggle", key: "hmm" },
+          },
+          {
+            type: "page",
+            name: "用户自定义词典",
+            desc: "通过自定义词典增强歧义纠错能力，重启 Obsidian 后生效",
+            visible: usesJieba,
+            items: [
+              {
+                name: "词典内容",
+                desc: "每行一个词：词语、可选词频、可选词性，按顺序用空格隔开",
+                control: { type: "textarea", key: "dict", rows: 8 },
+              },
+            ],
+          },
+        ],
+      },
+      {
+        type: "group",
+        heading: "Vim 模式",
+        items: [
+          {
+            name: "按中文词语移动光标",
+            desc: "Vim 普通模式下 w/e/b/ge 按中文分词移动，重启 Obsidian 后生效",
+            control: { type: "toggle", key: "moveByChineseWords" },
+          },
+          {
+            name: "使用英文标点查找中文标点",
+            desc: "Vim 普通模式下 f/t 支持对应中文标点，重启 Obsidian 后生效",
+            control: { type: "toggle", key: "moveTillChinesePunctuation" },
+          },
+        ],
+      },
+    ];
   }
 }

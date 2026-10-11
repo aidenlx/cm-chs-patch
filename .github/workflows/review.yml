@@ -1,0 +1,27 @@
+name: Plugin review
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "26"
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck && pnpm lint && pnpm lint:obsidian
+      - uses: obsidianmd/obsidian-workflows@8167caed39664214d82c86fdfa32e06d8d55f61d
+        with:
+          type: plugin
+          node-version: "26"
+          build: pnpm build
+          lint: false

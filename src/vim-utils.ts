@@ -1,57 +1,68 @@
-/* eslint-disable no-constant-condition */
-// source: obsidian v1.1.12
+// Adapted from Obsidian 1.14.4, lib/codemirror/vim.js, for Chinese segmentation.
 
 import { isChs } from "./utils.js";
+import type { Position } from "codemirror";
+import type { VimApi, VimEditor, VimMotionArgs } from "./vim-types";
 
 // 中英文标点映射
-const chinese_punctuation_mapping = {
+const chinesePunctuation: Record<string, string | undefined> = {
   ".": "。",
   ",": "，",
   ":": "：",
   ";": "；",
-  '?': "？",
+  "?": "？",
   "\\": "、",
   '"': "“",
-  '<': "《",
-  '>': "》",
+  "<": "《",
+  ">": "》",
   "[": "「",
   "]": "」",
   "(": "（",
   ")": "）",
 };
 
-/**
- *
- * @param {{CodeMirror: typeof import("codemirror"); vim: any; cut(text: string): any[]}} ctx
- */
-export function utils({ vim, CodeMirror, cut }) {
+export function utils({
+  vim,
+  CodeMirror,
+  cut,
+}: {
+  CodeMirror: typeof import("codemirror");
+  vim: VimApi;
+  cut: (text: string) => string[];
+}) {
   const vimGlobalState = vim.getVimGlobalState_();
   const Pos = CodeMirror.Pos;
-  // #region from vim.js, no mod
-  var wordCharTest = [
+  // #region adapted from Obsidian Vim word motions
+  const wordCharTest = [
       CodeMirror.isWordChar,
-      function (ch) {
-        return ch && !CodeMirror.isWordChar(ch) && !/\s/.test(ch);
+      function (ch: string) {
+        return !!ch && !CodeMirror.isWordChar(ch) && !/\s/.test(ch);
       },
     ],
     bigWordCharTest = [
-      function (ch) {
+      function (ch: string) {
         return /\S/.test(ch);
       },
     ];
-  function recordLastCharacterSearch(increment, args) {
+  function recordLastCharacterSearch(increment: number, args: VimMotionArgs) {
     vimGlobalState.lastCharacterSearch.increment = increment;
     vimGlobalState.lastCharacterSearch.forward = args.forward;
     vimGlobalState.lastCharacterSearch.selectedCharacter =
       args.selectedCharacter;
   }
-  function charIdxInLine(start, line, character, forward, includeChar) {
+  function charIdxInLine(
+    start: number,
+    line: string,
+    character: string,
+    forward: boolean,
+    includeChar: boolean,
+  ) {
     // Search for char in line.
     // motion_options: {forward, includeChar}
     // If includeChar = true, include it too.
     // If forward = true, search forward, else search backwards.
     // If char is not found on this line, do nothing
-    var idx;
+    let idx: number;
     if (forward) {
       idx = line.indexOf(character, start + 1);
       if (idx != -1 && !includeChar) {
@@ -65,27 +76,34 @@ export function utils({ vim, CodeMirror, cut }) {
     }
     return idx;
   }
-  function copyCursor(cur) {
+  function copyCursor(cur: Position) {
     return new Pos(cur.line, cur.ch);
   }
-  function isLine(cm, line) {
+  function isLine(cm: VimEditor, line: number) {
     return line >= cm.firstLine() && line <= cm.lastLine();
   }
-  function lineLength(cm, lineNum) {
+  function lineLength(cm: VimEditor, lineNum: number) {
     return cm.getLine(lineNum).length;
   }
-  function moveToWord(cm, cur, repeat, forward, wordEnd, bigWord) {
-    var curStart = copyCursor(cur);
-    var words = [];
-    if ((forward && !wordEnd) || (!forward && wordEnd)) {
-      repeat++;
-    }
+  function moveToWord(
+    cm: VimEditor,
+    cur: Position,
+    repeat: number,
+    forward: boolean,
+    wordEnd: boolean,
+    bigWord: boolean,
+  ) {
+    const curStart = copyCursor(cur);
+    let cursor = cur;
+    const words: { line: number; from: number; to: number }[] = [];
+    const wordCount =
+      repeat + ((forward && !wordEnd) || (!forward && wordEnd) ? 1 : 0);
     // For 'e', empty lines are not considered words, go figure.
-    var emptyLineIsWord = !(forward && wordEnd);
-    for (var i = 0; i < repeat; i++) {
-      var word = findWord(cm, cur, forward, bigWord, emptyLineIsWord);
+    const emptyLineIsWord = !(forward && wordEnd);
+    for (let i = 0; i < wordCount; i++) {
+      const word = findWord(cm, cursor, forward, bigWord, emptyLineIsWord);
       if (!word) {
-        var eodCh = lineLength(cm, cm.lastLine());
+        const eodCh = lineLength(cm, cm.lastLine());
         words.push(
           forward
             ? { line: cm.lastLine(), from: eodCh, to: eodCh }
@@ -94,11 +112,11 @@ export function utils({ vim, CodeMirror, cut }) {
         break;
       }
       words.push(word);
-      cur = new Pos(word.line, forward ? word.to - 1 : word.from);
+      cursor = new Pos(word.line, forward ? word.to - 1 : word.from);
     }
-    var shortCircuit = words.length != repeat;
-    var firstWord = words[0];
-    var lastWord = words.pop();
+    const shortCircuit = words.length != wordCount;
+    const firstWord = words[0];
+    let lastWord = words.pop()!;
     if (forward && !wordEnd) {
       // w
       if (
@@ -106,7 +124,7 @@ export function utils({ vim, CodeMirror, cut }) {
         (firstWord.from != curStart.ch || firstWord.line != curStart.line)
       ) {
         // We did not start in the middle of a word. Discard the extra word at the end.
-        lastWord = words.pop();
+        lastWord = words.pop()!;
       }
       return new Pos(lastWord.line, lastWord.from);
     } else if (forward && wordEnd) {
@@ -118,7 +136,7 @@ export function utils({ vim, CodeMirror, cut }) {
         (firstWord.to != curStart.ch || firstWord.line != curStart.line)
       ) {
         // We did not start in the middle of a word. Discard the extra word at the end.
-        lastWord = words.pop();
+        lastWord = words.pop()!;
       }
       return new Pos(lastWord.line, lastWord.to);
     } else {
@@ -128,18 +146,24 @@ export function utils({ vim, CodeMirror, cut }) {
   }
   // #endregion
 
-  // #region from vim.js, modefied
-  function moveToCharacter(cm, repeat, forward, character) {
-    const cur = cm.getCursor();
+  // #region Chinese segmentation and punctuation changes
+  function moveToCharacter(
+    cm: VimEditor,
+    repeat: number,
+    forward: boolean,
+    character: string,
+    head?: Position,
+  ) {
+    const cur = head || cm.getCursor();
     let start = cur.ch;
-    let idx;
+    let idx: number | undefined;
 
     for (let i = 0; i < repeat; i++) {
       const line = cm.getLine(cur.line);
       idx = charIdxInLine(start, line, character, forward, true);
 
       // #region mod
-      idx = idxbyChsPunctuation(character, start, line, forward, idx);
+      idx = indexWithChinesePunctuation(character, start, line, forward, idx);
       // #endregion
       if (idx == -1) {
         return null;
@@ -148,12 +172,18 @@ export function utils({ vim, CodeMirror, cut }) {
     }
     return new Pos(cm.getCursor().line, idx);
   }
-  function findWord(cm, cur, forward, bigWord, emptyLineIsWord) {
-    var lineNum = cur.line;
-    var pos = cur.ch;
-    var line = cm.getLine(lineNum);
-    var dir = forward ? 1 : -1;
-    var charTests = bigWord ? bigWordCharTest : wordCharTest;
+  function findWord(
+    cm: VimEditor,
+    cur: Position,
+    forward: boolean,
+    bigWord: boolean,
+    emptyLineIsWord: boolean,
+  ) {
+    let lineNum = cur.line;
+    let pos = cur.ch;
+    let line = cm.getLine(lineNum);
+    const dir = forward ? 1 : -1;
+    const charTests = bigWord ? bigWordCharTest : wordCharTest;
 
     if (emptyLineIsWord && line == "") {
       lineNum += dir;
@@ -168,12 +198,12 @@ export function utils({ vim, CodeMirror, cut }) {
       if (emptyLineIsWord && line == "") {
         return { from: 0, to: 0, line: lineNum };
       }
-      var stop = dir > 0 ? line.length : -1;
-      var wordStart = stop,
+      const stop = dir > 0 ? line.length : -1;
+      let wordStart = stop,
         wordEnd = stop;
       // Find bounds of next word.
       while (pos != stop) {
-        var foundWord = false;
+        let foundWord = false;
         // #region mod
         const from = Math.max(pos - 6, 0),
           to = Math.min(pos + 6, line.length);
@@ -229,7 +259,7 @@ export function utils({ vim, CodeMirror, cut }) {
           }
         }
         // #endregion
-        for (var i = 0; i < charTests.length && !foundWord; ++i) {
+        for (let i = 0; i < charTests.length && !foundWord; ++i) {
           if (charTests[i](line.charAt(pos))) {
             wordStart = pos;
             // Advance to end of word.
@@ -270,30 +300,42 @@ export function utils({ vim, CodeMirror, cut }) {
 
   // #endregion
 
-  /** custom function */
-  function idxbyChsPunctuation(character, start, line, forward, idx) {
-    if (
-      character.length == 1 &&
-      chinese_punctuation_mapping[character] != undefined
-    ) {
-      const punc_char = chinese_punctuation_mapping[character];
-      const punc_idx = charIdxInLine(start, line, punc_char, forward, true);
+  function indexWithChinesePunctuation(
+    character: string,
+    start: number,
+    line: string,
+    forward: boolean,
+    idx: number,
+  ) {
+    if (character.length == 1 && chinesePunctuation[character] != undefined) {
+      const punctuation = chinesePunctuation[character];
+      const punctuationIndex = charIdxInLine(
+        start,
+        line,
+        punctuation,
+        forward,
+        true,
+      );
 
-      if (punc_idx == -1) {
+      if (punctuationIndex == -1) {
         return idx;
       }
       if (idx == -1) {
-        return punc_idx;
+        return punctuationIndex;
       }
-      return forward ? Math.min(idx, punc_idx) : Math.max(idx, punc_idx);
+      return forward
+        ? Math.min(idx, punctuationIndex)
+        : Math.max(idx, punctuationIndex);
     }
     return idx;
   }
-  function segmentAt(segments, pos) {
+  function segmentAt(segments: string[], pos: number) {
+    let segment = "";
     let chunkBegin = 0,
       chunkEnd = 0;
-    for (var index = 0; index < segments.length; index++) {
-      var segment = segments[index];
+    let index = 0;
+    for (; index < segments.length; index++) {
+      segment = segments[index];
       chunkEnd = chunkBegin + segment.length;
       if (pos >= chunkBegin && pos < chunkEnd) {
         break;

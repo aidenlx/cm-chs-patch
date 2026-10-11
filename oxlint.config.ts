@@ -1,8 +1,12 @@
 import { defineConfig } from "oxlint";
 
 export default defineConfig({
+  options: { typeAware: true },
   plugins: ["eslint", "typescript", "unicorn", "oxc", "import", "promise"],
   rules: {
+    "typescript/unbound-method": "error",
+    // The segmentation window intentionally reverses strings by code point.
+    "typescript/no-misused-spread": ["warn", { allow: ["string"] }],
     "typescript/no-non-null-assertion": "off",
     "typescript/no-explicit-any": "off",
     "typescript/ban-ts-comment": "off",
@@ -14,9 +18,6 @@ export default defineConfig({
     "dist/**",
     "node_modules/**",
     "packages/**",
-    "src/vim.js",
-    "src/vim-utils.js",
-    "src/chsp-vim.js",
     "pnpm-lock.yaml",
   ],
 });
