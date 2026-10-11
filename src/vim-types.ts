@@ -13,15 +13,28 @@ export interface VimEditor extends Editor {
   moveH(amount: number, unit: "char"): void;
 }
 
+export type VimMotion = (
+  cm: VimEditor,
+  head: Position,
+  args: VimMotionArgs,
+) => Position | null;
+
+export type VimMotionName =
+  | "moveByWords"
+  | "moveToCharacter"
+  | "moveTillCharacter"
+  | "repeatLastCharacterSearch";
+
 export interface VimApi {
-  defineMotion(
+  defineMotion(name: string, motion: VimMotion): void;
+  handleKey(cm: Editor, key: string, origin?: string): unknown;
+  mapCommand(
+    key: string,
+    type: "motion",
     name: string,
-    motion: (
-      cm: VimEditor,
-      head: Position,
-      args: VimMotionArgs,
-    ) => Position | null,
+    args: Partial<VimMotionArgs>,
   ): void;
+  unmap(key: string): void;
   getVimGlobalState_(): {
     lastCharacterSearch: {
       increment: number;
