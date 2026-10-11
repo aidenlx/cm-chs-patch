@@ -53,9 +53,9 @@ export default class CMChsPatch extends Plugin {
     await this.saveLib(binary);
     await initJieba(binary, this.settings.dict);
     this.settings.useJieba = true;
-    await this.saveData(this.settings);
     this.segmenter = undefined;
     this.enablePatches();
+    await this.saveData(this.settings);
     if (this.active) this.settingTab?.update();
   }
 
