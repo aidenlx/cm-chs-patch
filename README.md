@@ -15,29 +15,13 @@ Special Thanks to [@fengkx](https://github.com/fengkx) for [jieba-wasm module](h
 | --------------------------------------------- | ----------------------------------------- |
 | ![ob-default-splitting](assets/before.gif)    | ![ob-patched-splitting](assets/after.gif) |
 
-## Disclosure 安全声明
+## Jieba component storage 结巴分词组件存储
 
-> [!WARNING]
-> **直接文件系统访问**：在桌面端，本插件使用 Node.js `fs` 模块在 Obsidian Vault API 之外读写文件。这用于将结巴分词 WASM 文件（`jieba_rs_wasm_<版本号>.wasm`）存储在 Obsidian 的共享 `userData` 目录中，从而避免在每个库中重复安装：
->
-> | 平台    | 路径                                                                 |
-> | ------- | -------------------------------------------------------------------- |
-> | macOS   | `~/Library/Application Support/obsidian/jieba_rs_wasm_<版本号>.wasm` |
-> | Windows | `%APPDATA%\obsidian\jieba_rs_wasm_<版本号>.wasm`                     |
-> | Linux   | `~/.config/obsidian/jieba_rs_wasm_<版本号>.wasm`                     |
->
-> 在移动端，该文件通过标准 Obsidian Vault API 存储在库的配置目录（`<vault>/.obsidian/jieba_rs_wasm_<版本号>.wasm`）中，不涉及直接文件系统访问。
+The jieba WASM binary is cached in IndexedDB using `idb`, keyed by the jieba-wasm version. Vaults sharing the same Obsidian browser origin and storage partition reuse the cache. Separate devices and storage partitions need their own installation; Obsidian Sync does not sync this cache.
 
-> [!WARNING]
-> **Direct Filesystem Access**: On desktop, this plugin uses the Node.js `fs` module to read and write files outside of the Obsidian vault API. This is used to store the jieba WASM binary (`jieba_rs_wasm_<version>.wasm`) in Obsidian's shared `userData` directory so that it does not need to be duplicated in every vault:
->
-> | Platform | Path                                                                  |
-> | -------- | --------------------------------------------------------------------- |
-> | macOS    | `~/Library/Application Support/obsidian/jieba_rs_wasm_<version>.wasm` |
-> | Windows  | `%APPDATA%\obsidian\jieba_rs_wasm_<version>.wasm`                     |
-> | Linux    | `~/.config/obsidian/jieba_rs_wasm_<version>.wasm`                     |
->
-> On mobile, the file is stored inside the vault's config directory (`<vault>/.obsidian/jieba_rs_wasm_<version>.wasm`) using the standard Obsidian vault API, and no direct filesystem access is involved.
+Open the plugin settings and choose **安装或导入结巴分词组件** to download the component or import a local `.wasm` file. Existing filesystem installations must be imported once using this picker. New installations use IndexedDB. The **管理结巴分词缓存** settings page lists all IndexedDB versions and legacy filesystem caches and lets you manually delete individual entries. Legacy files are read only to list them for this cleanup. Deleting the current version's cache affects every vault sharing it; restart Obsidian afterward.
+
+结巴分词 WASM 使用 `idb` 缓存在 IndexedDB 中，以 jieba-wasm 版本为键。同一浏览器源和存储分区内的库可共享缓存，不同设备需分别安装，Obsidian Sync 不会同步此缓存。在插件设置选择「安装或导入结巴分词组件」，可自动下载或导入本地 `.wasm` 文件。旧文件需手动导入一次，新安装使用 IndexedDB。「管理结巴分词缓存」页面可列出并手动删除各版本缓存和旧文件系统缓存。删除当前版本缓存会影响所有共享缓存的库，重启 Obsidian 后生效。
 
 ## Installation 安装
 
@@ -83,8 +67,8 @@ Special Thanks to [@fengkx](https://github.com/fengkx) for [jieba-wasm module](h
 
 ### Prerequisites
 
-- **Node.js 26+** — pinned in [`mise.toml`](mise.toml); the easiest way to provision it is [mise](https://mise.jdx.dev). If you manage Node yourself, run `corepack enable` to activate pnpm.
-- **pnpm 11.0.9** — sourced from `packageManager` in [`package.json`](package.json) via corepack. No global install needed.
+- **Node.js 26+** — pinned in [`mise.toml`](mise.toml); the easiest way to provision it is [mise](https://mise.jdx.dev).
+- **pnpm 11.0.9** — pinned in `mise.toml` and `packageManager` in `package.json`.
 - **Git**.
 
 ### One-time setup
@@ -95,7 +79,7 @@ git clone https://github.com/aidenlx/cm-chs-patch.git
 
 cd cm-chs-patch
 
-# 2. Provision Node 26 + enable corepack (skip if you manage Node yourself).
+# 2. Provision Node 26 + pnpm (skip if you manage Node yourself).
 mise install
 
 # 3. Install dependencies.
@@ -104,14 +88,16 @@ pnpm install
 
 ### Scripts
 
-| Command          | Purpose                                                                                               |
-| ---------------- | ----------------------------------------------------------------------------------------------------- |
-| `pnpm dev`       | Vite watch build to `build/`; also writes `.hotreload` for the Obsidian Hot-Reload plugin             |
-| `pnpm build`     | Production bundle to `build/main.js`; the version from `package.json` is stamped onto `manifest.json` |
-| `pnpm typecheck` | `tsc --noEmit`                                                                                        |
-| `pnpm lint`      | oxlint (`pnpm lint:fix` to autofix)                                                                   |
-| `pnpm format`    | oxfmt check (`pnpm format:fix` to apply)                                                              |
-| `pnpm release`   | release-it (maintainers only)                                                                         |
+| Command              | Purpose                                                                                               |
+| -------------------- | ----------------------------------------------------------------------------------------------------- |
+| `pnpm dev`           | Vite watch build to `build/`; also writes `.hotreload` for the Obsidian Hot-Reload plugin             |
+| `pnpm build`         | Production bundle to `build/main.js`; the version from `package.json` is stamped onto `manifest.json` |
+| `pnpm typecheck`     | `tsc --noEmit`                                                                                        |
+| `pnpm lint`          | oxlint (`pnpm lint:fix` to autofix)                                                                   |
+| `pnpm format`        | oxfmt check (`pnpm format:fix` to apply)                                                              |
+| `pnpm test`          | Versioned IndexedDB cache regression checks                                                           |
+| `pnpm review:plugin` | Official Obsidian plugin review, with a local summary under `.scratch/obsidian-review/`               |
+| `pnpm release`       | release-it (maintainers only)                                                                         |
 
 ### Loading the build into Obsidian
 
@@ -120,3 +106,9 @@ Symlink (or copy) `build/` into a test vault as `<vault>/.obsidian/plugins/cm-ch
 ### Target Obsidian version
 
 This release targets Obsidian 1.14.4, with `@codemirror/view` 6.43.13 and `@codemirror/state` 6.7.6, as specified by that Obsidian API package.
+
+### Plugin review environment
+
+The PR workflow and `pnpm review:plugin` run the official [Obsidian Workflows](https://github.com/obsidianmd/obsidian-workflows) reviewer at the same pinned revision with community scanner rules enabled. The local command downloads the bundled reviewer and installs its scanner dependencies in a temporary directory. It runs PR checks only and writes `.scratch/obsidian-review/summary.md`; it does not publish a release. Scanner policy findings are advisory, while build and validation failures fail the run.
+
+`src/vim.js` is an unmodified reference from Obsidian 1.14.4's `lib/codemirror/vim.js`, with a provenance header, and is not bundled. `src/vim-utils.js` contains copied helpers plus marked Chinese segmentation changes. Findings in unmodified upstream code are recorded for review rather than fixed locally.

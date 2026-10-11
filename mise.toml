@@ -2,9 +2,7 @@ min_version = "2024.9.5"
 
 [tools]
 node = "26"
-
-[hooks]
-postinstall = 'npx corepack enable'
+pnpm = "11.0.9"
 
 [settings]
 experimental = true

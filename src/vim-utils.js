@@ -1,5 +1,4 @@
-/* eslint-disable no-constant-condition */
-// source: obsidian v1.1.12
+// source: Obsidian v1.14.4, lib/codemirror/vim.js; Chinese segmentation changes below
 
 import { isChs } from "./utils.js";
 
@@ -22,7 +21,7 @@ const chinese_punctuation_mapping = {
 
 /**
  *
- * @param {{CodeMirror: typeof import("codemirror"); vim: any; cut(text: string): any[]}} ctx
+ * @param {{CodeMirror: typeof import("codemirror"); vim: import("./vim-types").VimApi; cut(text: string): string[]}} ctx
  */
 export function utils({ vim, CodeMirror, cut }) {
   const vimGlobalState = vim.getVimGlobalState_();
@@ -129,8 +128,15 @@ export function utils({ vim, CodeMirror, cut }) {
   // #endregion
 
   // #region from vim.js, modefied
-  function moveToCharacter(cm, repeat, forward, character) {
-    const cur = cm.getCursor();
+  /**
+   * @param {import("./vim-types").VimEditor} cm
+   * @param {number} repeat
+   * @param {boolean} forward
+   * @param {string} character
+   * @param {import("codemirror").Position} [head]
+   */
+  function moveToCharacter(cm, repeat, forward, character, head) {
+    const cur = head || cm.getCursor();
     let start = cur.ch;
     let idx;
 
@@ -148,6 +154,13 @@ export function utils({ vim, CodeMirror, cut }) {
     }
     return new Pos(cm.getCursor().line, idx);
   }
+  /**
+   * @param {import("./vim-types").VimEditor} cm
+   * @param {import("codemirror").Position} cur
+   * @param {boolean} forward
+   * @param {boolean} bigWord
+   * @param {boolean} emptyLineIsWord
+   */
   function findWord(cm, cur, forward, bigWord, emptyLineIsWord) {
     var lineNum = cur.line;
     var pos = cur.ch;
@@ -271,6 +284,13 @@ export function utils({ vim, CodeMirror, cut }) {
   // #endregion
 
   /** custom function */
+  /**
+   * @param {string} character
+   * @param {number} start
+   * @param {string} line
+   * @param {boolean} forward
+   * @param {number} idx
+   */
   function idxbyChsPunctuation(character, start, line, forward, idx) {
     if (
       character.length == 1 &&
@@ -289,6 +309,7 @@ export function utils({ vim, CodeMirror, cut }) {
     }
     return idx;
   }
+  /** @param {string[]} segments @param {number} pos */
   function segmentAt(segments, pos) {
     let chunkBegin = 0,
       chunkEnd = 0;

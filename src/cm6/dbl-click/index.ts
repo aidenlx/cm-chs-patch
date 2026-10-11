@@ -1,4 +1,3 @@
-/* eslint-disable prefer-arrow/prefer-arrow-functions */
 import { EditorSelection } from "@codemirror/state";
 import type { SelectionRange } from "@codemirror/state";
 import type { MouseSelectionStyle } from "@codemirror/view";
@@ -26,33 +25,19 @@ export const dblClickPatch = (plugin: CMChsPatch) => {
     // Only handle double clicks
     if (event.button !== 0 || event.detail !== 2) return null;
 
-    // From https://github.com/codemirror/view/blob/0.19.30/src/input.ts#L464-L495
+    // basicMouseSelection from @codemirror/view 6.43.13, src/input.ts.
     const start = queryPos(view, event),
-      type = event.detail; // not targeting ie, no need for polyfill
+      type = event.detail;
     let startSel = view.state.selection;
-    let last = start,
-      lastEvent: MouseEvent | null = event;
     return {
       update(update) {
         if (update.docChanged) {
-          if (start) start.pos = update.changes.mapPos(start.pos);
+          start.pos = update.changes.mapPos(start.pos);
           startSel = startSel.map(update.changes);
-          lastEvent = null;
         }
       },
       get(event, extend, multiple) {
-        let cur;
-        if (
-          lastEvent &&
-          event.clientX == lastEvent.clientX &&
-          event.clientY == lastEvent.clientY
-        )
-          cur = last;
-        else {
-          cur = last = queryPos(view, event);
-          lastEvent = event;
-        }
-        if (!cur || !start) return startSel;
+        const cur = queryPos(view, event);
         let range = rangeForClick(view, cur.pos, cur.bias, type);
         if (start.pos != cur.pos && !extend) {
           const startRange = rangeForClick(view, start.pos, start.bias, type);
@@ -60,17 +45,17 @@ export const dblClickPatch = (plugin: CMChsPatch) => {
             to = Math.max(startRange.to, range.to);
           range =
             from < range.from
-              ? EditorSelection.range(from, to)
-              : EditorSelection.range(to, from);
+              ? EditorSelection.range(from, to, range.assoc)
+              : EditorSelection.range(to, from, range.assoc);
         }
         if (extend)
           return startSel.replaceRange(
-            startSel.main.extend(range.from, range.to),
+            startSel.main.extend(range.from, range.to, range.assoc),
           );
         else if (multiple) return startSel.addRange(range);
         else return EditorSelection.create([range]);
       },
-    } as MouseSelectionStyle;
+    } satisfies MouseSelectionStyle;
   });
   return dblClickPatch;
 };

@@ -7,7 +7,7 @@ import init, {
 const vaildateFreq = (freq: string): number | undefined =>
   freq && Number.isInteger(+freq) ? +freq : undefined;
 const vaildateTag = (tag: string): keyof typeof vaildTags | undefined =>
-  tag && tag in vaildTags ? (tag as any) : undefined;
+  tag && tag in vaildTags ? (tag as keyof typeof vaildTags) : undefined;
 
 let initialized = false;
 

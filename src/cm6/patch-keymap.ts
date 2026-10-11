@@ -1,9 +1,9 @@
-/* eslint-disable prefer-arrow/prefer-arrow-functions */
 import type {
   EditorState,
   Transaction,
   CharCategory,
   StateCommand,
+  SelectionRange,
 } from "@codemirror/state";
 import { EditorSelection, findClusterBreak } from "@codemirror/state";
 import { EditorView, keymap } from "@codemirror/view";
@@ -11,16 +11,20 @@ import { EditorView, keymap } from "@codemirror/view";
 import type CMChsPatch from "../chsp-main";
 
 export const patchKeymap = (plugin: CMChsPatch) => {
-  // based on https://github.com/codemirror/commands/releases/tag/6.1.1
+  // Based on deleteBy, skipAtomic and deleteByGroup in Obsidian 1.14.4 app.js.
+  // Chinese segmentation is applied below the upstream group lookup.
 
-  function deleteBy(target: CommandTarget, by: (start: number) => number) {
+  function deleteBy(
+    target: CommandTarget,
+    by: (range: SelectionRange) => number,
+  ) {
     if (target.state.readOnly) return false;
     let event = "delete.selection";
     const { state } = target;
     const changes = state.changeByRange((range) => {
       let { from, to } = range;
       if (from == to) {
-        let towards = by(from);
+        let towards = by(range);
         if (towards < from) {
           event = "delete.backward";
           towards = skipAtomic(target, towards, false);
@@ -36,7 +40,10 @@ export const patchKeymap = (plugin: CMChsPatch) => {
       }
       return from == to
         ? { range }
-        : { changes: { from, to }, range: EditorSelection.cursor(from) };
+        : {
+            changes: { from, to },
+            range: EditorSelection.cursor(from, from < range.head ? -1 : 1),
+          };
     });
     if (changes.changes.empty) return false;
     target.dispatch(
@@ -65,7 +72,8 @@ export const patchKeymap = (plugin: CMChsPatch) => {
   }
 
   const deleteByGroup = (target: CommandTarget, forward: boolean) =>
-    deleteBy(target, (start) => {
+    deleteBy(target, (range) => {
+      const start = range.head;
       let pos = start;
       const { state } = target,
         line = state.doc.lineAt(pos);

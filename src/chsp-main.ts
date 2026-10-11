@@ -1,144 +1,53 @@
-import { Platform, Plugin } from "obsidian";
+import { Notice, Plugin } from "obsidian";
 import { VimPatcher } from "./chsp-vim.js";
 import setupCM6 from "./cm6";
 import GoToDownloadModal from "./install-guide";
 import { cut, cutForSearch, initJieba } from "./jieba";
 import { ChsPatchSettingTab, DEFAULT_SETTINGS } from "./settings";
 import { chsPatternGlobal, isChs } from "./utils.js";
-import { requireFs, requirePath } from "./require.js";
+import { loadWasm, saveWasm } from "./wasm-cache";
 
 const CHS_RANGE_LIMIT = 10;
-const JIEBA_WASM_CLEANUP_PATTERN = /^jieba_rs_wasm_(?:bg|\d+_\d+_\d+)\.wasm$/;
-
-const userDataDir = Platform.isDesktopApp
-  ? // eslint-disable-next-line @typescript-eslint/no-var-requires
-    require("@electron/remote").app.getPath("userData")
-  : null;
-
 export default class CMChsPatch extends Plugin {
   libName = `jieba_rs_wasm_${__JIEBA_VERSION__.replaceAll(".", "_")}.wasm`;
-  async loadLib(): Promise<ArrayBuffer | null> {
-    if (userDataDir) {
-      try {
-        const buf = await requireFs().readFile(this.libPath);
-        return buf.buffer.slice(
-          buf.byteOffset,
-          buf.byteOffset + buf.byteLength,
-        ) as ArrayBuffer;
-      } catch (e) {
-        if ((e as NodeJS.ErrnoException).code === "ENOENT") {
-          return null;
-        }
-        throw e;
-      }
-    } else {
-      if (!(await this.app.vault.adapter.exists(this.libPath, true))) {
-        return null;
-      }
-      const buf = await this.app.vault.adapter.readBinary(this.libPath);
-      return buf;
-    }
-  }
+  loadLib = loadWasm;
+  saveLib = saveWasm;
+
   async libExists(): Promise<boolean> {
-    if (userDataDir) {
-      try {
-        await requireFs().access(this.libPath);
-        return true;
-      } catch (e) {
-        if ((e as NodeJS.ErrnoException).code === "ENOENT") {
-          return false;
-        }
-        throw e;
-      }
-    } else {
-      return await this.app.vault.adapter.exists(this.libPath, true);
-    }
-  }
-  async saveLib(ab: ArrayBuffer): Promise<void> {
-    if (userDataDir) {
-      await requireFs().writeFile(this.libPath, Buffer.from(ab));
-    } else {
-      await this.app.vault.adapter.writeBinary(this.libPath, ab);
-    }
-  }
-  async deleteLib(): Promise<boolean> {
-    const handledPath = this.libPath;
-    let deleted = false;
-
-    if (userDataDir) {
-      const fs = requireFs();
-      try {
-        await fs.unlink(handledPath);
-        deleted = true;
-      } catch (e) {
-        if ((e as NodeJS.ErrnoException).code !== "ENOENT") throw e;
-      }
-
-      for (const name of await fs.readdir(userDataDir)) {
-        if (!JIEBA_WASM_CLEANUP_PATTERN.test(name)) continue;
-        const path = requirePath().join(userDataDir, name);
-        if (path === handledPath) continue;
-        try {
-          await fs.unlink(path);
-          deleted = true;
-        } catch (e) {
-          if ((e as NodeJS.ErrnoException).code !== "ENOENT") throw e;
-        }
-      }
-    } else {
-      const adapter = this.app.vault.adapter;
-      if (await adapter.exists(handledPath, true)) {
-        try {
-          await adapter.remove(handledPath);
-          deleted = true;
-        } catch (e) {
-          if ((e as NodeJS.ErrnoException).code !== "ENOENT") throw e;
-        }
-      }
-
-      const { files } = await adapter.list(this.app.vault.configDir);
-      for (const path of files) {
-        const name = path.slice(path.lastIndexOf("/") + 1);
-        if (!JIEBA_WASM_CLEANUP_PATTERN.test(name) || path === handledPath)
-          continue;
-        try {
-          await adapter.remove(path);
-          deleted = true;
-        } catch (e) {
-          if ((e as NodeJS.ErrnoException).code !== "ENOENT") throw e;
-        }
-      }
-    }
-    return deleted;
-  }
-  get libPath(): string {
-    if (userDataDir) {
-      return requirePath().join(userDataDir, this.libName);
-    } else {
-      return [this.app.vault.configDir, this.libName].join("/");
-    }
+    return (await this.loadLib()) !== null;
   }
 
   async onload() {
+    await this.loadSettings();
     this.addSettingTab(new ChsPatchSettingTab(this));
 
-    await this.loadSettings();
-
-    if (await this.loadSegmenter()) {
-      setupCM6(this);
-      console.info("editor word splitting patched");
+    try {
+      if (await this.loadSegmenter()) {
+        setupCM6(this);
+        this.addChild(new VimPatcher(this));
+      }
+    } catch (error) {
+      console.error("Failed to load word splitting engine", error);
+      new Notice("分词引擎加载失败，请在设置中重新导入结巴分词组件");
     }
-    this.addChild(new VimPatcher(this));
   }
 
   settings = DEFAULT_SETTINGS;
 
   async loadSettings() {
-    this.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
-  }
-
-  async saveSettings() {
-    await this.saveData(this.settings);
+    const data: unknown = await this.loadData();
+    this.settings = { ...DEFAULT_SETTINGS };
+    if (typeof data === "object" && data !== null) {
+      for (const key of Object.keys(
+        DEFAULT_SETTINGS,
+      ) as (keyof typeof DEFAULT_SETTINGS)[]) {
+        const value: unknown = Reflect.get(data, key);
+        if (key === "dict" && typeof value === "string")
+          this.settings.dict = value;
+        else if (key !== "dict" && typeof value === "boolean")
+          this.settings[key] = value;
+      }
+    }
   }
 
   segmenter?: Intl.Segmenter;
@@ -148,7 +57,6 @@ export default class CMChsPatch extends Plugin {
       this.segmenter = new Intl.Segmenter("zh-CN", {
         granularity: "word",
       });
-      console.info("window.Intl.Segmenter loaded");
       return true;
     }
 
@@ -158,12 +66,11 @@ export default class CMChsPatch extends Plugin {
       return false;
     }
     await initJieba(jiebaBinary, this.settings.dict);
-    console.info("Jieba loaded");
     return true;
   }
 
   cut(text: string, { search = false }: { search?: boolean } = {}): string[] {
-    if (!this.settings.useJieba && this.segmenter) {
+    if (this.segmenter) {
       return Array.from(this.segmenter.segment(text)).map((seg) => seg.segment);
     }
     if (search) {

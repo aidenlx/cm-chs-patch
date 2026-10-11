@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/consistent-type-imports */
-/* eslint-disable no-var */
 import "obsidian";
 declare module "obsidian" {
   interface Vault {
@@ -9,6 +7,8 @@ declare module "obsidian" {
 
 declare global {
   declare const __JIEBA_VERSION__: string;
-  declare var CodeMirrorAdapter: any;
+  declare var CodeMirrorAdapter:
+    | { Vim: import("./vim-types").VimApi }
+    | undefined;
   declare var CodeMirror: typeof import("codemirror");
 }

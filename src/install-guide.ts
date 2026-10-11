@@ -1,10 +1,10 @@
-import { Modal, Notice } from "obsidian";
+import { Modal, Notice, requestUrl } from "obsidian";
 
 import type CMChsPatch from "./chsp-main";
 
 function pickFile(accept: string): Promise<File | null> {
   return new Promise((resolve) => {
-    const input = document.createElement("input");
+    const input = createEl("input");
     input.type = "file";
     input.accept = accept;
     input.addEventListener("change", () => resolve(input.files?.[0] ?? null));
@@ -12,8 +12,6 @@ function pickFile(accept: string): Promise<File | null> {
     input.click();
   });
 }
-
-const colorSuccess = "var(--background-modifier-success)";
 
 const wasmUrl = `https://unpkg.com/jieba-wasm@${__JIEBA_VERSION__}/pkg/web/jieba_rs_wasm_bg.wasm`;
 
@@ -33,13 +31,18 @@ export default class GoToDownloadModal extends Modal {
   onOpen() {
     this.contentEl.createEl("h1", { text: "安装结巴分词" });
     this.contentEl.createDiv({}, (div) => {
-      div.appendText("新版分词插件需要安装 jieba-wasm，请按照下面的步骤安装：");
+      div.appendText(
+        "结巴分词组件保存在 IndexedDB，同源库可共享，请下载或导入组件：",
+      );
       div.createEl("ol", {}, (ol) => {
         ol.createEl("li", {}, (li) => {
           this.downloadButton = li.createEl(
             "button",
             { text: "自动下载" },
-            (btn) => (btn.onclick = this.onDownloadingFile.bind(this)),
+            (btn) =>
+              (btn.onclick = () => {
+                void this.onDownloadingFile();
+              }),
           );
           li.createEl("br");
           li.appendText("或");
@@ -59,7 +62,10 @@ export default class GoToDownloadModal extends Modal {
               this.selectButton = li.createEl(
                 "button",
                 { text: "选择文件" },
-                (btn) => (btn.onclick = this.onSelectingFile.bind(this)),
+                (btn) =>
+                  (btn.onclick = () => {
+                    void this.onSelectingFile();
+                  }),
               );
             });
           });
@@ -74,24 +80,33 @@ export default class GoToDownloadModal extends Modal {
     this.contentEl.empty();
   }
 
+  private async install(binary: () => Promise<ArrayBuffer>) {
+    this.selectButton?.setAttribute("disabled", "");
+    this.downloadButton?.setAttribute("disabled", "");
+    try {
+      await this.plugin.saveLib(await binary());
+      new Notice("安装成功，请重启 Obsidian 使结巴分词生效");
+      this.close();
+    } catch (error) {
+      console.error("Failed to install jieba wasm", error);
+      new Notice("结巴分词组件安装失败，请检查网络或选择有效的 WASM 文件");
+    } finally {
+      this.selectButton?.removeAttribute("disabled");
+      this.downloadButton?.removeAttribute("disabled");
+    }
+  }
+
   async onSelectingFile() {
     const file = await pickFile(".wasm");
-    if (!file || !file.name.toLowerCase().endsWith(".wasm")) return;
-    await this.plugin.saveLib(await file.arrayBuffer());
-    if (this.selectButton) {
-      this.selectButton.setText("结巴分词插件导入成功");
-      this.selectButton.style.backgroundColor = colorSuccess;
-    }
-    new Notice("✔️ 安装成功，请重启 Obsidian 使结巴分词生效");
+    if (file) await this.install(() => file.arrayBuffer());
   }
-  async onDownloadingFile() {
-    const resp = await fetch(wasmUrl);
-    await this.plugin.saveLib(await resp.arrayBuffer());
 
-    if (this.downloadButton) {
-      this.downloadButton.setText("结巴分词插件下载成功");
-      this.downloadButton.style.backgroundColor = colorSuccess;
-    }
-    new Notice("✔️ 安装成功，请重启 Obsidian 使结巴分词生效");
+  async onDownloadingFile() {
+    await this.install(async () => {
+      const response = await requestUrl(wasmUrl);
+      if (response.status !== 200)
+        throw new Error(`Download failed: ${response.status}`);
+      return response.arrayBuffer;
+    });
   }
 }

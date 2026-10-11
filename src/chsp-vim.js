@@ -1,5 +1,4 @@
 // @ts-check
-/* eslint-disable */
 import { Component } from "obsidian";
 import { utils } from "./vim-utils.js";
 
@@ -10,13 +9,13 @@ export class VimPatcher extends Component {
   constructor(plugin) {
     super();
     this.plugin = plugin;
-    this.utils = utils(
+    this.utils = this.vim ? utils(
       {
         CodeMirror: window.CodeMirror,
         vim: this.vim,
         cut: plugin.cut.bind(plugin),
       },
-    );
+    ) : null;
   }
   get vim() {
     return window.CodeMirrorAdapter?.Vim;
@@ -28,7 +27,7 @@ export class VimPatcher extends Component {
   }
 
   onload() {
-    if (!this.vim) return;
+    if (!this.vim || !this.utils) return;
     // only patch when enabled, so that default method is preserved when disabled
     // useful when obsidian updates breaks the patch and
     // user needs to disable patch to get vim working again
@@ -41,12 +40,13 @@ export class VimPatcher extends Component {
   }
 
   /**
-   * @param {*} vim
+   * @param {import("./vim-types").VimApi} vim
    */
   enableMoveByChineseWords(vim) {
-    // @ts-ignore
+    const helpers = this.utils;
+    if (!helpers) return;
     vim.defineMotion("moveByWords", (cm, head, motionArgs) => {
-      return this.utils.moveToWord(
+      return helpers.moveToWord(
         cm,
         head,
         motionArgs.repeat,
@@ -57,11 +57,11 @@ export class VimPatcher extends Component {
     });
   }
   /**
-   * @param {*} vim
+   * @param {import("./vim-types").VimApi} vim
    */
   enableMoveTillChinesePunctuation(vim) {
+    if (!this.utils) return;
     const { recordLastCharacterSearch, moveToCharacter } = this.utils;
-    // @ts-ignore
     vim.defineMotion("moveToCharacter", (cm, head, motionArgs) => {
       const repeat = motionArgs.repeat;
       recordLastCharacterSearch(0, motionArgs);
@@ -70,19 +70,20 @@ export class VimPatcher extends Component {
           cm,
           repeat,
           motionArgs.forward,
-          motionArgs.selectedCharacter
+          motionArgs.selectedCharacter,
+          head
         ) || head
       );
     });
 
-    // @ts-ignore
     vim.defineMotion("moveTillCharacter", (cm, head, motionArgs) => {
       const repeat = motionArgs.repeat;
       const curEnd = moveToCharacter(
         cm,
         repeat,
         motionArgs.forward,
-        motionArgs.selectedCharacter
+        motionArgs.selectedCharacter,
+        head
       );
       const increment = motionArgs.forward ? -1 : 1;
       recordLastCharacterSearch(increment, motionArgs);
@@ -91,7 +92,6 @@ export class VimPatcher extends Component {
       return curEnd;
     });
 
-    // @ts-ignore
     vim.defineMotion("repeatLastCharacterSearch", (cm, head, motionArgs) => {
       const vimGlobalState = vim.getVimGlobalState_();
       const lastSearch = vimGlobalState.lastCharacterSearch;
