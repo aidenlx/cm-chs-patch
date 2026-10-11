@@ -130,4 +130,4 @@ The PR workflow and `pnpm review:plugin` run the official [Obsidian Workflows](h
 
 The Vim reference is not stored in this repository. To obtain it, extract `lib/codemirror/vim.js` from the **Obsidian 1.14.4** runtime archive using an ASAR extraction tool such as `@electron/asar`. Use `obsidian-1.14.4.asar`, or a bundled `obsidian.asar` whose internal `package.json` reports version `1.14.4`; `app.asar` contains the launcher instead.
 
-`src/vim-utils.ts` adapts helpers from that version for Chinese segmentation, and `src/chsp-vim.ts` registers the patched motions. Both are TypeScript and checked by ESLint and oxlint.
+`src/vim-utils.ts` adapts helpers from that version for Chinese segmentation, and `src/chsp-vim.ts` registers the patched motions. Both are TypeScript and checked by ESLint and oxlint. Oxlint uses `oxlint-tsgolint` for type-aware checks, including `typescript/unbound-method` as an error.

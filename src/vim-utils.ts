@@ -28,7 +28,7 @@ export function utils({
 }: {
   CodeMirror: typeof import("codemirror");
   vim: VimApi;
-  cut(text: string): string[];
+  cut: (text: string) => string[];
 }) {
   const vimGlobalState = vim.getVimGlobalState_();
   const Pos = CodeMirror.Pos;
