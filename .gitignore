@@ -20,3 +20,6 @@ dist
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+# Local reference sources and diagnosis output
+.scratch/

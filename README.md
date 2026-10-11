@@ -85,23 +85,20 @@ Special Thanks to [@fengkx](https://github.com/fengkx) for [jieba-wasm module](h
 
 - **Node.js 26+** — pinned in [`mise.toml`](mise.toml); the easiest way to provision it is [mise](https://mise.jdx.dev). If you manage Node yourself, run `corepack enable` to activate pnpm.
 - **pnpm 11.0.9** — sourced from `packageManager` in [`package.json`](package.json) via corepack. No global install needed.
-- **Git** with submodule support (any modern version).
+- **Git**.
 
 ### One-time setup
 
 ```bash
-# 1. Clone with the cm-view submodule populated.
-#    If you already cloned without `--recurse-submodules`, run the second line instead.
-git clone --recurse-submodules https://github.com/aidenlx/cm-chs-patch.git
-git submodule update --init --recursive
+# 1. Clone the repository.
+git clone https://github.com/aidenlx/cm-chs-patch.git
 
 cd cm-chs-patch
 
 # 2. Provision Node 26 + enable corepack (skip if you manage Node yourself).
 mise install
 
-# 3. Install dependencies. The `packages/cm-view` workspace package's `prepare`
-#    hook builds its `dist/` (the @codemirror/view internal bundle) automatically.
+# 3. Install dependencies.
 pnpm install
 ```
 
@@ -119,3 +116,9 @@ pnpm install
 ### Loading the build into Obsidian
 
 Symlink (or copy) `build/` into a test vault as `<vault>/.obsidian/plugins/cm-chs-patch`, then enable the plugin in Obsidian's Community Plugins settings. With [Hot-Reload](https://github.com/pjeby/hot-reload) installed in the same vault, `pnpm dev` triggers live reloads on rebuild.
+
+### Double-click regression checks
+
+This release targets Obsidian 1.14.4, with `@codemirror/view` 6.43.13 and `@codemirror/state` 6.7.6, as specified by that Obsidian API package.
+
+Start a test Obsidian instance with `--remote-debugging-port=9222`, open a note, then run `pnpm test:browser`. The checks use temporary editors and remove them when complete. Set `OBSIDIAN_CDP_URL` to use a different debugging endpoint.
