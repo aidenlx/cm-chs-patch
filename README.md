@@ -9,6 +9,10 @@ Special Thanks to [@fengkx](https://github.com/fengkx) for [jieba-wasm module](h
 
 注意：从 v1.8.0 开始，默认分词引擎由结巴分词更换为系统自带分词引擎，结巴分词不再是必备组件，若你需要结合 [omnisearch](https://github.com/scambier/obsidian-omnisearch) 插件使用，或仍需要使用结巴分词提供的更精确的分词结果，以及新词发现、自定义词库功能，请在设置打开选项后，按照弹窗提示进行安装（若系统不提供分词引擎，无论选项是否打开，本插件仍会提示安装结巴分词）
 
+After disabling this plugin, fully reload Obsidian to remove its Vim mode patches.
+
+禁用本插件后，需要完全重新加载 Obsidian 才能移除 Vim 模式补丁。
+
 ## Demo
 
 | Obsidian's Default Word Splitting<br>默认分词 | Patched<br>安装插件后                     |
@@ -131,5 +135,3 @@ The PR workflow and `pnpm review:plugin` run the official [Obsidian Workflows](h
 The Vim reference is not stored in this repository. To obtain it, extract `lib/codemirror/vim.js` from the **Obsidian 1.14.4** runtime archive using an ASAR extraction tool such as `@electron/asar`. Use `obsidian-1.14.4.asar`, or a bundled `obsidian.asar` whose internal `package.json` reports version `1.14.4`; `app.asar` contains the launcher instead.
 
 `src/vim-utils.ts` adapts helpers from that version for Chinese segmentation, and `src/chsp-vim.ts` registers the patched motions. Both are TypeScript and checked by ESLint and oxlint. Oxlint uses `oxlint-tsgolint` for type-aware checks, including `typescript/unbound-method` as an error.
-
-Vim's motion table is private, so `monkey-around` cannot wrap it directly. The patch captures each original callback through `lastMotion` in a temporary detached editor, then registers removable wrappers and tracks later `defineMotion()` registrations. Unloading restores the original callbacks while preserving another plugin's later replacements. This relies on Obsidian 1.14.4's Vim internals and may need adjustment when Obsidian changes them. The temporary editor does not modify vault notes.
