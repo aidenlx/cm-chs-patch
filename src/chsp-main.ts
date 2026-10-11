@@ -12,24 +12,51 @@ export default class CMChsPatch extends Plugin {
   libName = `jieba_rs_wasm_${__JIEBA_VERSION__.replaceAll(".", "_")}.wasm`;
   loadLib = loadWasm;
   saveLib = saveWasm;
+  private patchesInstalled = false;
+  private active = false;
+  private settingTab?: ChsPatchSettingTab;
 
   async libExists(): Promise<boolean> {
     return (await this.loadLib()) !== null;
   }
 
   async onload() {
+    this.active = true;
     await this.loadSettings();
-    this.addSettingTab(new ChsPatchSettingTab(this));
+    this.settingTab = new ChsPatchSettingTab(this);
+    this.addSettingTab(this.settingTab);
 
     try {
-      if (await this.loadSegmenter()) {
-        setupCM6(this);
-        this.addChild(new VimPatcher(this));
-      }
+      await this.applySegmenter();
     } catch (error) {
       console.error("Failed to load word splitting engine", error);
       new Notice("分词引擎加载失败，请在设置中重新导入结巴分词组件");
     }
+  }
+
+  onunload() {
+    this.active = false;
+  }
+
+  private enablePatches() {
+    if (!this.active || this.patchesInstalled) return;
+    setupCM6(this);
+    this.addChild(new VimPatcher(this));
+    this.patchesInstalled = true;
+  }
+
+  async applySegmenter() {
+    if (await this.loadSegmenter()) this.enablePatches();
+  }
+
+  async installJieba(binary: ArrayBuffer) {
+    await this.saveLib(binary);
+    await initJieba(binary, this.settings.dict);
+    this.settings.useJieba = true;
+    await this.saveData(this.settings);
+    this.segmenter = undefined;
+    this.enablePatches();
+    if (this.active) this.settingTab?.update();
   }
 
   settings = DEFAULT_SETTINGS;
@@ -66,6 +93,9 @@ export default class CMChsPatch extends Plugin {
       return false;
     }
     await initJieba(jiebaBinary, this.settings.dict);
+    if (this.settings.useJieba || !window.Intl?.Segmenter) {
+      this.segmenter = undefined;
+    }
     return true;
   }
 

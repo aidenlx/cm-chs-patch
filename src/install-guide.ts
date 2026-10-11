@@ -70,9 +70,6 @@ export default class GoToDownloadModal extends Modal {
             });
           });
         });
-        ol.createEl("li", {}, (li) => {
-          li.appendText("重启 Obsidian 后生效");
-        });
       });
     });
   }
@@ -84,8 +81,8 @@ export default class GoToDownloadModal extends Modal {
     this.selectButton?.setAttribute("disabled", "");
     this.downloadButton?.setAttribute("disabled", "");
     try {
-      await this.plugin.saveLib(await binary());
-      new Notice("安装成功，请重启 Obsidian 使结巴分词生效");
+      await this.plugin.installJieba(await binary());
+      new Notice("安装成功，已启用结巴分词");
       this.close();
     } catch (error) {
       console.error("Failed to install jieba wasm", error);

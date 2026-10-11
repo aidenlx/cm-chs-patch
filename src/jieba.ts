@@ -10,8 +10,18 @@ const vaildateTag = (tag: string): keyof typeof vaildTags | undefined =>
   tag && tag in vaildTags ? (tag as keyof typeof vaildTags) : undefined;
 
 let initialized = false;
+let initializing: Promise<void> | undefined;
 
-export const initJieba = async (
+export const initJieba = (
+  wasm: Promise<ArrayBuffer> | ArrayBuffer,
+  dict?: string,
+) =>
+  (initializing ??= initializeJieba(wasm, dict).catch((error: unknown) => {
+    initializing = undefined;
+    throw error;
+  }));
+
+const initializeJieba = async (
   wasm: Promise<ArrayBuffer> | ArrayBuffer,
   dict?: string,
 ) => {

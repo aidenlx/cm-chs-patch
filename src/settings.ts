@@ -70,9 +70,7 @@ export class ChsPatchSettingTab extends PluginSettingTab {
               void remove()
                 .then(() => {
                   btn.setButtonText("已删除");
-                  new Notice(
-                    "已删除缓存，点击刷新查看缓存列表，重启 Obsidian 后生效",
-                  );
+                  new Notice("已删除缓存，点击刷新查看缓存列表");
                 })
                 .catch((error: unknown) => {
                   console.error("Failed to delete jieba cache", error);
@@ -92,13 +90,12 @@ export class ChsPatchSettingTab extends PluginSettingTab {
   async setControlValue(key: string, value: unknown): Promise<void> {
     await super.setControlValue(key, value);
     this.refreshDomState();
-    if (key === "useJieba" && value === true) {
+    if (key === "useJieba") {
       try {
-        if (!(await this.plugin.libExists()))
-          new GoToDownloadModal(this.plugin).open();
+        await this.plugin.applySegmenter();
       } catch (error) {
-        console.error("Failed to check jieba cache", error);
-        new Notice("无法读取结巴分词缓存，请尝试重新导入组件");
+        console.error("Failed to switch word splitting engine", error);
+        new Notice("无法切换分词引擎，请尝试重新导入结巴分词组件");
       }
     }
   }
@@ -113,7 +110,7 @@ export class ChsPatchSettingTab extends PluginSettingTab {
         items: [
           {
             name: "使用结巴分词",
-            desc: "支持新词发现、自定义词典，需要额外下载，重启 Obsidian 生效",
+            desc: "支持新词发现、自定义词典，首次使用需要下载或导入组件，安装后立即生效",
             control: { type: "toggle", key: "useJieba" },
           },
           {
