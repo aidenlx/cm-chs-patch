@@ -32,7 +32,7 @@ export const patchKeymap = (plugin: CMChsPatch) => {
         to = Math.max(to, towards);
       } else {
         from = skipAtomic(target, from, false);
-        to = skipAtomic(target, from, true);
+        to = skipAtomic(target, to, true);
       }
       return from == to
         ? { range }
