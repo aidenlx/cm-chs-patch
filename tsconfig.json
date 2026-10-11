@@ -24,7 +24,6 @@
     "src/**/*.d.ts",
     "src/chsp-vim.js",
     "src/vim-utils.js",
-    "src/vim.js",
     ".release-it.js",
     "oxfmt.config.ts",
     "oxlint.config.ts"

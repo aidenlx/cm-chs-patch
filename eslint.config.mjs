@@ -17,7 +17,7 @@ const reviewRules = new Set([
 ]);
 
 export default [
-  globalIgnores(["src/vim.js", "src/vim-utils.js"]),
+  globalIgnores(["src/vim-utils.js"]),
   {
     languageOptions: {
       parserOptions: {

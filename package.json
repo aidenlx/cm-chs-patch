@@ -16,7 +16,6 @@
     "format": "oxfmt --check",
     "format:fix": "oxfmt",
     "release": "release-it",
-    "test": "node --test tests/*.test.ts",
     "review:plugin": "pnpm lint && pnpm lint:obsidian && node scripts/review-plugin.mjs",
     "lint:obsidian": "eslint src"
   },
@@ -36,7 +35,6 @@
     "cz-conventional-changelog": "^3.3.0",
     "eslint": "9.37.0",
     "eslint-plugin-obsidianmd": "0.4.1",
-    "fake-indexeddb": "^6.2.5",
     "jszip": "^3.10.1",
     "obsidian": "1.14.4",
     "oxfmt": "^0.49.0",

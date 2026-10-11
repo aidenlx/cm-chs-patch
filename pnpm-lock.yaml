@@ -51,9 +51,6 @@ importers:
       eslint-plugin-obsidianmd:
         specifier: 0.4.1
         version: 0.4.1(@eslint/js@9.37.0)(@eslint/json@0.14.0)(@typescript-eslint/parser@8.61.1(eslint@9.37.0(jiti@2.7.0))(typescript@6.0.3))(eslint@9.37.0(jiti@2.7.0))(obsidian@1.14.4(@codemirror/state@6.7.6)(@codemirror/view@6.43.13))(typescript-eslint@8.61.1(eslint@9.37.0(jiti@2.7.0))(typescript@6.0.3))
-      fake-indexeddb:
-        specifier: ^6.2.5
-        version: 6.2.5
       jszip:
         specifier: ^3.10.1
         version: 3.10.1
@@ -1618,10 +1615,6 @@ packages:
   external-editor@3.1.0:
     resolution: {integrity: sha512-hMQ4CX1p1izmuLYyZqLMO/qGNw10wSv9QDCPfzXfyFrOaCSSoRfqE1Kf1s5an66J5JZC62NewG+mK49jOCtQew==}
     engines: {node: '>=4'}
-
-  fake-indexeddb@6.2.5:
-    resolution: {integrity: sha512-CGnyrvbhPlWYMngksqrSSUT1BAVP49dZocrHuK0SvtR0D5TMs5wP0o3j7jexDJW01KSadjBp1M/71o/KR3nD1w==}
-    engines: {node: '>=18'}
 
   fast-content-type-parse@3.0.0:
     resolution: {integrity: sha512-ZvLdcY8P+N8mGQJahJV5G4U88CSvT1rP8ApL6uETe88MBXrBHAkZlSEySdUlyztF7ccb+Znos3TFqaepHxdhBg==}
@@ -4839,8 +4832,6 @@ snapshots:
       chardet: 0.7.0
       iconv-lite: 0.4.24
       tmp: 0.0.33
-
-  fake-indexeddb@6.2.5: {}
 
   fast-content-type-parse@3.0.0: {}
 

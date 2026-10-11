@@ -14,7 +14,6 @@ export default defineConfig({
     "dist/**",
     "node_modules/**",
     "packages/**",
-    "src/vim.js",
     "src/vim-utils.js",
     "pnpm-lock.yaml",
   ],

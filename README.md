@@ -102,7 +102,6 @@ pnpm install
 | `pnpm lint`          | oxlint (`pnpm lint:fix` to autofix)                                                                   |
 | `pnpm lint:obsidian` | Obsidian policy checks only; general linting stays in oxlint                                          |
 | `pnpm format`        | oxfmt check (`pnpm format:fix` to apply)                                                              |
-| `pnpm test`          | Versioned IndexedDB cache regression checks                                                           |
 | `pnpm review:plugin` | Official Obsidian plugin review, with a local summary under `.scratch/obsidian-review/`               |
 | `pnpm release`       | release-it (maintainers only)                                                                         |
 
@@ -118,4 +117,6 @@ This release targets Obsidian 1.14.4, with `@codemirror/view` 6.43.13 and `@code
 
 The PR workflow and `pnpm review:plugin` run the official [Obsidian Workflows](https://github.com/obsidianmd/obsidian-workflows) reviewer at the same pinned revision. Both run `pnpm lint:obsidian` for Obsidian policy rules and `pnpm lint` for general code checks through oxlint. The reviewer's bundled ESLint pass is disabled to avoid duplicating general lint rules. The local command downloads the bundled reviewer. It runs PR checks only and writes `.scratch/obsidian-review/summary.md`; it does not publish a release. Obsidian ESLint errors fail the local command and CI. Other official policy findings are advisory; build and validation failures fail the run.
 
-`src/vim.js` is an unmodified reference from Obsidian 1.14.4's `lib/codemirror/vim.js`, with a provenance header, and is not bundled. `src/vim-utils.js` contains copied helpers plus marked Chinese segmentation changes. The upstream reference and copied helper file are excluded from ESLint and oxlint through configuration-level ignores; the plugin-authored Vim wrapper remains checked.
+The Vim reference is not stored in this repository. To obtain it, extract `lib/codemirror/vim.js` from the **Obsidian 1.14.4** runtime archive using an ASAR extraction tool such as `@electron/asar`. Use `obsidian-1.14.4.asar`, or a bundled `obsidian.asar` whose internal `package.json` reports version `1.14.4`; `app.asar` contains the launcher instead.
+
+`src/vim-utils.js` contains copied helpers from that version plus marked Chinese segmentation changes. It is excluded from ESLint and oxlint through configuration-level ignores; the plugin-authored Vim wrapper remains checked.
