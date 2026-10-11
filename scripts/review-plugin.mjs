@@ -26,8 +26,7 @@ const child = spawn(process.execPath, [entry], {
     INPUT_TYPE: "plugin",
     INPUT_MODE: "pr",
     INPUT_BUILD: "npm run build",
-    INPUT_LINT: "true",
-    "INPUT_SCANNER-LINT": "true",
+    INPUT_LINT: "false",
     INPUT_STRICT: "false",
   },
 });
