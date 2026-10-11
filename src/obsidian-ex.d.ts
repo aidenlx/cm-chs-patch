@@ -1,9 +1,4 @@
-import "obsidian";
-declare module "obsidian" {
-  interface Vault {
-    getConfig(key: string): unknown;
-  }
-}
+export {};
 
 declare global {
   declare const __JIEBA_VERSION__: string;

@@ -19,15 +19,26 @@ Special Thanks to [@fengkx](https://github.com/fengkx) for [jieba-wasm module](h
 
 The jieba WASM binary is cached in IndexedDB using `idb`, keyed by the jieba-wasm version. Vaults sharing the same Obsidian browser origin and storage partition reuse the cache. Separate devices and storage partitions need their own installation; Obsidian Sync does not sync this cache.
 
-Open the plugin settings and choose **安装或导入结巴分词组件** to download the component or import a local `.wasm` file. The component is enabled immediately after installation. If you previously installed it as a file, import it once using this picker.
+Open the plugin settings and choose **安装或导入结巴分词组件** to download the component or import a local `.wasm` file. The component is enabled immediately after installation. When upgrading to 1.14.0 from a version that used filesystem storage, reinstall Jieba through this action. Previous cache files are no longer loaded or managed by the plugin.
 
-Choose **管理结巴分词缓存** to manually delete cached versions or old WASM files. Deleting a shared cache affects future loads in every vault using it; already-loaded engines continue working.
+Choose **管理结巴分词缓存** to manually delete IndexedDB cache versions. Deleting a shared cache affects future loads in every vault using it; already-loaded engines continue working.
 
 结巴分词 WASM 按版本缓存在 IndexedDB 中。同一浏览器源和存储分区内的库可共享缓存，不同设备需分别安装，Obsidian Sync 不会同步此缓存。
 
-在插件设置选择「安装或导入结巴分词组件」，可自动下载或导入本地 `.wasm` 文件，安装后立即启用，无需重启。此前以文件形式安装的组件需手动导入一次。
+在插件设置选择「安装或导入结巴分词组件」，可自动下载或导入本地 `.wasm` 文件，安装后立即启用，无需重启。从使用文件系统缓存的旧版本升级到 1.14.0 后，需要在此重新安装结巴分词；插件不再读取或管理旧缓存文件。
 
-选择「管理结巴分词缓存」可手动删除各版本缓存或旧 WASM 文件。删除共享缓存会影响所有使用它的库下次加载组件，已加载的分词引擎仍可继续使用。
+选择「管理结巴分词缓存」可手动删除各版本 IndexedDB 缓存。删除共享缓存会影响所有使用它的库下次加载组件，已加载的分词引擎仍可继续使用。
+
+To free the space used by previous versions, manually delete files named `jieba_rs_wasm_bg.wasm` or `jieba_rs_wasm_<version>.wasm` (for example, `jieba_rs_wasm_2_4_0.wasm`) from the location below. Only remove these Jieba cache files.
+
+旧版本缓存不会自动清理。如需释放空间，请在下列位置手动删除 `jieba_rs_wasm_bg.wasm` 或 `jieba_rs_wasm_<版本号>.wasm`（例如 `jieba_rs_wasm_2_4_0.wasm`），仅删除这些结巴分词缓存文件。
+
+| Platform 平台 | Previous cache location 旧缓存位置                                         |
+| ------------- | -------------------------------------------------------------------------- |
+| macOS         | `~/Library/Application Support/obsidian/`                                  |
+| Windows       | `%APPDATA%\obsidian\`                                                      |
+| Linux         | `~/.config/obsidian/`                                                      |
+| Mobile 移动端 | The vault configuration folder, usually `<vault>/.obsidian/`（库配置目录） |
 
 ## Installation 安装
 

@@ -7,7 +7,6 @@ import {
 import type CMChsPatch from "./chsp-main";
 import GoToDownloadModal from "./install-guide";
 import { listWasmVersions, deleteWasm } from "./wasm-cache";
-import { listLegacyCaches, type LegacyCacheFile } from "./legacy-cache";
 
 export interface ChsPatchSetting {
   useJieba: boolean;
@@ -27,37 +26,24 @@ export const DEFAULT_SETTINGS: ChsPatchSetting = {
 
 export class ChsPatchSettingTab extends PluginSettingTab {
   private cachedVersions: string[] = [];
-  private legacyFiles: LegacyCacheFile[] = [];
   private cacheStatus = "点击刷新以查看缓存";
 
   private async refreshCaches() {
-    const [versions, legacy] = await Promise.allSettled([
-      listWasmVersions(),
-      listLegacyCaches(this.app),
-    ]);
-    this.cachedVersions = versions.status === "fulfilled" ? versions.value : [];
-    this.legacyFiles = legacy.status === "fulfilled" ? legacy.value : [];
-    const errors = [versions, legacy].filter(
-      (result) => result.status === "rejected",
-    );
-    this.cacheStatus = errors.length
-      ? "部分缓存无法读取，请查看控制台"
-      : "缓存列表已更新";
-    for (const error of errors) {
-      if (error.status === "rejected")
-        console.error("Failed to list jieba caches", error.reason);
+    try {
+      this.cachedVersions = await listWasmVersions();
+      this.cacheStatus = "缓存列表已更新";
+    } catch (error) {
+      this.cachedVersions = [];
+      this.cacheStatus = "缓存无法读取，请查看控制台";
+      console.error("Failed to list jieba caches", error);
     }
     this.update();
   }
 
-  private cacheEntry(
-    name: string,
-    desc: string,
-    remove: () => Promise<unknown>,
-  ): SettingDefinitionRender {
+  private cacheEntry(key: string): SettingDefinitionRender {
     return {
-      name,
-      desc,
+      name: key,
+      desc: "同源库共享此缓存",
       searchable: false,
       render: (setting) => {
         setting.addButton((btn) =>
@@ -67,7 +53,7 @@ export class ChsPatchSettingTab extends PluginSettingTab {
             .onClick(() => {
               btn.buttonEl.blur();
               btn.setDisabled(true);
-              void remove()
+              void deleteWasm(key)
                 .then(() => {
                   btn.setButtonText("已删除");
                   new Notice("已删除缓存，点击刷新查看缓存列表");
@@ -121,7 +107,7 @@ export class ChsPatchSettingTab extends PluginSettingTab {
           {
             type: "page",
             name: "管理结巴分词缓存",
-            desc: "手动删除旧文件缓存或任意 IndexedDB 缓存版本，共享缓存删除会影响所有同源库",
+            desc: "手动删除任意 IndexedDB 缓存版本，共享缓存删除会影响所有同源库",
             items: [
               {
                 name: "刷新缓存列表",
@@ -135,23 +121,8 @@ export class ChsPatchSettingTab extends PluginSettingTab {
                 type: "group",
                 heading: "IndexedDB 缓存版本",
                 items: this.cachedVersions.length
-                  ? this.cachedVersions.map((key) =>
-                      this.cacheEntry(key, "同源库共享此缓存", () =>
-                        deleteWasm(key),
-                      ),
-                    )
+                  ? this.cachedVersions.map((key) => this.cacheEntry(key))
                   : [{ name: "未找到 IndexedDB 缓存" }],
-              },
-              {
-                type: "group",
-                heading: "旧文件系统缓存",
-                items: this.legacyFiles.length
-                  ? this.legacyFiles.map((file) =>
-                      this.cacheEntry(file.name, file.location, () =>
-                        file.remove(),
-                      ),
-                    )
-                  : [{ name: "未找到旧文件缓存" }],
               },
             ],
           },

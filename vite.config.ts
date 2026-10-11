@@ -56,7 +56,6 @@ export default defineConfig(({ mode }) => {
         external: [
           "obsidian",
           "electron",
-          "@electron/remote",
           "@codemirror/state",
           "@codemirror/view",
           ...builtins,
