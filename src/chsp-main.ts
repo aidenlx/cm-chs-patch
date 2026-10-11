@@ -184,7 +184,7 @@ export default class CMChsPatch extends Plugin {
       // trim long text
       if (cursor - from > CHS_RANGE_LIMIT) {
         const newFrom = cursor - CHS_RANGE_LIMIT;
-        if (isChs(text.slice(newFrom, cursor))) {
+        if (isChs(text.slice(newFrom - from, cursor - from))) {
           // 英文单词超过 RANGE_LIMIT 被截断，不执行截断优化策略
           text = text.slice(newFrom - from);
           from = newFrom;
@@ -192,9 +192,9 @@ export default class CMChsPatch extends Plugin {
       }
       if (to - cursor > CHS_RANGE_LIMIT) {
         const newTo = cursor + CHS_RANGE_LIMIT;
-        if (isChs(text.slice(cursor, newTo))) {
+        if (isChs(text.slice(cursor - from, newTo - from))) {
           // 英文单词超过 RANGE_LIMIT 被截断，不执行截断优化策略
-          text = text.slice(0, newTo - to);
+          text = text.slice(0, newTo - from);
           to = newTo;
         }
       }

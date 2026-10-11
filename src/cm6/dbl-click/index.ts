@@ -17,7 +17,10 @@ export const dblClickPatch = (plugin: CMChsPatch) => {
     _type: number,
   ): SelectionRange => {
     const range = groupAt(view.state, pos, bias);
-    return cm6GetChsSeg(plugin, pos, range, view.state) ?? range;
+    // A hit on the right half of a character points after it. Keep the
+    // segment lookup inside that character instead of the following word.
+    const segmentPos = Math.max(range.from, pos - (bias < 0 ? 1 : 0));
+    return cm6GetChsSeg(plugin, segmentPos, range, view.state) ?? range;
   };
   const dblClickPatch = EditorView.mouseSelectionStyle.of((view, event) => {
     // Only handle double clicks
