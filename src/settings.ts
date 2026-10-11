@@ -68,15 +68,17 @@ export class ChsPatchSettingTab extends PluginSettingTab {
               btn.buttonEl.blur();
               btn.setDisabled(true);
               void remove()
-                .then(async () => {
-                  new Notice("已删除缓存，重启 Obsidian 后生效");
-                  await this.refreshCaches();
+                .then(() => {
+                  btn.setButtonText("已删除");
+                  new Notice(
+                    "已删除缓存，点击刷新查看缓存列表，重启 Obsidian 后生效",
+                  );
                 })
                 .catch((error: unknown) => {
                   console.error("Failed to delete jieba cache", error);
                   new Notice("删除缓存失败，请刷新列表后重试");
-                })
-                .finally(() => btn.setDisabled(false));
+                  btn.setDisabled(false);
+                });
             }),
         );
       },

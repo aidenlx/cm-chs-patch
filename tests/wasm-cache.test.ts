@@ -1,12 +1,26 @@
 import "fake-indexeddb/auto";
+import { createHash } from "node:crypto";
+import { readFile } from "node:fs/promises";
 import { openDB } from "idb";
 import assert from "node:assert/strict";
 import { test } from "node:test";
 
 globalThis.__JIEBA_VERSION__ = "test";
+const bytes = await readFile(
+  new URL(
+    "../node_modules/jieba-wasm/pkg/web/jieba_rs_wasm_bg.wasm",
+    import.meta.url,
+  ),
+);
+const wasm = bytes.buffer.slice(
+  bytes.byteOffset,
+  bytes.byteOffset + bytes.byteLength,
+);
+globalThis.__JIEBA_WASM_SHA256__ = createHash("sha256")
+  .update(bytes)
+  .digest("hex");
 const { loadWasm, saveWasm, deleteWasm, listWasmVersions } =
   await import("../src/wasm-cache.ts");
-const wasm = new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0]).buffer;
 
 test("versioned cache persists across connections and preserves other versions", async () => {
   assert.equal(await loadWasm(), null);
@@ -24,6 +38,9 @@ test("versioned cache persists across connections and preserves other versions",
   ]);
 
   await assert.rejects(saveWasm(new Uint8Array([1, 2, 3]).buffer));
+  await assert.rejects(
+    saveWasm(new Uint8Array([0, 97, 115, 109, 1, 0, 0, 0]).buffer),
+  );
   assert.deepEqual(await loadWasm(), wasm);
   assert.equal(await deleteWasm(), true);
   assert.equal(await loadWasm(), null);

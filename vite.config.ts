@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { readFile, writeFile } from "node:fs/promises";
 import { builtinModules } from "node:module";
 import { join, resolve } from "node:path";
@@ -6,6 +7,16 @@ import jiabaPackage from "./node_modules/jieba-wasm/package.json" with { type: "
 import pkg from "./package.json" with { type: "json" };
 
 const jiebaVersion = jiabaPackage.version;
+const jiebaWasmHash = createHash("sha256")
+  .update(
+    await readFile(
+      resolve(
+        import.meta.dirname,
+        "node_modules/jieba-wasm/pkg/web/jieba_rs_wasm_bg.wasm",
+      ),
+    ),
+  )
+  .digest("hex");
 
 const builtins = [...builtinModules, "original-fs"].flatMap((mod) => [
   mod,
@@ -27,6 +38,7 @@ export default defineConfig(({ mode }) => {
         isProd ? "production" : "development",
       ),
       __JIEBA_VERSION__: JSON.stringify(jiebaVersion),
+      __JIEBA_WASM_SHA256__: JSON.stringify(jiebaWasmHash),
     },
     build: {
       lib: {

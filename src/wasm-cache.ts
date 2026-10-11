@@ -29,8 +29,14 @@ export async function loadWasm(): Promise<ArrayBuffer | null> {
 }
 
 export async function saveWasm(binary: ArrayBuffer): Promise<void> {
-  if (!WebAssembly.validate(binary)) {
-    throw new Error("The selected file is not a valid WebAssembly binary.");
+  const hash = new Uint8Array(await crypto.subtle.digest("SHA-256", binary));
+  const hex = Array.from(hash, (byte) =>
+    byte.toString(16).padStart(2, "0"),
+  ).join("");
+  if (hex !== __JIEBA_WASM_SHA256__) {
+    throw new Error(
+      `The selected file does not match jieba-wasm ${__JIEBA_VERSION__}.`,
+    );
   }
   const db = await openCache();
   try {

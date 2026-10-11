@@ -21,9 +21,10 @@ export async function listLegacyCaches(app: App): Promise<LegacyCacheFile[]> {
   }
 
   if (Platform.isDesktop) {
-    const { app: electronApp } = await import("@electron/remote");
-    const fs = await import("node:fs/promises");
-    const { join } = await import("node:path");
+    const { app: electronApp } =
+      require("@electron/remote") as typeof import("@electron/remote");
+    const fs = require("node:fs/promises") as typeof import("node:fs/promises");
+    const { join } = require("node:path") as typeof import("node:path");
     const directory = electronApp.getPath("userData");
     for (const name of await fs.readdir(directory)) {
       if (!legacyFilename.test(name)) continue;
